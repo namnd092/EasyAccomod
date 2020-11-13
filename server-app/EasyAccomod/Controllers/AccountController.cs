@@ -354,6 +354,40 @@ namespace EasyAccomod.Controllers
             return Ok();
         }
 
+        // POST api/Account/OwnerRegister
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<IHttpActionResult> OwnerRegister(OwnerRegisterBindingModel model)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var user = new ApplicationUser()
+            {
+                UserName = model.UserName,
+                Email = model.Email
+            };
+
+            IdentityResult result = await UserManager.CreateAsync(user, model.Password);
+
+            if (!result.Succeeded)
+                return GetErrorResult(result);
+
+            var owner = new Owner()
+            {
+                AccountId = user.Id,
+                Address = model.Address,
+                Email = model.Email,
+                Identification = model.Identification,
+                Name = model.Name,
+                Phone = model.Name
+            };
+            _context.Owners.Add(owner);
+            _context.SaveChanges();
+
+            return Ok();
+        }
+
         // POST api/Account/RegisterExternal
         [OverrideAuthentication]
         [HostAuthentication(DefaultAuthenticationTypes.ExternalBearer)]
