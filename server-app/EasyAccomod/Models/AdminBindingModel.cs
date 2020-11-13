@@ -12,8 +12,5 @@ namespace EasyAccomod.Models
     {
         [Required]
         public string UserName { get; set; }
-
-        [Required]
-        public string RoleName { get; set; }
     }
 }

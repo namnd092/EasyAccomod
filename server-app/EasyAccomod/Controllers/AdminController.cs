@@ -22,26 +22,25 @@ namespace EasyAccomod.Controllers
             _userManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(_context));
         }
 
-        // POST api/Admin/SetRole
+        // POST api/Admin/SetOwner
         [HttpPost]
-        public IHttpActionResult SetRole(SetRoleBindingModel model)
+        public IHttpActionResult SetOwner(SetRoleBindingModel model)
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest("Model state is invalid.");
+                return BadRequest(ModelState);
             }
 
-            var role = _context.Roles.SingleOrDefault(r => r.Name == model.RoleName);
-
-            if (role == null)
-                return BadRequest(model.RoleName + " does not exist.");
-
             var user = _context.Users.SingleOrDefault(u => u.UserName == model.UserName);
-
             if (user == null)
                 return BadRequest("The user have user name " + model.UserName + " does not exist.");
 
-            _userManager.AddToRole(user.Id, model.RoleName);
+            var owner = _context.Owners.SingleOrDefault(o => o.AccountId == user.Id);
+            if (owner == null)
+                return BadRequest("The user have user name " + model.UserName + " is not an Owner.");
+
+            if (!_userManager.IsInRole(user.Id, RoleName.Owner))
+                _userManager.AddToRole(user.Id, RoleName.Owner);
 
             return Ok();
         }
