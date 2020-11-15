@@ -123,8 +123,8 @@ namespace EasyAccomod.Providers
         /// <param name="context"></param>
         private void SetCORSPolicy(IOwinContext context)
         {
-            // string allowedUrls = ConfigurationManager.AppSettings["allowedOrigins"];
-            string allowedUrls = "http://localhost:3000";
+            /*
+            string allowedUrls = ConfigurationManager.AppSettings["allowedOrigins"];
 
             if (!String.IsNullOrWhiteSpace(allowedUrls))
             {
@@ -140,6 +140,19 @@ namespace EasyAccomod.Providers
                     }
                 }
             }
+            */
+
+            string origin = context.Request.Headers.Get("Origin");
+            if (origin != null)
+            {
+                var found = origin.StartsWith("http://localhost:3000");
+                if (found)
+                {
+                    context.Response.Headers.Add("Access-Control-Allow-Origin",
+                        new string[] { origin });
+                }
+            }
+
             context.Response.Headers.Add("Access-Control-Allow-Headers",
                                    new string[] { "Authorization", "Content-Type" });
             context.Response.Headers.Add("Access-Control-Allow-Methods",
