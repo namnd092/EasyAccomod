@@ -17,5 +17,7 @@ namespace EasyAccomod.Models
         [Required] public string Content { get; set; }
 
         public string Status { get; set; }
+
+        [Required] public DateTime Time { get; set; }
     }
 }
