@@ -216,6 +216,10 @@
     <Compile Include="Migrations\202011101617267_InitialModel.Designer.cs">
       <DependentUpon>202011101617267_InitialModel.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202011201623010_EditModel.cs" />
+    <Compile Include="Migrations\202011201623010_EditModel.Designer.cs">
+      <DependentUpon>202011201623010_EditModel.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Accommodation.cs" />
     <Compile Include="Models\AccountBindingModels.cs" />
@@ -327,6 +331,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\202011101617267_InitialModel.resx">
       <DependentUpon>202011101617267_InitialModel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202011201623010_EditModel.resx">
+      <DependentUpon>202011201623010_EditModel.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

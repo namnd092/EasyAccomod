@@ -13,5 +13,7 @@ namespace EasyAccomod.Models
         [Required] public Renter Renter { get; set; }
 
         [Required] public RoomRentalPost RoomRentalPost { get; set; }
+
+        [Required] public DateTime Time { get; set; }
     }
 }
