@@ -15,7 +15,7 @@ namespace EasyAccomod.Models
 
         public string PublicLocationsNearby { get; set; }
 
-        [Required] public string RoomType { get; set; }
+        [Required] public AccommodationType AccommodationType { get; set; }
 
         [Required] public int RoomQuantity { get; set; }
 

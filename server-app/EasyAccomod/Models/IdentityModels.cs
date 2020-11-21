@@ -41,6 +41,8 @@ namespace EasyAccomod.Models
 
         public DbSet<AccommodationPicture> AccommodationPictures { get; set; }
 
+        public DbSet<AccommodationType> AccommodationTypes { get; set; }
+
         public ApplicationDbContext()
             : base("DefaultConnection", throwIfV1Schema: false)
         {
