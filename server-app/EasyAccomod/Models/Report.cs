@@ -6,7 +6,7 @@ using System.Web;
 
 namespace EasyAccomod.Models
 {
-    public class Comments
+    public class Report
     {
         public int Id { get; set; }
 
@@ -16,8 +16,8 @@ namespace EasyAccomod.Models
 
         [Required] public string Content { get; set; }
 
-        public string Status { get; set; }
-
         [Required] public DateTime Time { get; set; }
+
+        public string Status { get; set; }
     }
 }

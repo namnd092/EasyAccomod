@@ -31,13 +31,17 @@ namespace EasyAccomod.Models
 
         public DbSet<RoomRentalPost> RoomRentalPosts { get; set; }
 
-        public DbSet<Likes> Likes { get; set; }
+        public DbSet<Like> Likes { get; set; }
 
-        public DbSet<Views> Views { get; set; }
+        public DbSet<View> Views { get; set; }
 
-        public DbSet<Comments> Comments { get; set; }
+        public DbSet<Comment> Comments { get; set; }
 
-        public DbSet<Reports> Reports { get; set; }
+        public DbSet<Report> Reports { get; set; }
+
+        public DbSet<AccommodationPicture> AccommodationPictures { get; set; }
+
+        public DbSet<AccommodationType> AccommodationTypes { get; set; }
 
         public ApplicationDbContext()
             : base("DefaultConnection", throwIfV1Schema: false)
