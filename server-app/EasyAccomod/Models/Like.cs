@@ -6,7 +6,7 @@ using System.Web;
 
 namespace EasyAccomod.Models
 {
-    public class Reports
+    public class Like
     {
         public int Id { get; set; }
 
@@ -14,10 +14,6 @@ namespace EasyAccomod.Models
 
         [Required] public RoomRentalPost RoomRentalPost { get; set; }
 
-        [Required] public string Content { get; set; }
-
         [Required] public DateTime Time { get; set; }
-
-        public string Status { get; set; }
     }
 }

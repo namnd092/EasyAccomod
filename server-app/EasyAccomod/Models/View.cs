@@ -6,7 +6,7 @@ using System.Web;
 
 namespace EasyAccomod.Models
 {
-    public class Views
+    public class View
     {
         public int Id { get; set; }
 

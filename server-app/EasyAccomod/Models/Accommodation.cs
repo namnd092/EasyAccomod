@@ -41,8 +41,6 @@ namespace EasyAccomod.Models
 
         public string RoomOptions { get; set; }
 
-        [Required] public string RoomPicturesLink { get; set; }
-
         [Required] public Owner Owner { get; set; }
 
         [Required] public string Status { get; set; }
