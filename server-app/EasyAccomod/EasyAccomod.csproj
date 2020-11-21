@@ -228,6 +228,10 @@
     <Compile Include="Migrations\202011210312109_AddAccommodationTypeToDb.Designer.cs">
       <DependentUpon>202011210312109_AddAccommodationTypeToDb.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202011210324527_CreateAccommodationTypesInDb.cs" />
+    <Compile Include="Migrations\202011210324527_CreateAccommodationTypesInDb.Designer.cs">
+      <DependentUpon>202011210324527_CreateAccommodationTypesInDb.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Accommodation.cs" />
     <Compile Include="Models\AccommodationPicture.cs" />
@@ -350,6 +354,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202011210312109_AddAccommodationTypeToDb.resx">
       <DependentUpon>202011210312109_AddAccommodationTypeToDb.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202011210324527_CreateAccommodationTypesInDb.resx">
+      <DependentUpon>202011210324527_CreateAccommodationTypesInDb.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
