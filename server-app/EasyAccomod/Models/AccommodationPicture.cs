@@ -6,12 +6,12 @@ using System.Web;
 
 namespace EasyAccomod.Models
 {
-    public class Views
+    public class AccommodationPicture
     {
         public int Id { get; set; }
 
-        [Required] public Renter Renter { get; set; }
+        [Required] public string PictureLink { get; set; }
 
-        [Required] public RoomRentalPost RoomRentalPost { get; set; }
+        [Required] public Accommodation Accommodation { get; set; }
     }
 }

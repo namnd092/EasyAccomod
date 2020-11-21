@@ -15,7 +15,7 @@ namespace EasyAccomod.Models
 
         public string PublicLocationsNearby { get; set; }
 
-        [Required] public string RoomType { get; set; }
+        [Required] public AccommodationType AccommodationType { get; set; }
 
         [Required] public int RoomQuantity { get; set; }
 
@@ -40,8 +40,6 @@ namespace EasyAccomod.Models
         [Required] public int WaterPrice { get; set; }
 
         public string RoomOptions { get; set; }
-
-        [Required] public string RoomPicturesLink { get; set; }
 
         [Required] public Owner Owner { get; set; }
 

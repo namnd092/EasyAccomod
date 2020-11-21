@@ -216,21 +216,39 @@
     <Compile Include="Migrations\202011101617267_InitialModel.Designer.cs">
       <DependentUpon>202011101617267_InitialModel.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202011201623010_EditModel.cs" />
+    <Compile Include="Migrations\202011201623010_EditModel.Designer.cs">
+      <DependentUpon>202011201623010_EditModel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202011210303598_AddAccommodationPictureToDb.cs" />
+    <Compile Include="Migrations\202011210303598_AddAccommodationPictureToDb.Designer.cs">
+      <DependentUpon>202011210303598_AddAccommodationPictureToDb.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202011210312109_AddAccommodationTypeToDb.cs" />
+    <Compile Include="Migrations\202011210312109_AddAccommodationTypeToDb.Designer.cs">
+      <DependentUpon>202011210312109_AddAccommodationTypeToDb.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202011210324527_CreateAccommodationTypesInDb.cs" />
+    <Compile Include="Migrations\202011210324527_CreateAccommodationTypesInDb.Designer.cs">
+      <DependentUpon>202011210324527_CreateAccommodationTypesInDb.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Accommodation.cs" />
+    <Compile Include="Models\AccommodationPicture.cs" />
+    <Compile Include="Models\AccommodationType.cs" />
     <Compile Include="Models\AccountBindingModels.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Admin.cs" />
     <Compile Include="Models\AdminBindingModel.cs" />
-    <Compile Include="Models\Comments.cs" />
+    <Compile Include="Models\Comment.cs" />
     <Compile Include="Models\IdentityModels.cs" />
-    <Compile Include="Models\Likes.cs" />
+    <Compile Include="Models\Like.cs" />
     <Compile Include="Models\Owner.cs" />
     <Compile Include="Models\Renter.cs" />
-    <Compile Include="Models\Reports.cs" />
+    <Compile Include="Models\Report.cs" />
     <Compile Include="Models\RoleName.cs" />
     <Compile Include="Models\RoomRentalPost.cs" />
-    <Compile Include="Models\Views.cs" />
+    <Compile Include="Models\View.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Providers\ApplicationOAuthProvider.cs" />
     <Compile Include="Results\ChallengeResult.cs" />
@@ -327,6 +345,18 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\202011101617267_InitialModel.resx">
       <DependentUpon>202011101617267_InitialModel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202011201623010_EditModel.resx">
+      <DependentUpon>202011201623010_EditModel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202011210303598_AddAccommodationPictureToDb.resx">
+      <DependentUpon>202011210303598_AddAccommodationPictureToDb.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202011210312109_AddAccommodationTypeToDb.resx">
+      <DependentUpon>202011210312109_AddAccommodationTypeToDb.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202011210324527_CreateAccommodationTypesInDb.resx">
+      <DependentUpon>202011210324527_CreateAccommodationTypesInDb.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
