@@ -42,8 +42,8 @@
                 "command": "C:\\Program Files (x86)\\IIS Express\\iisexpress.exe"
             },
             "args": [
-                "/path:${workspaceRoot}\\server-app\\EasyAccomod",
-                "/port:46030"
+                "/config:C:\\Program Files (x86)\\IIS Express\\AppServer\\applicationhost.config",
+                "/site:EasyAccomod"
             ],
             "presentation": {
                 "echo": true,
