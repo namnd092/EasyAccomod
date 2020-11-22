@@ -31,13 +31,13 @@ namespace EasyAccomod.Controllers
                 return BadRequest(ModelState);
             }
 
-            var user = _context.Users.SingleOrDefault(u => u.UserName == model.UserName);
+            var user = _context.Users.SingleOrDefault(u => u.Id == model.AccountId);
             if (user == null)
-                return BadRequest("The user have user name " + model.UserName + " does not exist.");
+                return BadRequest("The user have account id " + model.AccountId + " does not exist.");
 
             var owner = _context.Owners.SingleOrDefault(o => o.AccountId == user.Id);
             if (owner == null)
-                return BadRequest("The user have user name " + model.UserName + " is not an Owner.");
+                return BadRequest("The user have account id " + model.AccountId + " is not an Owner.");
 
             var listRole = _userManager.GetRoles(user.Id);
 
