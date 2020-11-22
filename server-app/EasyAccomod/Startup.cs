@@ -51,11 +51,33 @@ namespace EasyAccomod
                 {
                     userManager.AddToRole(user.Id, "Admin");
                 }
+
+                var admin = new Admin()
+                {
+                    Name = "Admin",
+                    Email = user.Email,
+                    AccountId = user.Id
+                };
+
+                _context.Admins.Add(admin);
+                _context.SaveChanges();
             }
 
-            if (!roleManager.RoleExists("Owner"))
+            if (!roleManager.RoleExists(RoleName.Owner))
             {
-                var role = new IdentityRole("Owner");
+                var role = new IdentityRole(RoleName.Owner);
+                roleManager.Create(role);
+            }
+
+            if (!roleManager.RoleExists(RoleName.Renter))
+            {
+                var role = new IdentityRole(RoleName.Renter);
+                roleManager.Create(role);
+            }
+
+            if (!roleManager.RoleExists(RoleName.WaitForConfirmation))
+            {
+                var role = new IdentityRole(RoleName.WaitForConfirmation);
                 roleManager.Create(role);
             }
         }

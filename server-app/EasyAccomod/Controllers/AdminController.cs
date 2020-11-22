@@ -39,8 +39,13 @@ namespace EasyAccomod.Controllers
             if (owner == null)
                 return BadRequest("The user have user name " + model.UserName + " is not an Owner.");
 
-            if (!_userManager.IsInRole(user.Id, RoleName.Owner))
-                _userManager.AddToRole(user.Id, RoleName.Owner);
+            var listRole = _userManager.GetRoles(user.Id);
+
+            if (listRole.Count > 0)
+            {
+                _userManager.RemoveFromRoles(user.Id, listRole.ToArray());
+            }
+            _userManager.AddToRole(user.Id, RoleName.Owner);
 
             return Ok();
         }
