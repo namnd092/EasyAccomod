@@ -395,16 +395,20 @@ namespace EasyAccomod.Controllers
                 return GetErrorResult(result);
             }
 
-            Renter renter = new Renter
+            var addToRole = UserManager.AddToRole(user.Id, RoleName.Renter);
+            if (addToRole.Succeeded)
             {
-                AccountId = user.Id,
-                Name = model.Name,
-                Email = model.Email
-            };
-            _context.Renters.Add(renter);
-            _context.SaveChanges();
-
-            _userManager.AddToRole(user.Id, RoleName.Renter);
+                Renter renter = new Renter
+                {
+                    AccountId = user.Id,
+                    Name = model.Name,
+                    Email = model.Email
+                };
+                _context.Renters.Add(renter);
+                _context.SaveChanges();
+            }
+            else
+                return BadRequest("Error when add to role");
 
             return Ok();
         }
@@ -428,19 +432,23 @@ namespace EasyAccomod.Controllers
             if (!result.Succeeded)
                 return GetErrorResult(result);
 
-            var owner = new Owner()
+            var addToRole = UserManager.AddToRole(user.Id, RoleName.WaitForConfirmation);
+            if (addToRole.Succeeded)
             {
-                AccountId = user.Id,
-                Address = model.Address,
-                Email = model.Email,
-                Identification = model.Identification,
-                Name = model.Name,
-                Phone = model.Phone
-            };
-            _context.Owners.Add(owner);
-            _context.SaveChanges();
-
-            _userManager.AddToRole(user.Id, RoleName.WaitForConfirmation);
+                var owner = new Owner()
+                {
+                    AccountId = user.Id,
+                    Address = model.Address,
+                    Email = model.Email,
+                    Identification = model.Identification,
+                    Name = model.Name,
+                    Phone = model.Phone
+                };
+                _context.Owners.Add(owner);
+                _context.SaveChanges();
+            }
+            else
+                return BadRequest("Error when add to role");
 
             return Ok();
         }
