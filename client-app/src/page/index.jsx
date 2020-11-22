@@ -8,6 +8,7 @@ import RegisterPage from './RegisterPage'
 import Header from '../components/Header';
 import Footer from '../components/Footer'
 import NotFound from '../components/NotFound'
+import './style.css'
 const PrivateRoute = ({ component: Component, ...rest }) => (
     <Route {...rest} render={Component} />
 )
@@ -16,21 +17,23 @@ export const Page = () => {
     return (
         <Router>
             <Header/>
-            <Switch>
-                <Route exact path='/'>
-                    <HomePage/>
-                </Route>
-                <Route path='/post/:id'>
-                    <PostPage/>
-                </Route>
-                <Route path='/login'>
-                    <LoginPage/>
-                </Route>
-                <Route path='/register'>
-                    <RegisterPage/>
-                </Route>
-                <Route component={NotFound}/>
-            </Switch>
+            <main>
+                <Switch>
+                    <Route exact path='/'>
+                        <HomePage/>
+                    </Route>
+                    <Route path='/post/:id'>
+                        <PostPage/>
+                    </Route>
+                    <Route path='/login'>
+                        <LoginPage/>
+                    </Route>
+                    <Route path='/register'>
+                        <RegisterPage/>
+                    </Route>
+                    <Route component={NotFound}/>
+                </Switch>
+            </main>
             <Footer/>
         </Router>
     )
