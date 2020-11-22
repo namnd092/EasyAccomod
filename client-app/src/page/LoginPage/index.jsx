@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react'
+import React, { Fragment, useState } from 'react'
 import PropTypes from 'prop-types'
 import { Formik, Field, Form } from 'formik'
 import * as Yup from 'yup'
@@ -6,11 +6,15 @@ import { TextField, Button, FormControl, Input, FormGroup, InputLabel } from '@m
 import { useHistory } from 'react-router-dom'
 import './style.css';
 import authApi from '../../api/authApi'
+import {setUser} from '../../redux/slice/userSlice'
+import {useSelector, useDispatch} from 'react-redux';
 
 LoginPage.propTypes = {}
 
 function LoginPage(props) {
-    const history = useHistory()
+    const history = useHistory();
+    const dispatch = useDispatch();
+    const [message, setMessage] = useState(''); 
     const initialValues = {
         username: '',
         password: '',
@@ -18,22 +22,28 @@ function LoginPage(props) {
     const validationSchema = Yup.object().shape({
         username: Yup.string()
             .required('Tên đăng nhập không được bỏ trống')
-            .min(6, 'Tên đăng nhập phải từ 6 ký tự trở lên'),
+            .min(5, 'Tên đăng nhập phải từ 6 ký tự trở lên'),
         password: Yup.string()
             .required('Mật khẩu không được bỏ trống')
             .min(6,'Mật khẩu phải chứa ít nhất 6 ký tự'),
     })
-    const gotoRegister = () => {
-        history.push('/register')
-    }
     const handleSubmit = async(value) => {
         console.log('Submit Login', value)
         const {username, password} = value;
-        const response = await authApi.postLogin(username, password)
-        console.log(response)
-        const data = response.data;
+        try {
+            const response = await authApi.postLogin(username, password);
+            const {access_token, account_id, role, user_id} = response;
+            dispatch(setUser({account_id, user_id, role}));
+            console.log(response)
+            localStorage.setItem('token', access_token);
+            localStorage.setItem('role', role);
+            setMessage('Bạn đã đăng nhập thành công')
+            history.push('/');
+        } catch (error) {
+            console.log(error)
+            setMessage('Bạn đã nhập sai tên đăng nhập hoặc mật khẩu');
+        }
     }
-    
     return (
         <Fragment>
             <h1>Login</h1>
