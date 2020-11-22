@@ -123,6 +123,52 @@ namespace EasyAccomod.Controllers
             };
         }
 
+        // GET api/Account/Info
+        [Authorize]
+        [HttpGet]
+        public IHttpActionResult Info()
+        {
+            var accountId = User.Identity.GetUserId();
+
+            var roleId = _context.Users.Single(u => u.Id == accountId).Roles.Single().RoleId;
+            var roleName = _context.Roles.Single(r => r.Id == roleId).Name;
+
+            int userId = -1;
+
+            string name = "";
+
+            switch (roleName)
+            {
+                case RoleName.Admin:
+                    var admin = _context.Admins.Single(a => a.AccountId == accountId);
+                    userId = admin.Id;
+                    name = admin.Name;
+                    break;
+
+                case RoleName.WaitForConfirmation:
+                case RoleName.Owner:
+                    var owner = _context.Owners.Single(o => o.AccountId == accountId);
+                    userId = owner.Id;
+                    name = owner.Name;
+                    break;
+
+                case RoleName.Renter:
+                    var renter = _context.Renters.Single(r => r.AccountId == accountId);
+                    userId = renter.Id;
+                    name = renter.Name;
+                    break;
+            }
+
+            var result = new InfoViewModel()
+            {
+                AccountId = accountId,
+                Name = name,
+                Role = roleName,
+                UserId = userId
+            };
+            return Ok(result);
+        }
+
         // POST api/Account/Logout
         [Route("Logout")]
         public IHttpActionResult Logout()

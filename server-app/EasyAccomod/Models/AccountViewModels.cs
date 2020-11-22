@@ -5,6 +5,17 @@ namespace EasyAccomod.Models
 {
     // Models returned by AccountController actions.
 
+    public class InfoViewModel
+    {
+        public string Name { get; set; }
+
+        public string Role { get; set; }
+
+        public string AccountId { get; set; }
+
+        public int UserId { get; set; }
+    }
+
     public class CreateTokenViewModel
     {
         public string access_token { get; set; }
