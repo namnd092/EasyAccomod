@@ -17,6 +17,7 @@ using Microsoft.Owin.Security.OAuth;
 using EasyAccomod.Models;
 using EasyAccomod.Providers;
 using EasyAccomod.Results;
+using Newtonsoft.Json;
 
 namespace EasyAccomod.Controllers
 {
@@ -54,6 +55,58 @@ namespace EasyAccomod.Controllers
         }
 
         public ISecureDataFormat<AuthenticationTicket> AccessTokenFormat { get; private set; }
+
+        // POST api/Account/Token
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("Token")]
+        public IHttpActionResult CreateToken(CreateTokenBindingModel model)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest();
+
+            var client = new HttpClient();
+
+            var loginData = new Dictionary<string, string>
+            {
+                {"UserName", model.UserName},
+                {"Password", model.Password},
+                {"grant_type", "password"}
+            };
+
+            var content = new FormUrlEncodedContent(loginData);
+
+            var response = client.PostAsync("https://localhost:44360/token", content).Result;
+
+            if (!response.IsSuccessStatusCode)
+                return BadRequest("User name or password is invalid.");
+
+            string resultJson = response.Content.ReadAsStringAsync().Result;
+            var result = JsonConvert.DeserializeObject<CreateTokenViewModel>(resultJson);
+
+            result.account_id = _context.Users.Single(u => u.UserName == model.UserName).Id;
+
+            var roleId = _context.Users.Single(u => u.UserName == model.UserName).Roles.Single().RoleId;
+            result.role = _context.Roles.Single(r => r.Id == roleId).Name;
+
+            switch (result.role)
+            {
+                case RoleName.Admin:
+                    result.user_id = _context.Admins.Single(a => a.AccountId == result.account_id).Id;
+                    break;
+
+                case RoleName.WaitForConfirmation:
+                case RoleName.Owner:
+                    result.user_id = _context.Owners.Single(o => o.AccountId == result.account_id).Id;
+                    break;
+
+                case RoleName.Renter:
+                    result.user_id = _context.Renters.Single(r => r.AccountId == result.account_id).Id;
+                    break;
+            }
+
+            return Ok(result);
+        }
 
         // GET api/Account/UserInfo
         [HostAuthentication(DefaultAuthenticationTypes.ExternalBearer)]
@@ -322,11 +375,11 @@ namespace EasyAccomod.Controllers
             return logins;
         }
 
-        // POST api/Account/Register
+        // POST api/Account/RenterRegister
         [HttpPost]
         [AllowAnonymous]
-        [Route("Register")]
-        public async Task<IHttpActionResult> Register(RegisterBindingModel model)
+        [Route("RenterRegister")]
+        public async Task<IHttpActionResult> RenterRegister(RegisterBindingModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -350,6 +403,8 @@ namespace EasyAccomod.Controllers
             };
             _context.Renters.Add(renter);
             _context.SaveChanges();
+
+            _userManager.AddToRole(user.Id, RoleName.Renter);
 
             return Ok();
         }
@@ -380,10 +435,12 @@ namespace EasyAccomod.Controllers
                 Email = model.Email,
                 Identification = model.Identification,
                 Name = model.Name,
-                Phone = model.Name
+                Phone = model.Phone
             };
             _context.Owners.Add(owner);
             _context.SaveChanges();
+
+            _userManager.AddToRole(user.Id, RoleName.WaitForConfirmation);
 
             return Ok();
         }

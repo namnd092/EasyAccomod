@@ -6,6 +6,16 @@ namespace EasyAccomod.Models
 {
     // Models used as parameters to AccountController actions.
 
+    public class CreateTokenBindingModel
+    {
+        [Required]
+        public string UserName { get; set; }
+
+        [Required]
+        [DataType(DataType.Password)]
+        public string Password { get; set; }
+    }
+
     public class AddExternalLoginBindingModel
     {
         [Required]
