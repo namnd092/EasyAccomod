@@ -232,12 +232,20 @@
     <Compile Include="Migrations\202011210324527_CreateAccommodationTypesInDb.Designer.cs">
       <DependentUpon>202011210324527_CreateAccommodationTypesInDb.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202011231635160_AddAddressModelToDb.cs" />
+    <Compile Include="Migrations\202011231635160_AddAddressModelToDb.Designer.cs">
+      <DependentUpon>202011231635160_AddAddressModelToDb.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Accommodation.cs" />
     <Compile Include="Models\AccommodationPicture.cs" />
     <Compile Include="Models\AccommodationType.cs" />
     <Compile Include="Models\AccountBindingModels.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\AddressModel\Address.cs" />
+    <Compile Include="Models\AddressModel\District.cs" />
+    <Compile Include="Models\AddressModel\Province.cs" />
+    <Compile Include="Models\AddressModel\Ward.cs" />
     <Compile Include="Models\Admin.cs" />
     <Compile Include="Models\AdminBindingModel.cs" />
     <Compile Include="Models\Comment.cs" />
@@ -358,6 +366,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202011210324527_CreateAccommodationTypesInDb.resx">
       <DependentUpon>202011210324527_CreateAccommodationTypesInDb.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202011231635160_AddAddressModelToDb.resx">
+      <DependentUpon>202011231635160_AddAddressModelToDb.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
