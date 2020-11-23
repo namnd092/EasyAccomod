@@ -4,6 +4,7 @@ const initialState = {
    account_id: null,
    user_id: null,
    role: null,
+   name: null,
 }
 
 const userSlice = createSlice({

@@ -27,7 +27,7 @@ const Header = props => {
                 <div className="logo" onClick={gotoHome}>
                     <img src={logo} alt=""/>
                 </div>
-                <nav className="navbar navbar-expand-lg ">
+                <nav className="navbar navbar-expand-md ">
                     <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                         <i class="fas fa-bars" style={{color: 'white'}}></i>
                     </button>

@@ -1,0 +1,14 @@
+.homePage{
+}
+.homepage__searchFrom{
+    background-color: white;
+    padding: 50px;
+}
+.homepage__searchFrom label{
+    
+}
+
+.homePage__pagination{
+    width: 510px;
+    margin: auto;
+}

@@ -15,6 +15,7 @@ function LoginPage(props) {
     const history = useHistory();
     const dispatch = useDispatch();
     const [message, setMessage] = useState(''); 
+    const [role, useRole] = useState('');
     const initialValues = {
         username: '',
         password: '',
@@ -32,8 +33,8 @@ function LoginPage(props) {
         const {username, password} = value;
         try {
             const response = await authApi.postLogin(username, password);
-            const {access_token, account_id, role, user_id} = response;
-            dispatch(setUser({account_id, user_id, role}));
+            const {access_token, account_id, role, user_id, name} = response;
+            dispatch(setUser({account_id, user_id, role, name}));
             console.log(response)
             localStorage.setItem('token', access_token);
             localStorage.setItem('role', role);
