@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
+using EasyAccomod.Models.AddressModel;
 using Newtonsoft.Json;
 
 namespace EasyAccomod.Models
@@ -10,8 +11,6 @@ namespace EasyAccomod.Models
     public class Accommodation
     {
         [Required] public int Id { get; set; }
-
-        [Required] public string Address { get; set; }
 
         public string PublicLocationsNearby { get; set; }
 
