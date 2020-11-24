@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import { Formik, Field, Form } from 'formik'
 import * as Yup from 'yup'
@@ -9,24 +9,30 @@ import authApi from '../../api/authApi'
 import {setUser} from '../../redux/slice/userSlice'
 import {useSelector, useDispatch} from 'react-redux';
 
-LoginPage.propTypes = {}
+LoginPage.propTypes = {
+    handle: PropTypes.func,
+}
+LoginPage.defaultType = {
+    handle: null,
+}
 
 function LoginPage(props) {
     const history = useHistory();
     const dispatch = useDispatch();
     const [message, setMessage] = useState(''); 
-    const [role, useRole] = useState('');
+    const [role, setRole] = useState('');
     const initialValues = {
         username: '',
         password: '',
     }
     const validationSchema = Yup.object().shape({
         username: Yup.string()
-            .required('Tên đăng nhập không được bỏ trống')
-            .min(5, 'Tên đăng nhập phải từ 6 ký tự trở lên'),
+            .required('Tên đăng nhập không được bỏ trống'),
         password: Yup.string()
             .required('Mật khẩu không được bỏ trống')
-            .min(6,'Mật khẩu phải chứa ít nhất 6 ký tự'),
+            .min(6,'Mật khẩu phải chứa ít nhất 6 ký tự')
+            .matches(/\w*(?:[A-Z]+)\w*(?:[\W.]+)\w*/, 'Mật khẩu phải chứa ít nhất 1 ký tự in hoa và 1 ký tự đặc biệt')
+            
     })
     const handleSubmit = async(value) => {
         console.log('Submit Login', value)
@@ -37,7 +43,7 @@ function LoginPage(props) {
             dispatch(setUser({account_id, user_id, role, name}));
             console.log(response)
             localStorage.setItem('token', access_token);
-            localStorage.setItem('role', role);
+            setRole(role);
             setMessage('Bạn đã đăng nhập thành công')
             history.push('/');
         } catch (error) {
@@ -45,6 +51,10 @@ function LoginPage(props) {
             setMessage('Bạn đã nhập sai tên đăng nhập hoặc mật khẩu');
         }
     }
+
+    useEffect(()=>{
+        props.handle(role)
+    },[role])
     return (
         <Fragment>
             <h1>Login</h1>

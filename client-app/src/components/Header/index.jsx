@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { Link, NavLink } from 'react-router-dom'
 import './style.css';
 import logo from '../../assets/img/logo.png';
 import {useLocation, useHistory} from 'react-router-dom'
@@ -11,7 +11,7 @@ const Header = props => {
     const history = useHistory();
     const dispatch = useDispatch();
     //const {role} = useSelector(state => state.user)
-    const role = localStorage.getItem('role') || null;
+    //const role = localStorage.getItem('role') || null;
     const gotoHome = () => {
         history.push('/');
     }
@@ -36,22 +36,26 @@ const Header = props => {
                             {/* <li className="nav-item active">
                                 <Link to="/" className={"nav-link"}>Trang chủ</Link>
                             </li> */}
+                            
                             <li className="nav-item active">
-                                <Link to="/" className={"nav-link"}>Tìm phòng</Link>
+                                <NavLink to="/" className={"nav-link"}>Tìm phòng</NavLink>
                             </li>
-                            <li className="nav-item" style={{display: role && role.toUpperCase() !== 'renter' ? '' : 'none'}}>
-                                <Link className="nav-link" to="#">Đăng bài</Link>
+                            <li className="nav-item" >
+                                <NavLink className="nav-link" to="/newpost">Đăng bài</NavLink>
                             </li>
-                            <li className="nav-item" style={{display: pathname !== '/login' && !role ? '' : 'none'}}>
-                                <Link className="nav-link" to="/login" >Đăng nhập</Link>
+                            <li className="nav-item" >
+                                <NavLink className="nav-link" to="/approved">Phê duyệt</NavLink>
                             </li>
-                            <li className="nav-item" style={{display: pathname === '/login' && !role ? '' : 'none'}}>
-                                <Link className="nav-link" to="/register">Đăng ký</Link>
+                            <li className="nav-item" style={{display: pathname !== '/login' && !props.role ? '' : 'none'}}>
+                                <NavLink className="nav-link" to="/login" >Đăng nhập</NavLink>
                             </li>
-                            <li className="nav-item dropdown" style={{display: role ? '' : 'none'}}>
-                                <Link className="nav-link dropdown-toggle" to="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <li className="nav-item" style={{display: pathname === '/login' && !props.role ? '' : 'none'}}>
+                                <NavLink className="nav-link" to="/register">Đăng ký</NavLink>
+                            </li>
+                            <li className="nav-item dropdown" style={{display: props.role ? '' : 'none'}}>
+                                <NavLink className="nav-link dropdown-toggle" to="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     Nguyễn Duy Nam
-                                </Link>
+                                </NavLink>
                                 <div className="dropdown-menu header__account__dropdown" aria-labelledby="navbarDropdown">
                                     <Link className="dropdown-item" to="/profile">
                                         <i class="fas fa-user-circle">

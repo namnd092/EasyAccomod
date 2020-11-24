@@ -9,8 +9,7 @@ const auth = localStorage.getItem('token') !== null;
 //const role = localStorage.getItem('role') || null;
 
 
-function PrivateRoute({ component: Component, roles, ...rest }) {
-    const role = useSelector(state => state.user.role);
+function PrivateRoute({ component: Component, roles, role, ...rest }) {
     return (
         <Route {...rest} render={props => {
             if (!auth) {

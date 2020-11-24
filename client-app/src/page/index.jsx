@@ -22,17 +22,29 @@ import './style.css'
 import authApi from '../api/authApi'
 import { setUser } from '../redux/slice/userSlice'
 import effectGetInfo from '../utils/Auth'
+import ApprovedPage from './ApprovedPage'
+import NewPostPage from './NewPostPage'
 
 export const Page = () => {
     const dispatch = useDispatch()
-    
+    const [role, setRole] = React.useState('');
     useEffect(() => {
-        effectGetInfo(dispatch);
-    })
+        async function effectGetInfo(){
+            effectGetInfo(dispatch);
+            const response = await authApi.getAccountInfoByToken();
+            const {role} = response;
+            setRole(role)
+        }
+    }, [])
+
+    const handle=(role)=>{
+        console.log(role)
+        setRole(role)
+    }
     
     return (
         <Router>
-            <Header />
+            <Header role={role}/>
             <main>
                 <div className="width_box">
                     <Switch>
@@ -42,26 +54,39 @@ export const Page = () => {
                         <Route path="/post/:id">
                             <PostPage />
                         </Route>
-                        <Route path="/login">
-                            <LoginPage />
+                        <Route path="/login" role={role}>
+                            <LoginPage handle={handle}/>
                         </Route>
-                        <Route path="/register">
+                        <Route path="/register" role={role}>
                             <RegisterPage />
                         </Route>
-                        {/* <Route path="/profile">
+                        <Route path="/profile">
                             <ProfilePage />
                         </Route>
-                        <AuthRoute component={LoginPage} roles={[]} path="/login" />
+                        <Route path="/approved">
+                            <ApprovedPage/>
+                        </Route>
+                        <Route path="/newpost">
+                            <NewPostPage/>
+                        </Route>
+                        {/* <AuthRoute 
+                            component={LoginPage} 
+                            roles={[]} 
+                            path="/login" 
+                            role={role}
+                        />
                         <AuthRoute
                             component={RegisterPage}
                             roles={[]}
                             path="/register"
+                            role={role}
                         /> */}
-                        <PrivateRoute
+                        {/* <PrivateRoute
                             component={ProfilePage}
                             roles={['admin', 'renter', 'owner']}
                             path="/profile"
-                        />
+                            role={role}
+                        /> */}
                         <Route component={NotFound} />
                     </Switch>
                 </div>

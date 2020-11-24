@@ -129,7 +129,7 @@ function SearchFrom(props) {
             {({ handleChange, handleBlur, handleSubmit, values }) => (
                 <Form>
                     <div className="row">
-                        <div className="col-10">
+                        <div className="col-12 col-lg-10">
                             <Accordion expanded={true}>
                                 <AccordionSummary>
                                     <h2>Tìm kiếm cơ bản</h2>
@@ -137,7 +137,7 @@ function SearchFrom(props) {
                                 <AccordionDetails>
                                     <div style={{ width: '100%' }}>
                                         <div className="row">
-                                            <FormGroup className="col-3">
+                                            <FormGroup className="col-12 col-md-6 col-xl-3">
                                                 <FormLabel>
                                                     Loại Phòng
                                                 </FormLabel>
@@ -156,7 +156,7 @@ function SearchFrom(props) {
                                                     }
                                                 />
                                             </FormGroup>
-                                            <FormGroup className="col-3">
+                                            <FormGroup className="col-12 col-md-6 col-xl-3">
                                                 <FormLabel>
                                                     Tỉnh/Thành phố
                                                 </FormLabel>
@@ -173,7 +173,7 @@ function SearchFrom(props) {
                                                     }
                                                 />
                                             </FormGroup>
-                                            <FormGroup className="col-3">
+                                            <FormGroup className="col-12 col-md-6 col-xl-3">
                                                 <FormLabel>
                                                     Quận/Huyện
                                                 </FormLabel>
@@ -188,7 +188,7 @@ function SearchFrom(props) {
                                                     }
                                                 />
                                             </FormGroup>
-                                            <FormGroup className="col-3">
+                                            <FormGroup className="col-12 col-md-6 col-xl-3">
                                                 <FormLabel>Xã/Phường</FormLabel>
                                                 <Select
                                                     defaultValue={
@@ -204,10 +204,10 @@ function SearchFrom(props) {
                                         </div>
 
                                         <div className="row">
-                                            <FormGroup className="col-6">
+                                            <FormGroup className="col-12 col-xl-6 mt-3">
                                                 <TextField
                                                     id="outlined-basic"
-                                                    label="Địa chỉ chi tiết"
+                                                    label="Đường/Số nhà"
                                                     variant="outlined"
                                                     name="street"
                                                     onChange={(value) =>
@@ -220,7 +220,7 @@ function SearchFrom(props) {
                                                     }
                                                 />
                                             </FormGroup>
-                                            <FormGroup className="col-3">
+                                            <FormGroup className="col-12 col-md-6 col-xl-3">
                                                 <FormLabel>Mức giá</FormLabel>
                                                 <Select
                                                     defaultValue={
@@ -238,7 +238,7 @@ function SearchFrom(props) {
                                                     }
                                                 />
                                             </FormGroup>
-                                            <FormGroup className="col-3">
+                                            <FormGroup className="col-12 col-md-6 col-xl-3">
                                                 <FormLabel>Diện tích</FormLabel>
                                                 <Select
                                                     defaultValue={
@@ -267,7 +267,7 @@ function SearchFrom(props) {
                                 <AccordionDetails>
                                     <div style={{width: '100%'}}>
                                         <div className="row">
-                                            <FormGroup className="col-2">
+                                            <FormGroup className="col-12 col-md-6 col-lg-4 col-xl-2">
                                                 <FormLabel>Chung chủ</FormLabel>
                                                 <Select
                                                     defaultValue={choseData[0]}
@@ -283,7 +283,7 @@ function SearchFrom(props) {
                                                     }
                                                 />
                                             </FormGroup>
-                                            <FormGroup className="col-2">
+                                            <FormGroup className="col-12 col-md-6 col-lg-4 col-xl-2">
                                                 <FormLabel>Nóng lạnh</FormLabel>
                                                 <Select
                                                     defaultValue={choseData[0]}
@@ -299,7 +299,7 @@ function SearchFrom(props) {
                                                     }
                                                 />
                                             </FormGroup>
-                                            <FormGroup className="col-2">
+                                            <FormGroup className="col-12 col-md-6 col-lg-4 col-xl-2">
                                                 <FormLabel>Ban công</FormLabel>
                                                 <Select
                                                     defaultValue={choseData[0]}
@@ -315,7 +315,7 @@ function SearchFrom(props) {
                                                     }
                                                 />
                                             </FormGroup>
-                                            <FormGroup className="col-2">
+                                            <FormGroup className="col-12 col-md-6 col-lg-4 col-xl-2">
                                                 <FormLabel>Điều hòa</FormLabel>
                                                 <Select
                                                     defaultValue={choseData[0]}
@@ -331,7 +331,7 @@ function SearchFrom(props) {
                                                     }
                                                 />
                                             </FormGroup>
-                                            <FormGroup className="col-2">
+                                            <FormGroup className="col-12 col-md-6 col-lg-4 col-xl-2">
                                                 <FormLabel>
                                                     Nhà tắm riêng
                                                 </FormLabel>
@@ -349,7 +349,7 @@ function SearchFrom(props) {
                                                     }
                                                 />
                                             </FormGroup>
-                                            <FormGroup className="col-2">
+                                            <FormGroup className="col-12 col-md-6 col-lg-4 col-xl-2">
                                                 <FormLabel>Bếp riêng</FormLabel>
                                                 <Select
                                                     defaultValue={choseData[0]}
@@ -370,10 +370,10 @@ function SearchFrom(props) {
                                 </AccordionDetails>
                             </Accordion>
                         </div>
-                        <div className="col-2">
+                        <div className="col-lg-2 col-12">
                             <Button
                                 type={'submit'}
-                                color={'primary'}
+                                color={'secondary'}
                                 variant="contained"
                             >
                                 Tìm kiếm
