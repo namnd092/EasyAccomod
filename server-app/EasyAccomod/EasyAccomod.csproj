@@ -236,6 +236,10 @@
     <Compile Include="Migrations\202011231635160_AddAddressModelToDb.Designer.cs">
       <DependentUpon>202011231635160_AddAddressModelToDb.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202011241344352_EditAccommodationTableInDb.cs" />
+    <Compile Include="Migrations\202011241344352_EditAccommodationTableInDb.Designer.cs">
+      <DependentUpon>202011241344352_EditAccommodationTableInDb.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Accommodation.cs" />
     <Compile Include="Models\AccommodationPicture.cs" />
@@ -369,6 +373,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202011231635160_AddAddressModelToDb.resx">
       <DependentUpon>202011231635160_AddAddressModelToDb.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202011241344352_EditAccommodationTableInDb.resx">
+      <DependentUpon>202011241344352_EditAccommodationTableInDb.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
