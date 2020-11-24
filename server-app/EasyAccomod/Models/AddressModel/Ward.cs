@@ -13,7 +13,9 @@ namespace EasyAccomod.Models.AddressModel
         [Required]
         public string Name { get; set; }
 
-        [Required]
         public District District { get; set; }
+
+        [Required]
+        public int DistrictId { get; set; }
     }
 }

@@ -244,6 +244,10 @@
     <Compile Include="Migrations\202011241344352_EditAccommodationTableInDb.Designer.cs">
       <DependentUpon>202011241344352_EditAccommodationTableInDb.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202011241656254_EditAddressModel.cs" />
+    <Compile Include="Migrations\202011241656254_EditAddressModel.Designer.cs">
+      <DependentUpon>202011241656254_EditAddressModel.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Accommodation.cs" />
     <Compile Include="Models\AccommodationPicture.cs" />
@@ -382,6 +386,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202011241344352_EditAccommodationTableInDb.resx">
       <DependentUpon>202011241344352_EditAccommodationTableInDb.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202011241656254_EditAddressModel.resx">
+      <DependentUpon>202011241656254_EditAddressModel.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

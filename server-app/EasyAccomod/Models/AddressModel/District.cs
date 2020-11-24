@@ -13,7 +13,9 @@ namespace EasyAccomod.Models.AddressModel
         [Required]
         public string Name { get; set; }
 
-        [Required]
         public Province Province { get; set; }
+
+        [Required]
+        public byte ProvinceId { get; set; }
     }
 }
