@@ -213,6 +213,9 @@
     <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
+    <Compile Include="Dtos\DistrictDto.cs" />
+    <Compile Include="Dtos\ProvinceDto.cs" />
+    <Compile Include="Dtos\WardDto.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -256,7 +259,7 @@
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\AddressModel\Address.cs" />
     <Compile Include="Models\AddressModel\District.cs" />
-    <Compile Include="Models\AddressModel\ListProvinceViewModel.cs" />
+    <Compile Include="Models\AddressModel\AddressViewModel.cs" />
     <Compile Include="Models\AddressModel\Province.cs" />
     <Compile Include="Models\AddressModel\Ward.cs" />
     <Compile Include="Models\Admin.cs" />
@@ -306,6 +309,7 @@
     <Content Include="Areas\HelpPage\Views\Help\DisplayTemplates\CollectionModelDescription.cshtml" />
     <Content Include="Areas\HelpPage\Views\Help\DisplayTemplates\ApiGroup.cshtml" />
     <Content Include="Areas\HelpPage\Views\Help\Api.cshtml" />
+    <Content Include="App_Data\Province_District_Ward.json" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
     <Content Include="Scripts\jquery-3.4.1.min.js" />
@@ -332,10 +336,7 @@
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="App_Data\" />
-    <Folder Include="Dtos\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
   </ItemGroup>
