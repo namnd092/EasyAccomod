@@ -215,8 +215,14 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
     <Compile Include="Dtos\AccommodationDto.cs" />
+    <Compile Include="Dtos\AccommodationPaymentTypeDto.cs" />
+    <Compile Include="Dtos\AccommodationTypeDto.cs" />
+    <Compile Include="Dtos\AddressDto.cs" />
     <Compile Include="Dtos\DistrictDto.cs" />
+    <Compile Include="Dtos\KitchenTypeDto.cs" />
+    <Compile Include="Dtos\OwnerDto.cs" />
     <Compile Include="Dtos\ProvinceDto.cs" />
+    <Compile Include="Dtos\RoomAreaRangeDto.cs" />
     <Compile Include="Dtos\WardDto.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
