@@ -214,6 +214,7 @@
     <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
+    <Compile Include="Dtos\AccommodationDto.cs" />
     <Compile Include="Dtos\DistrictDto.cs" />
     <Compile Include="Dtos\ProvinceDto.cs" />
     <Compile Include="Dtos\WardDto.cs" />
@@ -252,8 +253,13 @@
     <Compile Include="Migrations\202011241656254_EditAddressModel.Designer.cs">
       <DependentUpon>202011241656254_EditAddressModel.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202011251641588_EditAccommodationModel.cs" />
+    <Compile Include="Migrations\202011251641588_EditAccommodationModel.Designer.cs">
+      <DependentUpon>202011251641588_EditAccommodationModel.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Accommodation.cs" />
+    <Compile Include="Models\AccommodationPaymentType.cs" />
     <Compile Include="Models\AccommodationPicture.cs" />
     <Compile Include="Models\AccommodationType.cs" />
     <Compile Include="Models\AccountBindingModels.cs" />
@@ -267,11 +273,13 @@
     <Compile Include="Models\AdminBindingModel.cs" />
     <Compile Include="Models\Comment.cs" />
     <Compile Include="Models\IdentityModels.cs" />
+    <Compile Include="Models\KitchenType.cs" />
     <Compile Include="Models\Like.cs" />
     <Compile Include="Models\Owner.cs" />
     <Compile Include="Models\Renter.cs" />
     <Compile Include="Models\Report.cs" />
     <Compile Include="Models\RoleName.cs" />
+    <Compile Include="Models\RoomAreaRange.cs" />
     <Compile Include="Models\RoomRentalPost.cs" />
     <Compile Include="Models\View.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -393,6 +401,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202011241656254_EditAddressModel.resx">
       <DependentUpon>202011241656254_EditAddressModel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202011251641588_EditAccommodationModel.resx">
+      <DependentUpon>202011251641588_EditAccommodationModel.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

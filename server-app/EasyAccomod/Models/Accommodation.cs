@@ -10,15 +10,29 @@ namespace EasyAccomod.Models
 {
     public class Accommodation
     {
-        [Required] public int Id { get; set; }
+        public int Id { get; set; }
 
-        [Required] public AccommodationType AccommodationType { get; set; }
+        public Address Address { get; set; }
+
+        [Required]
+        public int AddressId { get; set; }
+
+        public AccommodationType AccommodationType { get; set; }
+
+        [Required]
+        public int AccommodationTypeId { get; set; }
 
         [Required] public int RoomQuantity { get; set; }
 
-        public string RoomPrice { get; set; }
+        public AccommodationPaymentType PaymentType { get; set; }
 
-        public string RoomArea { get; set; }
+        public byte PaymentTypeId { get; set; }
+
+        public string Price { get; set; }
+
+        public RoomAreaRange RoomAreaRange { get; set; }
+
+        public byte RoomAreaRangeId { get; set; }
 
         public bool LiveWithOwner { get; set; }
 
@@ -26,7 +40,10 @@ namespace EasyAccomod.Models
 
         [Required] public bool HaveWaterHeater { get; set; }
 
-        [Required] public string Kitchen { get; set; }
+        public KitchenType KitchenType { get; set; }
+
+        [Required]
+        public byte KitchenTypeId { get; set; }
 
         [Required] public bool HaveAirConditioner { get; set; }
 
@@ -38,7 +55,10 @@ namespace EasyAccomod.Models
 
         public string RoomOptions { get; set; }
 
-        [Required] public Owner Owner { get; set; }
+        public Owner Owner { get; set; }
+
+        [Required]
+        public int OwnerId { get; set; }
 
         [Required] public string Status { get; set; }
     }

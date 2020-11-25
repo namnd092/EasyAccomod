@@ -44,6 +44,12 @@ namespace EasyAccomod.Models
 
         public DbSet<AccommodationType> AccommodationTypes { get; set; }
 
+        public DbSet<KitchenType> KitchenTypes { get; set; }
+
+        public DbSet<AccommodationPaymentType> AccommodationPaymentTypes { get; set; }
+
+        public DbSet<RoomAreaRange> RoomAreaRanges { get; set; }
+
         public DbSet<Address> Addresses { get; set; }
 
         public DbSet<Province> Provinces { get; set; }
