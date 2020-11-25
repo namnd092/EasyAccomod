@@ -25,9 +25,9 @@ namespace EasyAccomod.Migrations
             RenameIndex(table: "dbo.Districts", name: "IX_Province_Id", newName: "IX_ProvinceId");
             RenameIndex(table: "dbo.Wards", name: "IX_District_Id", newName: "IX_DistrictId");
 
-            AlterColumn("dbo.Addresses", "DistrictId", c => c.Int());
-            AlterColumn("dbo.Addresses", "ProvinceId", c => c.Byte());
-            AlterColumn("dbo.Addresses", "WardId", c => c.Int());
+            AlterColumn("dbo.Addresses", "DistrictId", c => c.Int(nullable: false));
+            AlterColumn("dbo.Addresses", "ProvinceId", c => c.Byte(nullable: false));
+            AlterColumn("dbo.Addresses", "WardId", c => c.Int(nullable: false));
 
             CreateIndex("dbo.Addresses", "ProvinceId");
             CreateIndex("dbo.Addresses", "DistrictId");
@@ -35,7 +35,7 @@ namespace EasyAccomod.Migrations
 
             AddForeignKey("dbo.Addresses", "DistrictId", "dbo.Districts", "Id");
             AddForeignKey("dbo.Addresses", "ProvinceId", "dbo.Provinces", "Id");
-            AddForeignKey("dbo.Addresses", "WardId", "dbo.Wards", "Id");
+            AddForeignKey("dbo.Addresses", "WardId", "dbo.Wards", "Id", cascadeDelete: true);
         }
 
         public override void Down()
