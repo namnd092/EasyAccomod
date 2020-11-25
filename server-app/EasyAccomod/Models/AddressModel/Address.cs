@@ -12,9 +12,15 @@ namespace EasyAccomod.Models.AddressModel
 
         public Province Province { get; set; }
 
+        public byte ProvinceId { get; set; }
+
         public District District { get; set; }
 
+        public int DistrictId { get; set; }
+
         public Ward Ward { get; set; }
+
+        public int WardId { get; set; }
 
         public string Street { get; set; }
 
