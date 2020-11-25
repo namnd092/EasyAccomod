@@ -1,10 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net.Http;
+using AutoMapper;
+using EasyAccomod.Dtos;
 using EasyAccomod.Models;
+using EasyAccomod.Models.AddressModel;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.Owin;
+using Newtonsoft.Json;
 using Owin;
 
 [assembly: OwinStartup(typeof(EasyAccomod.Startup))]
@@ -24,9 +30,10 @@ namespace EasyAccomod
         {
             ConfigureAuth(app);
             CreateRolesAndUsers();
+            GenerateAddressDataInDb();
         }
 
-        public void CreateRolesAndUsers()
+        private void CreateRolesAndUsers()
         {
             var roleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(_context));
 
@@ -79,6 +86,64 @@ namespace EasyAccomod
             {
                 var role = new IdentityRole(RoleName.WaitForConfirmation);
                 roleManager.Create(role);
+            }
+        }
+
+        private void GenerateAddressDataInDb()
+        {
+            if (_context.Provinces.Any()) return;
+
+            var fileName = "Province_District_Ward.json";
+            var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"App_Data\", fileName);
+
+            using (StreamReader streamReader = File.OpenText(path))
+            {
+                var json = streamReader.ReadToEndAsync().Result;
+
+                var listProvinces = JsonConvert.DeserializeObject<IEnumerable<ProvinceViewModel>>(json);
+
+                foreach (var provinceViewModel in listProvinces)
+                {
+                    var provinceDto = new ProvinceDto()
+                    {
+                        Id = provinceViewModel.Id,
+                        Name = provinceViewModel.Name
+                    };
+
+                    var province = Mapper.Map<ProvinceDto, Province>(provinceDto);
+                    _context.Provinces.Add(province);
+                    _context.SaveChanges();
+
+                    var listDistricts = provinceViewModel.Huyen;
+                    foreach (var districtViewModel in listDistricts)
+                    {
+                        var districtDto = new DistrictDto()
+                        {
+                            Id = districtViewModel.Id,
+                            Name = districtViewModel.Name,
+                            ProvinceId = districtViewModel.Tinh_id
+                        };
+
+                        var district = Mapper.Map<DistrictDto, District>(districtDto);
+                        _context.Districts.Add(district);
+                        _context.SaveChanges();
+
+                        var listWards = districtViewModel.Xa;
+                        foreach (var wardViewModel in listWards)
+                        {
+                            var wardDto = new WardDto()
+                            {
+                                Id = wardViewModel.Id,
+                                Name = wardViewModel.Name,
+                                DistrictId = wardViewModel.Huyen_id
+                            };
+
+                            var ward = Mapper.Map<WardDto, Ward>(wardDto);
+                            _context.Wards.Add(ward);
+                            _context.SaveChanges();
+                        }
+                    }
+                }
             }
         }
     }

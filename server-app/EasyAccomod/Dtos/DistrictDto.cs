@@ -1,24 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
+using EasyAccomod.Models.AddressModel;
 
-namespace EasyAccomod.Models.AddressModel
+namespace EasyAccomod.Dtos
 {
-    public class District
+    public class DistrictDto
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int Id { get; set; }
 
         [Required]
         public string Name { get; set; }
 
-        public Province Province { get; set; }
+        public ProvinceDto Province { get; set; }
 
-        [Required]
         public byte ProvinceId { get; set; }
     }
 }

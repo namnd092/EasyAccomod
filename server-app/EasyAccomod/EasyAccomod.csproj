@@ -45,6 +45,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AutoMapper, Version=4.1.1.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
+      <HintPath>..\packages\AutoMapper.4.1.1\lib\net45\AutoMapper.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -174,6 +177,7 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\IdentityConfig.cs" />
+    <Compile Include="App_Start\MappingProfile.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
@@ -209,6 +213,9 @@
     <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
+    <Compile Include="Dtos\DistrictDto.cs" />
+    <Compile Include="Dtos\ProvinceDto.cs" />
+    <Compile Include="Dtos\WardDto.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -236,6 +243,14 @@
     <Compile Include="Migrations\202011231635160_AddAddressModelToDb.Designer.cs">
       <DependentUpon>202011231635160_AddAddressModelToDb.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202011241344352_EditAccommodationTableInDb.cs" />
+    <Compile Include="Migrations\202011241344352_EditAccommodationTableInDb.Designer.cs">
+      <DependentUpon>202011241344352_EditAccommodationTableInDb.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202011241656254_EditAddressModel.cs" />
+    <Compile Include="Migrations\202011241656254_EditAddressModel.Designer.cs">
+      <DependentUpon>202011241656254_EditAddressModel.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Accommodation.cs" />
     <Compile Include="Models\AccommodationPicture.cs" />
@@ -244,6 +259,7 @@
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\AddressModel\Address.cs" />
     <Compile Include="Models\AddressModel\District.cs" />
+    <Compile Include="Models\AddressModel\AddressViewModel.cs" />
     <Compile Include="Models\AddressModel\Province.cs" />
     <Compile Include="Models\AddressModel\Ward.cs" />
     <Compile Include="Models\Admin.cs" />
@@ -293,6 +309,7 @@
     <Content Include="Areas\HelpPage\Views\Help\DisplayTemplates\CollectionModelDescription.cshtml" />
     <Content Include="Areas\HelpPage\Views\Help\DisplayTemplates\ApiGroup.cshtml" />
     <Content Include="Areas\HelpPage\Views\Help\Api.cshtml" />
+    <Content Include="App_Data\Province_District_Ward.json" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
     <Content Include="Scripts\jquery-3.4.1.min.js" />
@@ -319,9 +336,7 @@
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="App_Data\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
   </ItemGroup>
@@ -369,6 +384,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202011231635160_AddAddressModelToDb.resx">
       <DependentUpon>202011231635160_AddAddressModelToDb.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202011241344352_EditAccommodationTableInDb.resx">
+      <DependentUpon>202011241344352_EditAccommodationTableInDb.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202011241656254_EditAddressModel.resx">
+      <DependentUpon>202011241656254_EditAddressModel.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
