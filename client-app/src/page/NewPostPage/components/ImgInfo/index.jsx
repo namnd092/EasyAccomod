@@ -1,21 +1,28 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import ImageUploader from 'react-images-upload';
 
 ImgInfo.propTypes = {}
 
 function ImgInfo(props) {
+    const [images, setImages] = React.useState([]);
+    const handleImageChange = (img) => {
+        console.log(img)
+        setImages([...images].concat(img));
+    }
     return (
         <div class="card">
             <h5 class="card-header">Hình Ảnh</h5>
             <div class="card-body">
-                <h5 class="card-title">Special title treatment</h5>
-                <p class="card-text">
-                    With supporting text below as a natural lead-in to
-                    additional content.
-                </p>
-                <a href="#" class="btn btn-primary">
-                    Go somewhere
-                </a>
+                <ImageUploader 
+                    onChange={handleImageChange}
+                    imgExtension={['.jpg', '.gif', '.png', '.gif']}
+                    withIcon={true}
+                    withPreview={true}
+                    label={'Chọn tối thiểu 3 ảnh, mỗi ảnh không quá 6MB'}
+                    buttonText={'Chọn ảnh'}
+                    name={'roomImageArr'}
+                />
             </div>
         </div>
     )
