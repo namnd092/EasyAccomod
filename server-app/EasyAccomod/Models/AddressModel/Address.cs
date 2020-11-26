@@ -12,19 +12,22 @@ namespace EasyAccomod.Models.AddressModel
 
         public Province Province { get; set; }
 
+        [Required]
         public byte ProvinceId { get; set; }
 
         public District District { get; set; }
 
+        [Required]
         public int DistrictId { get; set; }
 
         public Ward Ward { get; set; }
 
+        [Required]
         public int WardId { get; set; }
 
+        [Required]
         public string Street { get; set; }
 
-        [Required]
-        public Accommodation Accommodation { get; set; }
+        public string PublicLocationNearby { get; set; }
     }
 }

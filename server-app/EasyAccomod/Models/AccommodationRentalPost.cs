@@ -6,7 +6,7 @@ using System.Web;
 
 namespace EasyAccomod.Models
 {
-    public class RoomRentalPost
+    public class AccommodationRentalPost
     {
         [Required] public int Id { get; set; }
 
@@ -18,6 +18,9 @@ namespace EasyAccomod.Models
 
         public int Likes { get; set; }
 
-        [Required] public Accommodation Accommodation { get; set; }
+        public Accommodation Accommodation { get; set; }
+
+        [Required]
+        public int AccommodationId { get; set; }
     }
 }
