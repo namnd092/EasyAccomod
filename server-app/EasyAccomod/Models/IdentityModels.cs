@@ -1,6 +1,7 @@
 ﻿using System.Data.Entity;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using EasyAccomod.Models.AddressModel;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
@@ -29,7 +30,7 @@ namespace EasyAccomod.Models
 
         public DbSet<Accommodation> Accommodations { get; set; }
 
-        public DbSet<RoomRentalPost> RoomRentalPosts { get; set; }
+        public DbSet<AccommodationRentalPost> AccommodationRentalPosts { get; set; }
 
         public DbSet<Like> Likes { get; set; }
 
@@ -42,6 +43,22 @@ namespace EasyAccomod.Models
         public DbSet<AccommodationPicture> AccommodationPictures { get; set; }
 
         public DbSet<AccommodationType> AccommodationTypes { get; set; }
+
+        public DbSet<KitchenType> KitchenTypes { get; set; }
+
+        public DbSet<AccommodationPaymentType> AccommodationPaymentTypes { get; set; }
+
+        public DbSet<AccommodationStatus> AccommodationStatuses { get; set; }
+
+        public DbSet<RoomAreaRange> RoomAreaRanges { get; set; }
+
+        public DbSet<Address> Addresses { get; set; }
+
+        public DbSet<Province> Provinces { get; set; }
+
+        public DbSet<District> Districts { get; set; }
+
+        public DbSet<Ward> Wards { get; set; }
 
         public ApplicationDbContext()
             : base("DefaultConnection", throwIfV1Schema: false)

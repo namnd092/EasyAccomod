@@ -45,6 +45,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AutoMapper, Version=4.1.1.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
+      <HintPath>..\packages\AutoMapper.4.1.1\lib\net45\AutoMapper.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -174,6 +177,7 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\IdentityConfig.cs" />
+    <Compile Include="App_Start\MappingProfile.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
@@ -205,10 +209,23 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\SampleDirection.cs" />
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
+    <Compile Include="Controllers\AccommodationController.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\AddressController.cs" />
     <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
+    <Compile Include="Dtos\AccommodationDto.cs" />
+    <Compile Include="Dtos\AccommodationPaymentTypeDto.cs" />
+    <Compile Include="Dtos\AccommodationStatusDto.cs" />
+    <Compile Include="Dtos\AccommodationTypeDto.cs" />
+    <Compile Include="Dtos\AddressDto.cs" />
+    <Compile Include="Dtos\DistrictDto.cs" />
+    <Compile Include="Dtos\KitchenTypeDto.cs" />
+    <Compile Include="Dtos\OwnerDto.cs" />
+    <Compile Include="Dtos\ProvinceDto.cs" />
+    <Compile Include="Dtos\RoomAreaRangeDto.cs" />
+    <Compile Include="Dtos\WardDto.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -232,22 +249,59 @@
     <Compile Include="Migrations\202011210324527_CreateAccommodationTypesInDb.Designer.cs">
       <DependentUpon>202011210324527_CreateAccommodationTypesInDb.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202011231635160_AddAddressModelToDb.cs" />
+    <Compile Include="Migrations\202011231635160_AddAddressModelToDb.Designer.cs">
+      <DependentUpon>202011231635160_AddAddressModelToDb.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202011241344352_EditAccommodationTableInDb.cs" />
+    <Compile Include="Migrations\202011241344352_EditAccommodationTableInDb.Designer.cs">
+      <DependentUpon>202011241344352_EditAccommodationTableInDb.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202011241656254_EditAddressModel.cs" />
+    <Compile Include="Migrations\202011241656254_EditAddressModel.Designer.cs">
+      <DependentUpon>202011241656254_EditAddressModel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202011251641588_EditAccommodationModel.cs" />
+    <Compile Include="Migrations\202011251641588_EditAccommodationModel.Designer.cs">
+      <DependentUpon>202011251641588_EditAccommodationModel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202011260549055_EditAccommodationRentalPostModel.cs" />
+    <Compile Include="Migrations\202011260549055_EditAccommodationRentalPostModel.Designer.cs">
+      <DependentUpon>202011260549055_EditAccommodationRentalPostModel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202011261036117_ChangeTypeOfWaterPriceAndElectricityPriceToString.cs" />
+    <Compile Include="Migrations\202011261036117_ChangeTypeOfWaterPriceAndElectricityPriceToString.Designer.cs">
+      <DependentUpon>202011261036117_ChangeTypeOfWaterPriceAndElectricityPriceToString.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202011261132132_AddAccommodationStatusModel.cs" />
+    <Compile Include="Migrations\202011261132132_AddAccommodationStatusModel.Designer.cs">
+      <DependentUpon>202011261132132_AddAccommodationStatusModel.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Accommodation.cs" />
+    <Compile Include="Models\AccommodationPaymentType.cs" />
     <Compile Include="Models\AccommodationPicture.cs" />
+    <Compile Include="Models\AccommodationStatus.cs" />
     <Compile Include="Models\AccommodationType.cs" />
     <Compile Include="Models\AccountBindingModels.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\AddressModel\Address.cs" />
+    <Compile Include="Models\AddressModel\District.cs" />
+    <Compile Include="Models\AddressModel\AddressViewModel.cs" />
+    <Compile Include="Models\AddressModel\Province.cs" />
+    <Compile Include="Models\AddressModel\Ward.cs" />
     <Compile Include="Models\Admin.cs" />
     <Compile Include="Models\AdminBindingModel.cs" />
     <Compile Include="Models\Comment.cs" />
     <Compile Include="Models\IdentityModels.cs" />
+    <Compile Include="Models\KitchenType.cs" />
     <Compile Include="Models\Like.cs" />
     <Compile Include="Models\Owner.cs" />
     <Compile Include="Models\Renter.cs" />
     <Compile Include="Models\Report.cs" />
     <Compile Include="Models\RoleName.cs" />
-    <Compile Include="Models\RoomRentalPost.cs" />
+    <Compile Include="Models\RoomAreaRange.cs" />
+    <Compile Include="Models\AccommodationRentalPost.cs" />
     <Compile Include="Models\View.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Providers\ApplicationOAuthProvider.cs" />
@@ -285,6 +339,7 @@
     <Content Include="Areas\HelpPage\Views\Help\DisplayTemplates\CollectionModelDescription.cshtml" />
     <Content Include="Areas\HelpPage\Views\Help\DisplayTemplates\ApiGroup.cshtml" />
     <Content Include="Areas\HelpPage\Views\Help\Api.cshtml" />
+    <Content Include="App_Data\Province_District_Ward.json" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
     <Content Include="Scripts\jquery-3.4.1.min.js" />
@@ -312,7 +367,7 @@
     <Content Include="Views\Shared\_Layout.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="App_Data\" />
+    <Folder Include="Views\Address\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
@@ -358,6 +413,27 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202011210324527_CreateAccommodationTypesInDb.resx">
       <DependentUpon>202011210324527_CreateAccommodationTypesInDb.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202011231635160_AddAddressModelToDb.resx">
+      <DependentUpon>202011231635160_AddAddressModelToDb.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202011241344352_EditAccommodationTableInDb.resx">
+      <DependentUpon>202011241344352_EditAccommodationTableInDb.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202011241656254_EditAddressModel.resx">
+      <DependentUpon>202011241656254_EditAddressModel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202011251641588_EditAccommodationModel.resx">
+      <DependentUpon>202011251641588_EditAccommodationModel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202011260549055_EditAccommodationRentalPostModel.resx">
+      <DependentUpon>202011260549055_EditAccommodationRentalPostModel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202011261036117_ChangeTypeOfWaterPriceAndElectricityPriceToString.resx">
+      <DependentUpon>202011261036117_ChangeTypeOfWaterPriceAndElectricityPriceToString.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202011261132132_AddAccommodationStatusModel.resx">
+      <DependentUpon>202011261132132_AddAccommodationStatusModel.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
