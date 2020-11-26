@@ -263,6 +263,10 @@
     <Compile Include="Migrations\202011251641588_EditAccommodationModel.Designer.cs">
       <DependentUpon>202011251641588_EditAccommodationModel.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202011260549055_EditAccommodationRentalPostModel.cs" />
+    <Compile Include="Migrations\202011260549055_EditAccommodationRentalPostModel.Designer.cs">
+      <DependentUpon>202011260549055_EditAccommodationRentalPostModel.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Accommodation.cs" />
     <Compile Include="Models\AccommodationPaymentType.cs" />
@@ -286,7 +290,7 @@
     <Compile Include="Models\Report.cs" />
     <Compile Include="Models\RoleName.cs" />
     <Compile Include="Models\RoomAreaRange.cs" />
-    <Compile Include="Models\RoomRentalPost.cs" />
+    <Compile Include="Models\AccommodationRentalPost.cs" />
     <Compile Include="Models\View.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Providers\ApplicationOAuthProvider.cs" />
@@ -410,6 +414,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202011251641588_EditAccommodationModel.resx">
       <DependentUpon>202011251641588_EditAccommodationModel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202011260549055_EditAccommodationRentalPostModel.resx">
+      <DependentUpon>202011260549055_EditAccommodationRentalPostModel.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

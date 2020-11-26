@@ -10,7 +10,10 @@ namespace EasyAccomod.Models
     {
         public int Id { get; set; }
 
-        [Required] public RoomRentalPost RoomRentalPost { get; set; }
+        public AccommodationRentalPost AccommodationRentalPost { get; set; }
+
+        [Required]
+        public int AccommodationRentalPostId { get; set; }
 
         [Required] public DateTime Time { get; set; }
     }

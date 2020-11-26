@@ -30,7 +30,7 @@ namespace EasyAccomod.Models
 
         public DbSet<Accommodation> Accommodations { get; set; }
 
-        public DbSet<RoomRentalPost> RoomRentalPosts { get; set; }
+        public DbSet<AccommodationRentalPost> RoomRentalPosts { get; set; }
 
         public DbSet<Like> Likes { get; set; }
 
