@@ -17,7 +17,8 @@ namespace Vidly.App_Start
             Mapper.CreateMap<Accommodation, AccommodationDto>();
             Mapper.CreateMap<Address, AddressDto>();
             Mapper.CreateMap<AccommodationType, AccommodationTypeDto>();
-            Mapper.CreateMap<AccommodationPaymentType, AccommodationTypeDto>();
+            Mapper.CreateMap<AccommodationPaymentType, AccommodationPaymentTypeDto>();
+            Mapper.CreateMap<AccommodationStatus, AccommodationStatusDto>();
             Mapper.CreateMap<RoomAreaRange, RoomAreaRangeDto>();
             Mapper.CreateMap<KitchenType, KitchenTypeDto>();
             Mapper.CreateMap<Owner, OwnerDto>();

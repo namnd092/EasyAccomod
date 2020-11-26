@@ -49,9 +49,9 @@ namespace EasyAccomod.Models
 
         [Required] public bool HaveBalcony { get; set; }
 
-        [Required] public int ElectricityPrice { get; set; }
+        [Required] public string ElectricityPrice { get; set; }
 
-        [Required] public int WaterPrice { get; set; }
+        [Required] public string WaterPrice { get; set; }
 
         public string RoomOptions { get; set; }
 
@@ -60,6 +60,9 @@ namespace EasyAccomod.Models
         [Required]
         public int OwnerId { get; set; }
 
-        [Required] public string Status { get; set; }
+        public AccommodationStatus Status { get; set; }
+
+        [Required]
+        public byte StatusId { get; set; }
     }
 }

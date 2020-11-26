@@ -12,17 +12,17 @@ namespace EasyAccomod.Dtos
     {
         public int Id { get; set; }
 
+        [Required]
         public AddressDto Address { get; set; }
 
-        [Required]
         public int AddressId { get; set; }
 
         public AccommodationTypeDto AccommodationType { get; set; }
 
         [Required]
-        public int AccommodationTypeId { get; set; }
+        public int? AccommodationTypeId { get; set; }
 
-        [Required] public int RoomQuantity { get; set; }
+        [Required] public int? RoomQuantity { get; set; }
 
         public AccommodationPaymentTypeDto PaymentType { get; set; }
 
@@ -36,30 +36,32 @@ namespace EasyAccomod.Dtos
 
         public bool LiveWithOwner { get; set; }
 
-        [Required] public bool HaveClosedBathroom { get; set; }
+        [Required] public bool? HaveClosedBathroom { get; set; }
 
-        [Required] public bool HaveWaterHeater { get; set; }
+        [Required] public bool? HaveWaterHeater { get; set; }
 
         public KitchenTypeDto KitchenType { get; set; }
 
         [Required]
-        public byte KitchenTypeId { get; set; }
+        public byte? KitchenTypeId { get; set; }
 
-        [Required] public bool HaveAirConditioner { get; set; }
+        [Required] public bool? HaveAirConditioner { get; set; }
 
-        [Required] public bool HaveBalcony { get; set; }
+        [Required] public bool? HaveBalcony { get; set; }
 
-        [Required] public int ElectricityPrice { get; set; }
+        [Required] public string ElectricityPrice { get; set; }
 
-        [Required] public int WaterPrice { get; set; }
+        [Required] public string WaterPrice { get; set; }
 
         public string RoomOptions { get; set; }
 
         public OwnerDto Owner { get; set; }
 
-        [Required]
         public int OwnerId { get; set; }
 
-        [Required] public string Status { get; set; }
+        public AccommodationStatusDto Status { get; set; }
+
+        [Required]
+        public byte? StatusId { get; set; }
     }
 }

@@ -14,17 +14,17 @@ namespace EasyAccomod.Dtos
         public ProvinceDto Province { get; set; }
 
         [Required]
-        public byte ProvinceId { get; set; }
+        public byte? ProvinceId { get; set; }
 
         public DistrictDto District { get; set; }
 
         [Required]
-        public int DistrictId { get; set; }
+        public int? DistrictId { get; set; }
 
         public WardDto Ward { get; set; }
 
         [Required]
-        public int WardId { get; set; }
+        public int? WardId { get; set; }
 
         [Required]
         public string Street { get; set; }

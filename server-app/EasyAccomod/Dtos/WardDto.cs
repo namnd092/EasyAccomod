@@ -18,6 +18,6 @@ namespace EasyAccomod.Dtos
         public DistrictDto District { get; set; }
 
         [Required]
-        public int DistrictId { get; set; }
+        public int? DistrictId { get; set; }
     }
 }

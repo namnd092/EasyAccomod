@@ -209,6 +209,7 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\SampleDirection.cs" />
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
+    <Compile Include="Controllers\AccommodationController.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AddressController.cs" />
     <Compile Include="Controllers\AdminController.cs" />
@@ -216,6 +217,7 @@
     <Compile Include="Controllers\ValuesController.cs" />
     <Compile Include="Dtos\AccommodationDto.cs" />
     <Compile Include="Dtos\AccommodationPaymentTypeDto.cs" />
+    <Compile Include="Dtos\AccommodationStatusDto.cs" />
     <Compile Include="Dtos\AccommodationTypeDto.cs" />
     <Compile Include="Dtos\AddressDto.cs" />
     <Compile Include="Dtos\DistrictDto.cs" />
@@ -267,10 +269,19 @@
     <Compile Include="Migrations\202011260549055_EditAccommodationRentalPostModel.Designer.cs">
       <DependentUpon>202011260549055_EditAccommodationRentalPostModel.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202011261036117_ChangeTypeOfWaterPriceAndElectricityPriceToString.cs" />
+    <Compile Include="Migrations\202011261036117_ChangeTypeOfWaterPriceAndElectricityPriceToString.Designer.cs">
+      <DependentUpon>202011261036117_ChangeTypeOfWaterPriceAndElectricityPriceToString.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202011261132132_AddAccommodationStatusModel.cs" />
+    <Compile Include="Migrations\202011261132132_AddAccommodationStatusModel.Designer.cs">
+      <DependentUpon>202011261132132_AddAccommodationStatusModel.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Accommodation.cs" />
     <Compile Include="Models\AccommodationPaymentType.cs" />
     <Compile Include="Models\AccommodationPicture.cs" />
+    <Compile Include="Models\AccommodationStatus.cs" />
     <Compile Include="Models\AccommodationType.cs" />
     <Compile Include="Models\AccountBindingModels.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -417,6 +428,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202011260549055_EditAccommodationRentalPostModel.resx">
       <DependentUpon>202011260549055_EditAccommodationRentalPostModel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202011261036117_ChangeTypeOfWaterPriceAndElectricityPriceToString.resx">
+      <DependentUpon>202011261036117_ChangeTypeOfWaterPriceAndElectricityPriceToString.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202011261132132_AddAccommodationStatusModel.resx">
+      <DependentUpon>202011261132132_AddAccommodationStatusModel.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
