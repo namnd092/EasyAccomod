@@ -277,6 +277,10 @@
     <Compile Include="Migrations\202011261132132_AddAccommodationStatusModel.Designer.cs">
       <DependentUpon>202011261132132_AddAccommodationStatusModel.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202011291117114_EditSomeAccommodationPrices.cs" />
+    <Compile Include="Migrations\202011291117114_EditSomeAccommodationPrices.Designer.cs">
+      <DependentUpon>202011291117114_EditSomeAccommodationPrices.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Accommodation.cs" />
     <Compile Include="Models\AccommodationPaymentType.cs" />
@@ -434,6 +438,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202011261132132_AddAccommodationStatusModel.resx">
       <DependentUpon>202011261132132_AddAccommodationStatusModel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202011291117114_EditSomeAccommodationPrices.resx">
+      <DependentUpon>202011291117114_EditSomeAccommodationPrices.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

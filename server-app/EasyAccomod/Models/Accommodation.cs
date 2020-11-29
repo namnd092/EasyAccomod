@@ -26,14 +26,18 @@ namespace EasyAccomod.Models
 
         public AccommodationPaymentType PaymentType { get; set; }
 
+        [Required]
         public byte PaymentTypeId { get; set; }
 
-        public string Price { get; set; }
+        [Required]
+        public int Price { get; set; }
 
         public RoomAreaRange RoomAreaRange { get; set; }
 
+        [Required]
         public byte RoomAreaRangeId { get; set; }
 
+        [Required]
         public bool LiveWithOwner { get; set; }
 
         [Required] public bool HaveClosedBathroom { get; set; }
@@ -49,9 +53,15 @@ namespace EasyAccomod.Models
 
         [Required] public bool HaveBalcony { get; set; }
 
-        [Required] public string ElectricityPrice { get; set; }
+        [Required]
+        public bool IsStateElectricityPrice { get; set; }
 
-        [Required] public string WaterPrice { get; set; }
+        public int ElectricityPrice { get; set; }
+
+        [Required]
+        public bool IsStateWaterPrice { get; set; }
+
+        public int WaterPrice { get; set; }
 
         public string RoomOptions { get; set; }
 
