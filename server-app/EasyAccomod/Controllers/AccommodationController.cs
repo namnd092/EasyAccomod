@@ -10,6 +10,7 @@ using AutoMapper;
 using EasyAccomod.Dtos;
 using EasyAccomod.Models;
 using EasyAccomod.Models.AddressModel;
+using Microsoft.Ajax.Utilities;
 using Microsoft.AspNet.Identity;
 
 namespace EasyAccomod.Controllers
@@ -132,10 +133,31 @@ namespace EasyAccomod.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
+            if (!(bool)accommodationDto.IsStateElectricityPrice)
+            {
+                if (accommodationDto.ElectricityPrice <= 0)
+                    return BadRequest("Enter Electricity price.");
+            }
+            else
+            {
+                accommodationDto.ElectricityPrice = 0;
+            }
+
+            if (!(bool)accommodationDto.IsStateWaterPrice)
+            {
+                if (accommodationDto.WaterPrice <= 0)
+                    return BadRequest("Enter Water price.");
+            }
+            else
+            {
+                accommodationDto.WaterPrice = 0;
+            }
+
             var accommodation = Mapper.Map<AccommodationDto, Accommodation>(accommodationDto);
 
             var ownerAccountId = User.Identity.GetUserId();
             accommodation.OwnerId = _context.Owners.Single(o => o.AccountId == ownerAccountId).Id;
+            accommodation.StatusId = _context.AccommodationStatuses.Single(s => s.Name == "Chưa cho thuê").Id;
 
             _context.Accommodations.Add(accommodation);
             _context.SaveChanges();

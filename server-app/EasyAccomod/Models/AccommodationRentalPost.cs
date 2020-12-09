@@ -10,17 +10,26 @@ namespace EasyAccomod.Models
     {
         [Required] public int Id { get; set; }
 
+        [Required]
+        public string Title { get; set; }
+
+        [Required]
+        public string Content { get; set; }
+
         [Required] public DateTime DateAdded { get; set; }
 
-        public DateTime? DateExpired { get; set; }
+        [Required] public DateTime DateExpired { get; set; }
 
-        public int Views { get; set; }
-
-        public int Likes { get; set; }
+        public ICollection<AccommodationPicture> AccommodationPictures { get; set; }
 
         public Accommodation Accommodation { get; set; }
 
         [Required]
         public int AccommodationId { get; set; }
+
+        public RentalPostStatus Status { get; set; }
+
+        [Required]
+        public byte StatusId { get; set; }
     }
 }
