@@ -12,7 +12,6 @@ using Microsoft.AspNet.Identity;
 
 namespace EasyAccomod.Controllers
 {
-    [AllowAnonymous]
     [RoutePrefix("api/RentalPosts")]
     public class AccommodationRentalPostController : ApiController
     {
@@ -236,6 +235,7 @@ namespace EasyAccomod.Controllers
                 return BadRequest("Status does not exist.");
 
             rentalPostInDb.StatusId = (byte)rentalPostStatusDto.Id;
+            _context.SaveChanges();
 
             return Ok();
         }
