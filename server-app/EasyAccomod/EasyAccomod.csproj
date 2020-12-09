@@ -227,6 +227,7 @@
     <Compile Include="Dtos\KitchenTypeDto.cs" />
     <Compile Include="Dtos\OwnerDto.cs" />
     <Compile Include="Dtos\ProvinceDto.cs" />
+    <Compile Include="Dtos\RentalPostStatusDto.cs" />
     <Compile Include="Dtos\RoomAreaRangeDto.cs" />
     <Compile Include="Dtos\WardDto.cs" />
     <Compile Include="Global.asax.cs">

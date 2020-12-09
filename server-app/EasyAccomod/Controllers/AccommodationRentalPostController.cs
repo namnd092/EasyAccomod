@@ -214,5 +214,30 @@ namespace EasyAccomod.Controllers
 
             return Ok();
         }
+
+        // PUT	/api/RentalPosts/1/SetStatus
+        [Authorize(Roles = RoleName.Admin)]
+        [HttpPut]
+        [Route("{id}/SetStatus")]
+        public IHttpActionResult SetRentalPostStatus(int id, RentalPostStatusDto rentalPostStatusDto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var rentalPostInDb = _context.AccommodationRentalPosts
+                .Include(p => p.Status)
+                .SingleOrDefault(p => p.Id == id);
+
+            if (rentalPostInDb == null)
+                return NotFound();
+
+            var status = _context.RentalPostStatuses.SingleOrDefault(s => s.Id == rentalPostStatusDto.Id);
+            if (status == null)
+                return BadRequest("Status does not exist.");
+
+            rentalPostInDb.StatusId = (byte)rentalPostStatusDto.Id;
+
+            return Ok();
+        }
     }
 }

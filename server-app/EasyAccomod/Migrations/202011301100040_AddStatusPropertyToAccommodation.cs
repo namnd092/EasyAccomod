@@ -23,7 +23,6 @@
             Sql(@"INSERT INTO [dbo].[RentalPostStatus] ([Name]) VALUES (N'Đang chờ duyệt')
 INSERT INTO [dbo].[RentalPostStatus] ([Name]) VALUES (N'Được duyệt')
 INSERT INTO [dbo].[RentalPostStatus] ([Name]) VALUES (N'Không được duyệt')
-INSERT INTO [dbo].[RentalPostStatus] ([Name]) VALUES (N'Hết hạn')
 ");
         }
 
