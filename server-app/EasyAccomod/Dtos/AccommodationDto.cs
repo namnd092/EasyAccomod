@@ -26,15 +26,19 @@ namespace EasyAccomod.Dtos
 
         public AccommodationPaymentTypeDto PaymentType { get; set; }
 
-        public byte PaymentTypeId { get; set; }
+        [Required]
+        public byte? PaymentTypeId { get; set; }
 
-        public string Price { get; set; }
+        [Required]
+        public int? Price { get; set; }
 
         public RoomAreaRangeDto RoomAreaRange { get; set; }
 
-        public byte RoomAreaRangeId { get; set; }
+        [Required]
+        public byte? RoomAreaRangeId { get; set; }
 
-        public bool LiveWithOwner { get; set; }
+        [Required]
+        public bool? LiveWithOwner { get; set; }
 
         [Required] public bool? HaveClosedBathroom { get; set; }
 
@@ -49,9 +53,15 @@ namespace EasyAccomod.Dtos
 
         [Required] public bool? HaveBalcony { get; set; }
 
-        [Required] public string ElectricityPrice { get; set; }
+        [Required]
+        public bool? IsStateElectricityPrice { get; set; }
 
-        [Required] public string WaterPrice { get; set; }
+        public int ElectricityPrice { get; set; }
+
+        [Required]
+        public bool? IsStateWaterPrice { get; set; }
+
+        public int WaterPrice { get; set; }
 
         public string RoomOptions { get; set; }
 
@@ -61,7 +71,6 @@ namespace EasyAccomod.Dtos
 
         public AccommodationStatusDto Status { get; set; }
 
-        [Required]
-        public byte? StatusId { get; set; }
+        public byte StatusId { get; set; }
     }
 }

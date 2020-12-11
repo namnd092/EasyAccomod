@@ -22,6 +22,8 @@ namespace Vidly.App_Start
             Mapper.CreateMap<RoomAreaRange, RoomAreaRangeDto>();
             Mapper.CreateMap<KitchenType, KitchenTypeDto>();
             Mapper.CreateMap<Owner, OwnerDto>();
+            Mapper.CreateMap<AccommodationRentalPost, AccommodationRentalPostDto>();
+            Mapper.CreateMap<AccommodationPicture, AccommodationPictureDto>();
 
             // Dto to Domain
             Mapper.CreateMap<DistrictDto, District>();
@@ -34,6 +36,10 @@ namespace Vidly.App_Start
                 .ForMember(a => a.Id, opt => opt.Ignore());
             Mapper.CreateMap<OwnerDto, Owner>()
                 .ForMember(o => o.Id, opt => opt.Ignore());
+            Mapper.CreateMap<AccommodationRentalPostDto, AccommodationRentalPost>()
+                .ForMember(p => p.Id, opt => opt.Ignore());
+            Mapper.CreateMap<AccommodationPictureDto, AccommodationPicture>()
+                .ForMember(p => p.Id, opt => opt.Ignore());
         }
     }
 }
