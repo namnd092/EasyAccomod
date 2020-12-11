@@ -2,6 +2,9 @@ header{
     background-color: var(--bg-color);
     padding: 5px 0;
 }
+.navbar{
+    padding: 0.5rem 0;
+}
 .header{
     display: flex;
     justify-content: space-between;
@@ -23,7 +26,7 @@ header a {
 }
 header .nav-item{
     font-size: 1.2rem;
-    margin-right: 10px;
+    margin-left: 10px;
 }
 header .nav-item:hover{
     border-bottom: 2px solid white;

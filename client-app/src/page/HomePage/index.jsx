@@ -1,19 +1,18 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import { useSelector } from 'react-redux'
-import queryString from 'query-string'
-import './styles.css'
-import SearchFrom from './components/SearchFrom'
-import PostList from './components/PostList'
-import HomePagination from './components/HomePagination'
+import React, { Component } from 'react';
+import { useSelector } from 'react-redux';
+import queryString from 'query-string';
+import './styles.css';
+import SearchFrom from './components/SearchFrom';
+import PostList from './components/PostList';
+import HomePagination from './components/HomePagination';
 
 export const HomePage = () => {
-    const [totalRow, setTotalRow] = React.useState(0)
-    const [postList, setPostList] = React.useState([])
+    const [totalRow, setTotalRow] = React.useState(0);
+    const [postList, setPostList] = React.useState([]);
     const [filterSearch, setFilterSearch] = React.useState({
         province: null,
-        town: null,
-        village: null,
+        district: null,
+        ward: null,
         street: null,
         roomPrice: null,
         roomArea: null,
@@ -28,21 +27,21 @@ export const HomePage = () => {
         liveWithOwner: null,
         _page: 1,
         _limit: 15,
-    })
+    });
     React.useEffect(() => {
         async function searchByFilter() {
-            const query = queryString.stringify(filterSearch)
-            console.log(query)
+            const query = queryString.stringify(filterSearch);
+            console.log(query);
         }
-        searchByFilter()
-        return () => {}
-    }, [filterSearch])
+        searchByFilter();
+        return () => {};
+    }, [filterSearch]);
     const handleFilterChange = (value) => {
-        setFilterSearch({ ...filterSearch, ...value })
-    }
+        setFilterSearch({ ...filterSearch, ...value });
+    };
     const handlePageChange = (_page) => {
-        setFilterSearch({ ...filterSearch, _page })
-    }
+        setFilterSearch({ ...filterSearch, _page });
+    };
     return (
         <div className="homePage">
             <div className="homepage__searchFrom">
@@ -57,9 +56,5 @@ export const HomePage = () => {
                 />
             </div>
         </div>
-    )
-}
-
-// Home.propTypes = {
-//     prop: PropTypes
-// }
+    );
+};

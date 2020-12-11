@@ -1,0 +1,7 @@
+.tablePostPage{
+    width: 100%;
+}
+.tablePostPage th, td{
+    border: 1px solid gray;
+    border-collapse: collapse;
+}

@@ -30,18 +30,13 @@ export const Page = () => {
     const [role, setRole] = React.useState('');
     useEffect(() => {
         async function effectGetInfo(){
-            effectGetInfo(dispatch);
             const response = await authApi.getAccountInfoByToken();
-            const {role} = response;
-            setRole(role)
+            const {role} = await response;
+            setRole(role);
         }
+        effectGetInfo();
     }, [])
 
-    const handle=(role)=>{
-        console.log(role)
-        setRole(role)
-    }
-    
     return (
         <Router>
             <Header role={role}/>
@@ -54,7 +49,7 @@ export const Page = () => {
                         <Route path="/post/:id">
                             <PostPage />
                         </Route>
-                        <Route path="/login" role={role}>
+                        {/* <Route path="/login" role={role}>
                             <LoginPage handle={handle}/>
                         </Route>
                         <Route path="/register" role={role}>
@@ -62,31 +57,29 @@ export const Page = () => {
                         </Route>
                         <Route path="/profile">
                             <ProfilePage />
-                        </Route>
+                        </Route> */}
                         <Route path="/approved">
                             <ApprovedPage/>
                         </Route>
                         <Route path="/newpost">
                             <NewPostPage/>
                         </Route>
-                        {/* <AuthRoute 
-                            component={LoginPage} 
-                            roles={[]} 
+                        <AuthRoute 
+                            component={LoginPage}
                             path="/login" 
                             role={role}
                         />
                         <AuthRoute
                             component={RegisterPage}
-                            roles={[]}
                             path="/register"
                             role={role}
-                        /> */}
-                        {/* <PrivateRoute
+                        />
+                        <PrivateRoute
                             component={ProfilePage}
                             roles={['admin', 'renter', 'owner']}
                             path="/profile"
                             role={role}
-                        /> */}
+                        />
                         <Route component={NotFound} />
                     </Switch>
                 </div>

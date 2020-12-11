@@ -1,56 +1,48 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import { Field, Form, Formik } from 'formik'
+import React from 'react';
+import PropTypes from 'prop-types';
+import { Form, Formik } from 'formik';
 import {
     Accordion,
     AccordionDetails,
     AccordionSummary,
-} from '@material-ui/core'
+} from '@material-ui/core';
 import {
     Button,
     FormGroup,
     FormLabel,
-    Input,
     TextField,
-} from '@material-ui/core'
-import Select from 'react-select'
-import { useState } from 'react'
+} from '@material-ui/core';
+import Select from 'react-select';
+import { useState } from 'react';
+import addressApi from '../../../../api/addressApi';
+import roomApi from '../../../../api/roomApi';
 
 SearchFrom.propTypes = {
     onSumbit: PropTypes.func,
-}
+};
 
 SearchFrom.defaultProps = {
     onSumbit: null,
-}
+};
 
 function SearchFrom(props) {
     const initialValues = {
         province: null,
         town: null,
-        village: null,
+        ward: null,
         street: null,
-        roomPrice: null,
-        roomArea: null,
+        roomPrice: 0,
+        roomArea: 0,
         roomQuantity: null,
         haveKitchen: 0,
         haveAirConditioner: 0,
         haveBalcony: 0,
-        haveClosedBathroom: null,
-        haveWaterHeater: null,
+        haveClosedBathroom: 0,
+        haveWaterHeater: 0,
         waterPrice: null,
         electricityPrice: null,
-        liveWithOwner: null,
-    }
-    const provinceArr = [
-        { value: 0, label: 'Tỉnh/Thành Phố' },
-        { value: 1, label: 'Bắc Giang' },
-        { value: 2, label: 'Bắc Ninh' },
-        { value: 3, label: 'Hưng Yên' },
-        { value: 4, label: 'Hà Nội' },
-        { value: 5, label: 'Đà Nẵng' },
-        { value: 6, label: 'Tp HCM' },
-    ]
+        liveWithOwner: 0,
+    };
     const roomPriceArr = [
         { value: 'all', label: 'Mức giá' },
         { value: '_1', label: 'Dưới 1 triệu' },
@@ -62,29 +54,17 @@ function SearchFrom(props) {
         { value: '10_15', label: '10 triệu - 15 triệu' },
         { value: '15_20', label: '15 triệu - 20 triệu' },
         { value: '20_', label: 'Trên 20 triệu' },
-    ]
-    const roomAreaArr = [
-        { value: 'all', label: 'Diện tích' },
-        { value: '_20', label: 'Dưới 20m2' },
-        { value: '20_30', label: '20m2 - 30m2' },
-        { value: '30_40', label: '30m2 - 40m2' },
-        { value: '40_50', label: '40m2 - 50m2' },
-        { value: '50_60', label: '50m2 - 60m2' },
-        { value: '60_70', label: '60m2 - 70m2' },
-        { value: '70_80', label: '70m2 - 80m2' },
-        { value: '80_90', label: '80m2 - 90m2' },
-        { value: '90_100', label: '90m2 - 100m2' },
-        { value: '100_', label: 'Trên 100m2' },
-    ]
+    ];
     const choseData = [
         { value: 0, label: 'Tất cả' },
         { value: 1, label: 'Có' },
         { value: -1, label: 'Không' },
-    ]
+    ];
+    const defaultData = [{ value: 0, label: 'Tất cả' }];
     const [filterValues, setFilterValues] = useState({
         province: 0,
-        town: 0,
-        village: 0,
+        district: 0,
+        ward: 0,
         street: null,
         roomPrice: 0,
         roomArea: 0,
@@ -97,29 +77,147 @@ function SearchFrom(props) {
         waterPrice: 0,
         electricityPrice: 0,
         liveWithOwner: 0,
-    })
-    const [provinceData, setProvinceData] = useState(provinceArr)
-    const [townData, setTownData] = useState([])
-    const [villageData, setVillageData] = useState([])
-    const [roomTypeData, setRoomTypeData] = useState([])
+    });
+    const [provinceData, setProvinceData] = useState([defaultData]);
+    const [districtData, setDistrictData] = useState([defaultData]);
+    const [wardData, setWardData] = useState([defaultData]);
+    const [roomTypeData, setRoomTypeData] = useState([defaultData]);
+    const [roomAreaData, setRoomAreaData] = useState([defaultData]);
+    const [kitchenTypeData, setKitchenTypeData] = useState([defaultData]);
+
+    React.useEffect(() => {
+        async function effectGetRoomAreaData() {
+            try {
+                const response = await roomApi.getAllRoomAreaType();
+                setRoomAreaData(
+                    defaultData.concat(
+                        [...response].map((e) => ({
+                            value: e.id,
+                            label: e.range,
+                        }))
+                    )
+                );
+            } catch (error) {
+                console.log(error);
+            }
+        }
+        effectGetRoomAreaData();
+
+        async function effectGetRoomType() {
+            try {
+                const response = await roomApi.getAllRoomType();
+                setRoomTypeData(
+                    defaultData.concat(
+                        [...response].map((e) => ({
+                            value: e.id,
+                            label: e.name,
+                        }))
+                    )
+                );
+            } catch (error) {
+                console.log(error);
+            }
+        }
+        effectGetRoomType();
+
+        async function effectGetProvinceData() {
+            try {
+                const response = await addressApi.getAllProvince();
+                setProvinceData(
+                    defaultData.concat(
+                        [...response].map((e) => ({
+                            value: e.id,
+                            label: e.name,
+                        }))
+                    )
+                );
+            } catch (error) {
+                console.log(error);
+            }
+        }
+        effectGetProvinceData();
+
+        async function effectGetKitchenType() {
+            try {
+                const response = await roomApi.getAllKitchenType();
+                console.log(response);
+                setKitchenTypeData(
+                    defaultData.concat(
+                        [...response].map((e) => ({
+                            value: e.id,
+                            label: e.name,
+                        }))
+                    )
+                );
+            } catch (error) {
+                console.log(error);
+            }
+        }
+        effectGetKitchenType();
+    }, []);
+
+    const handleProvinceChange = async (value) => {
+        const provinceId = value.value;
+        console.log(provinceId);
+        setFilterValues({
+            ...filterValues,
+            province: provinceId,
+            district: 0,
+            ward: 0,
+        });
+        try {
+            if (provinceId === 0) {
+                setDistrictData(defaultData);
+            } else {
+                const response = await addressApi.getDistrictByProvinceId(
+                    provinceId
+                );
+                setDistrictData(
+                    defaultData.concat(
+                        [...response].map((e) => ({
+                            value: e.id,
+                            label: e.name,
+                        }))
+                    )
+                );
+            }
+            setWardData(defaultData);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const handleDistrictChange = async (value) => {
+        const districtId = value.value;
+        setFilterValues({
+            ...filterValues,
+            district: districtId,
+            ward: 0,
+        });
+        try {
+            if (districtId === 0) {
+                setWardData(defaultData);
+            } else {
+                const response = await addressApi.getWardByDistrictID(
+                    districtId
+                );
+                setWardData(
+                    defaultData.concat(
+                        [...response].map((e) => ({
+                            value: e.id,
+                            label: e.name,
+                        }))
+                    )
+                );
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
 
     const handleSubmit = (value) => {
-        props.onSubmit(filterValues)
-    }
-    const handleProvinceChange = (value) => {
-        setFilterValues({
-            ...filterValues,
-            province: value.value,
-        })
-        console.log(value)
-    }
-    const handleTownChange = (value) => {
-        setFilterValues({
-            ...filterValues,
-            town: value.value,
-        })
-        console.log(value)
-    }
+        props.onSubmit(filterValues);
+    };
 
     return (
         <Formik
@@ -162,9 +260,16 @@ function SearchFrom(props) {
                                                 </FormLabel>
                                                 <Select
                                                     defaultValue={
-                                                        provinceArr[0]
+                                                        provinceData[0]
                                                     }
-                                                    options={provinceArr}
+                                                    value={
+                                                        provinceData.find(
+                                                            (e) =>
+                                                                e.value ===
+                                                                filterValues.province
+                                                        )
+                                                    }
+                                                    options={provinceData}
                                                     name="province"
                                                     onChange={(value) =>
                                                         handleProvinceChange(
@@ -179,12 +284,21 @@ function SearchFrom(props) {
                                                 </FormLabel>
                                                 <Select
                                                     defaultValue={
-                                                        provinceArr[0]
+                                                        filterValues.district
                                                     }
-                                                    options={provinceArr}
-                                                    name="town"
+                                                    value={
+                                                        districtData.find(
+                                                            (e) =>
+                                                                e.value ===
+                                                                filterValues.district
+                                                        )
+                                                    }
+                                                    options={districtData}
+                                                    name="district"
                                                     onChange={(value) =>
-                                                        handleTownChange(value)
+                                                        handleDistrictChange(
+                                                            value
+                                                        )
                                                     }
                                                 />
                                             </FormGroup>
@@ -192,12 +306,22 @@ function SearchFrom(props) {
                                                 <FormLabel>Xã/Phường</FormLabel>
                                                 <Select
                                                     defaultValue={
-                                                        provinceArr[0]
+                                                        filterValues.ward
                                                     }
-                                                    options={provinceArr}
-                                                    name="village"
+                                                    value={
+                                                        wardData.find(
+                                                            (e) =>
+                                                                e.value ===
+                                                                filterValues.ward
+                                                        )
+                                                    }
+                                                    options={wardData}
+                                                    name="ward"
                                                     onChange={(value) =>
-                                                        console.log(value)
+                                                        setFilterValues({
+                                                            ...filterValues,
+                                                            ward: value.value,
+                                                        })
                                                     }
                                                 />
                                             </FormGroup>
@@ -210,7 +334,7 @@ function SearchFrom(props) {
                                                     label="Đường/Số nhà"
                                                     variant="outlined"
                                                     name="street"
-                                                    onChange={(value) =>
+                                                    onBlur={(value) =>
                                                         setFilterValues({
                                                             ...filterValues,
                                                             street:
@@ -242,9 +366,9 @@ function SearchFrom(props) {
                                                 <FormLabel>Diện tích</FormLabel>
                                                 <Select
                                                     defaultValue={
-                                                        roomAreaArr[0]
+                                                        roomAreaData[0]
                                                     }
-                                                    options={roomAreaArr}
+                                                    options={roomAreaData}
                                                     name="roomArea"
                                                     isSearchable={false}
                                                     onChange={(value) =>
@@ -265,7 +389,7 @@ function SearchFrom(props) {
                                     <h2>Tìm kiếm chi tiết</h2>
                                 </AccordionSummary>
                                 <AccordionDetails>
-                                    <div style={{width: '100%'}}>
+                                    <div style={{ width: '100%' }}>
                                         <div className="row">
                                             <FormGroup className="col-12 col-md-6 col-lg-4 col-xl-2">
                                                 <FormLabel>Chung chủ</FormLabel>
@@ -352,8 +476,10 @@ function SearchFrom(props) {
                                             <FormGroup className="col-12 col-md-6 col-lg-4 col-xl-2">
                                                 <FormLabel>Bếp riêng</FormLabel>
                                                 <Select
-                                                    defaultValue={choseData[0]}
-                                                    options={choseData}
+                                                    defaultValue={
+                                                        kitchenTypeData[0]
+                                                    }
+                                                    options={kitchenTypeData}
                                                     name="haveKitchen"
                                                     isSearchable={false}
                                                     onChange={(value) =>
@@ -383,7 +509,7 @@ function SearchFrom(props) {
                 </Form>
             )}
         </Formik>
-    )
+    );
 }
 
-export default SearchFrom
+export default SearchFrom;

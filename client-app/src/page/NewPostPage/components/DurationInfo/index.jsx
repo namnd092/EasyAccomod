@@ -14,6 +14,7 @@ import Select from 'react-select'
 DurationInfo.propTypes = {}
 
 function DurationInfo(props) {
+    const {handleDurationInfoChange} = props;
     const packageTypeArr = [
         { value: 1, label: 'Đăng theo tuần', price: 1000, type: 'tuần' },
         { value: 2, label: 'Đăng theo tháng', price: 3000, type: 'tháng' },

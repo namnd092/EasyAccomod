@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import {useSelector} from 'react-redux'
 const { Route, Redirect } = require("react-router-dom");
-const auth = localStorage.getItem('token')
-function AuthRoute({ component: Component, roles, role, ...rest }) {
-    
+
+function AuthRoute({ component: Component, ...rest }) {
+    const isAuth = !!localStorage.getItem('token') 
     return (
         <Route {...rest} render={props => {
-            if(role){
+            if(isAuth){
                 return <Redirect to={{ pathname: '/', state: { from: props.location } }} />
             }
             return <Component {...props}/>

@@ -6,18 +6,18 @@ import {useLocation, useHistory} from 'react-router-dom'
 import {removeUser} from '../../redux/slice/userSlice'
 import {useDispatch, useSelector} from 'react-redux'
 
-const Header = props => {
+const Header = (props) => {
     const pathname = useLocation().pathname;
     const history = useHistory();
     const dispatch = useDispatch();
-    //const {role} = useSelector(state => state.user)
-    //const role = localStorage.getItem('role') || null;
+   
+    const auth = !!localStorage.getItem('token');
     const gotoHome = () => {
         history.push('/');
     }
-    const handleLogout = () => {
-        localStorage.removeItem('token');
-        localStorage.removeItem('role');
+    const handleLogout = async() => {
+        await localStorage.removeItem('token');
+        await localStorage.removeItem('role');
         dispatch(removeUser())
         history.push('/login');
     }
@@ -46,13 +46,13 @@ const Header = props => {
                             <li className="nav-item" >
                                 <NavLink className="nav-link" to="/approved">Phê duyệt</NavLink>
                             </li>
-                            <li className="nav-item" style={{display: pathname !== '/login' && !props.role ? '' : 'none'}}>
+                            <li className="nav-item" style={{display: pathname !== '/login' && !auth ? '' : 'none'}}>
                                 <NavLink className="nav-link" to="/login" >Đăng nhập</NavLink>
                             </li>
-                            <li className="nav-item" style={{display: pathname === '/login' && !props.role ? '' : 'none'}}>
+                            <li className="nav-item" style={{display: pathname === '/login' && !auth ? '' : 'none'}}>
                                 <NavLink className="nav-link" to="/register">Đăng ký</NavLink>
                             </li>
-                            <li className="nav-item dropdown" style={{display: props.role ? '' : 'none'}}>
+                            <li className="nav-item dropdown" style={{display: auth ? '' : 'none'}}>
                                 <NavLink className="nav-link dropdown-toggle" to="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     Nguyễn Duy Nam
                                 </NavLink>

@@ -1,14 +1,12 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import ImageUploader from 'react-images-upload';
 
 ImgInfo.propTypes = {}
 
 function ImgInfo(props) {
-    const [images, setImages] = React.useState([]);
-    const handleImageChange = (img) => {
-        console.log(img)
-        setImages([...images].concat(img));
+    const {handleImgInfoChange} = props;
+    const handleImageChange = async(imgArr) => {
+        handleImgInfoChange({roomImageArr: imgArr});
     }
     return (
         <div class="card">
