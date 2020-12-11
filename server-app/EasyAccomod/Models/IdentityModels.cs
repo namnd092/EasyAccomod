@@ -32,6 +32,8 @@ namespace EasyAccomod.Models
 
         public DbSet<AccommodationRentalPost> AccommodationRentalPosts { get; set; }
 
+        public DbSet<RentalPostStatus> RentalPostStatuses { get; set; }
+
         public DbSet<Like> Likes { get; set; }
 
         public DbSet<View> Views { get; set; }
