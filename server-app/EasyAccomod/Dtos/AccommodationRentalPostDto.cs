@@ -24,6 +24,7 @@ namespace EasyAccomod.Dtos
         public DateTime DateExpired { get; set; }
 
         [Required]
+        [Range(7, 365)]
         public int? TimeDisplayed { get; set; }
 
         [Required]

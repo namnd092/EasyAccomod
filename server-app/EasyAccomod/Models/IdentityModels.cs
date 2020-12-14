@@ -56,6 +56,8 @@ namespace EasyAccomod.Models
 
         public DbSet<Address> Addresses { get; set; }
 
+        public DbSet<ExtendRentalPostPeriod> ExtendRentalPostPeriods { get; set; }
+
         public DbSet<Province> Provinces { get; set; }
 
         public DbSet<District> Districts { get; set; }
