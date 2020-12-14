@@ -29,9 +29,8 @@ namespace EasyAccomod.Controllers
             , byte provinceId = 0, int districtId = 0, int wardId = 0, string street = "", string publicLocationNearby = ""
             , byte paymentTypeId = 0, int minPrice = 0, int maxPrice = 0
             , byte accommodationTypeId = 0, byte roomAreaRangeId = 0
-            , bool liveWithOwner = true, bool haveClosedBathroom = false, bool haveWaterHeater = false
-            , byte kitchenTypeId = 0, bool haveAirConditioner = false, bool haveBalcony = false
-            , int isExpired = 0, byte statusId = 0)
+            , int liveWithOwner = 0, int haveClosedBathroom = 0, int haveWaterHeater = 0
+            , byte kitchenTypeId = 0, int haveAirConditioner = 0, int haveBalcony = 0)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -85,17 +84,87 @@ namespace EasyAccomod.Controllers
                 rentalPostsInDb = rentalPostsInDb.Where(p => p.Accommodation.RoomAreaRangeId == roomAreaRangeId);
             }
 
-            // Search by Accommodation facilities
-            if (haveAirConditioner)
-                rentalPostsInDb = rentalPostsInDb.Where(p => p.Accommodation.HaveAirConditioner);
-            if (haveBalcony)
-                rentalPostsInDb = rentalPostsInDb.Where(p => p.Accommodation.HaveBalcony);
-            if (haveClosedBathroom)
-                rentalPostsInDb = rentalPostsInDb.Where(p => p.Accommodation.HaveClosedBathroom);
-            if (haveWaterHeater)
-                rentalPostsInDb = rentalPostsInDb.Where(p => p.Accommodation.HaveWaterHeater);
-            if (!liveWithOwner)
-                rentalPostsInDb = rentalPostsInDb.Where(p => !p.Accommodation.LiveWithOwner);
+            switch (haveAirConditioner)
+            {
+                // Search by Accommodation facilities
+                case 1:
+                    rentalPostsInDb = rentalPostsInDb.Where(p => p.Accommodation.HaveAirConditioner);
+                    break;
+
+                case -1:
+                    rentalPostsInDb = rentalPostsInDb.Where(p => !p.Accommodation.HaveAirConditioner);
+                    break;
+
+                default:
+                    if (haveAirConditioner != 0)
+                        return BadRequest("Invalid input: haveAirConditioner.");
+                    break;
+            }
+
+            switch (haveBalcony)
+            {
+                case 1:
+                    rentalPostsInDb = rentalPostsInDb.Where(p => p.Accommodation.HaveBalcony);
+                    break;
+
+                case -1:
+                    rentalPostsInDb = rentalPostsInDb.Where(p => !p.Accommodation.HaveBalcony);
+                    break;
+
+                default:
+                    if (haveBalcony != 0)
+                        return BadRequest("Invalid input: haveBalcony.");
+                    break;
+            }
+
+            switch (haveClosedBathroom)
+            {
+                case 1:
+                    rentalPostsInDb = rentalPostsInDb.Where(p => p.Accommodation.HaveClosedBathroom);
+                    break;
+
+                case -1:
+                    rentalPostsInDb = rentalPostsInDb.Where(p => !p.Accommodation.HaveClosedBathroom);
+                    break;
+
+                default:
+                    if (haveClosedBathroom != 0)
+                        return BadRequest("Invalid input: haveCloseBathroom.");
+                    break;
+            }
+
+            switch (haveWaterHeater)
+            {
+                case 1:
+                    rentalPostsInDb = rentalPostsInDb.Where(p => p.Accommodation.HaveWaterHeater);
+                    break;
+
+                case -1:
+                    rentalPostsInDb = rentalPostsInDb.Where(p => !p.Accommodation.HaveWaterHeater);
+                    break;
+
+                default:
+                    if (haveWaterHeater != 0)
+                        return BadRequest("Invalid input: haveWaterHeater.");
+                    break;
+            }
+
+            switch (liveWithOwner)
+            {
+                case 1:
+                    rentalPostsInDb = rentalPostsInDb.Where(p => p.Accommodation.LiveWithOwner);
+                    break;
+
+                case -1:
+                    rentalPostsInDb = rentalPostsInDb.Where(p => !p.Accommodation.LiveWithOwner);
+                    break;
+
+                default:
+                    if (liveWithOwner != 0)
+                        return BadRequest("Invalid input: liveWithOwner");
+                    break;
+            }
+
             if (kitchenTypeId != 0)
                 rentalPostsInDb = rentalPostsInDb.Where(p => p.Accommodation.KitchenTypeId == kitchenTypeId);
 
