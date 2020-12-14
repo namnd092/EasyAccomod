@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { FormGroup, FormLabel } from '@material-ui/core';
-import JoditEditor from "jodit-react";
+import JoditEditor from 'jodit-react';
 
 DescriptionInfo.propTypes = {
     handleDescriptionInfoChange: PropTypes.func,
@@ -12,10 +12,10 @@ function DescriptionInfo(props) {
     //const [description, setDescription] = React.useState(RichTextEditor.createEmptyValue());
     const handleDescriptionChange = (value) => {
         const description = value.target.innerHTML;
-        handleDescriptionInfoChange({description});
+        handleDescriptionInfoChange({ description });
     };
     return (
-        <div class="card">
+        <div class="card mt-4">
             <h5 class="card-header">Thông tin mô tả</h5>
             <div class="card-body">
                 <FormGroup>
@@ -28,7 +28,7 @@ function DescriptionInfo(props) {
                         placeholder="Mô tả về phòng trọ của bạn"
                         
                     /> */}
-                    <JoditEditor 
+                    <JoditEditor
                         //value={description}
                         onBlur={handleDescriptionChange}
                     />

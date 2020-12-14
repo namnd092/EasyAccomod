@@ -112,7 +112,7 @@ function BasicInfo(props) {
         const roomPaymentType = value.value;
         setFormValues({ ...formValues, roomPaymentType });
         handleBasicInfoChange(formValues);
-    }
+    };
     const handleRoomAreaChange = (value) => {
         const roomArea = value.value;
         setFormValues({ ...formValues, roomArea });
@@ -228,19 +228,21 @@ function BasicInfo(props) {
         }
         effectGetRoomAreaRange();
 
-        async function effectGetRoomPaymentType(){
+        async function effectGetRoomPaymentType() {
             try {
                 const response = await roomApi.getAllPaymentType();
-                setRoomPaymentTypeData([...response].map(e => ({value: e.id, label: e.name})))
+                setRoomPaymentTypeData(
+                    [...response].map((e) => ({ value: e.id, label: e.name }))
+                );
             } catch (error) {
-                console.log(error)
+                console.log(error);
             }
         }
         effectGetRoomPaymentType();
     }, []);
 
     return (
-        <div class="card">
+        <div class="card mt-4">
             <h5 class="card-header">Thông tin cơ bản</h5>
             <div class="card-body">
                 <FormGroup>
@@ -250,7 +252,7 @@ function BasicInfo(props) {
                         name="title"
                         onBlur={handleTitleChange}
                     />
-                    {errors && touched && (<span>{errors.title}</span>)}
+                    {errors && touched && <span>{errors.title}</span>}
                 </FormGroup>
                 <FormGroup>
                     <FormLabel>Loại Phòng</FormLabel>
@@ -260,7 +262,7 @@ function BasicInfo(props) {
                         options={roomTypeData}
                         onChange={handleRoomTypeChange}
                     />
-                    {errors && touched && (<span>{errors.title}</span>)}
+                    {errors && touched && <span>{errors.title}</span>}
                 </FormGroup>
                 <FormGroup>
                     <FormLabel>Tỉnh/Thành phố</FormLabel>
@@ -277,7 +279,7 @@ function BasicInfo(props) {
                         }
                         onChange={handleProvinceChange}
                     />
-                    {errors && touched && (<span>{errors.title}</span>)}
+                    {errors && touched && <span>{errors.title}</span>}
                 </FormGroup>
                 <FormGroup>
                     <FormLabel>Quận/Huyện</FormLabel>
@@ -294,7 +296,7 @@ function BasicInfo(props) {
                         }
                         onChange={handleDistrictChange}
                     />
-                    {errors && touched && (<span>{errors.title}</span>)}
+                    {errors && touched && <span>{errors.title}</span>}
                 </FormGroup>
                 <FormGroup>
                     <FormLabel>Xã/Phường</FormLabel>
@@ -311,7 +313,7 @@ function BasicInfo(props) {
                         }
                         onChange={handleWardChange}
                     />
-                    {errors && touched && (<span>{errors.title}</span>)}
+                    {errors && touched && <span>{errors.title}</span>}
                 </FormGroup>
                 <FormGroup>
                     <FormLabel>Số nhà, Đường</FormLabel>
@@ -320,13 +322,13 @@ function BasicInfo(props) {
                         name="street"
                         onBlur={handleStreetChange}
                     />
-                    {errors && touched && (<span>{errors.title}</span>)}
+                    {errors && touched && <span>{errors.title}</span>}
                 </FormGroup>
                 <FormGroup>
                     <FormLabel>Giá tiền(vnd)</FormLabel>
-                    <Input 
-                        type={"number"}
-                        className={"form-control"}
+                    <Input
+                        type={'number'}
+                        className={'form-control'}
                         name="roomPrice"
                         onBlur={handleRoomPriceChange}
                     />
@@ -336,7 +338,7 @@ function BasicInfo(props) {
                         options={roomPaymentTypeData}
                         onChange={handleRoomPaymentTypeChange}
                     />
-                    {errors && touched && (<span>{errors.title}</span>)}
+                    {errors && touched && <span>{errors.title}</span>}
                 </FormGroup>
                 <FormGroup>
                     <FormLabel>Diện tích</FormLabel>

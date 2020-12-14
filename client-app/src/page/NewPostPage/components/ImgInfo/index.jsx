@@ -1,18 +1,18 @@
-import React from 'react'
+import React from 'react';
 import ImageUploader from 'react-images-upload';
 
-ImgInfo.propTypes = {}
+ImgInfo.propTypes = {};
 
 function ImgInfo(props) {
-    const {handleImgInfoChange} = props;
-    const handleImageChange = async(imgArr) => {
-        handleImgInfoChange({roomImageArr: imgArr});
-    }
+    const { handleImgInfoChange } = props;
+    const handleImageChange = async (imgArr) => {
+        handleImgInfoChange({ roomImageArr: imgArr });
+    };
     return (
-        <div class="card">
+        <div class="card mt-4">
             <h5 class="card-header">Hình Ảnh</h5>
             <div class="card-body">
-                <ImageUploader 
+                <ImageUploader
                     onChange={handleImageChange}
                     imgExtension={['.jpg', '.gif', '.png', '.gif']}
                     withIcon={true}
@@ -23,7 +23,7 @@ function ImgInfo(props) {
                 />
             </div>
         </div>
-    )
+    );
 }
 
-export default ImgInfo
+export default ImgInfo;

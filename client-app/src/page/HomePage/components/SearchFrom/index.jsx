@@ -1,17 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import './style.css';
 import { Form, Formik } from 'formik';
 import {
     Accordion,
     AccordionDetails,
     AccordionSummary,
+    InputBase,
+    makeStyles,
 } from '@material-ui/core';
-import {
-    Button,
-    FormGroup,
-    FormLabel,
-    TextField,
-} from '@material-ui/core';
+import { Button, FormGroup, FormLabel, TextField } from '@material-ui/core';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Select from 'react-select';
 import { useState } from 'react';
 import addressApi from '../../../../api/addressApi';
@@ -25,7 +24,17 @@ SearchFrom.defaultProps = {
     onSumbit: null,
 };
 
+const useStyles = makeStyles((theme) => ({
+    root: {
+        width: '100%',
+    },
+    heading: {
+        fontSize: theme.typography.pxToRem(15),
+        fontWeight: theme.typography.fontWeightRegular,
+    },
+}));
 function SearchFrom(props) {
+    const classes = useStyles();
     const initialValues = {
         province: null,
         town: null,
@@ -228,8 +237,14 @@ function SearchFrom(props) {
                 <Form>
                     <div className="row">
                         <div className="col-12 col-lg-10">
-                            <Accordion expanded={true}>
-                                <AccordionSummary>
+                            <Accordion>
+                                <AccordionSummary
+                                    expandIcon={
+                                        <ExpandMoreIcon fontSize={'24px'} />
+                                    }
+                                    aria-controls="panel1a-content"
+                                    id="panel1a-header"
+                                >
                                     <h2>Tìm kiếm cơ bản</h2>
                                 </AccordionSummary>
                                 <AccordionDetails>
@@ -262,13 +277,11 @@ function SearchFrom(props) {
                                                     defaultValue={
                                                         provinceData[0]
                                                     }
-                                                    value={
-                                                        provinceData.find(
-                                                            (e) =>
-                                                                e.value ===
-                                                                filterValues.province
-                                                        )
-                                                    }
+                                                    value={provinceData.find(
+                                                        (e) =>
+                                                            e.value ===
+                                                            filterValues.province
+                                                    )}
                                                     options={provinceData}
                                                     name="province"
                                                     onChange={(value) =>
@@ -286,13 +299,11 @@ function SearchFrom(props) {
                                                     defaultValue={
                                                         filterValues.district
                                                     }
-                                                    value={
-                                                        districtData.find(
-                                                            (e) =>
-                                                                e.value ===
-                                                                filterValues.district
-                                                        )
-                                                    }
+                                                    value={districtData.find(
+                                                        (e) =>
+                                                            e.value ===
+                                                            filterValues.district
+                                                    )}
                                                     options={districtData}
                                                     name="district"
                                                     onChange={(value) =>
@@ -308,13 +319,11 @@ function SearchFrom(props) {
                                                     defaultValue={
                                                         filterValues.ward
                                                     }
-                                                    value={
-                                                        wardData.find(
-                                                            (e) =>
-                                                                e.value ===
-                                                                filterValues.ward
-                                                        )
-                                                    }
+                                                    value={wardData.find(
+                                                        (e) =>
+                                                            e.value ===
+                                                            filterValues.ward
+                                                    )}
                                                     options={wardData}
                                                     name="ward"
                                                     onChange={(value) =>
@@ -329,11 +338,14 @@ function SearchFrom(props) {
 
                                         <div className="row">
                                             <FormGroup className="col-12 col-xl-6 mt-3">
-                                                <TextField
-                                                    id="outlined-basic"
+                                                <FormLabel>
+                                                    Đường/Số nhà
+                                                </FormLabel>
+                                                <input
                                                     label="Đường/Số nhà"
                                                     variant="outlined"
                                                     name="street"
+                                                    className="form-control"
                                                     onBlur={(value) =>
                                                         setFilterValues({
                                                             ...filterValues,
@@ -385,7 +397,11 @@ function SearchFrom(props) {
                                 </AccordionDetails>
                             </Accordion>
                             <Accordion>
-                                <AccordionSummary>
+                                <AccordionSummary
+                                    expandIcon={<ExpandMoreIcon />}
+                                    aria-controls="panel2a-content"
+                                    id="panel2a-header"
+                                >
                                     <h2>Tìm kiếm chi tiết</h2>
                                 </AccordionSummary>
                                 <AccordionDetails>

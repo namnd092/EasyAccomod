@@ -9,33 +9,59 @@ function BasicInfo(props) {
             <div class="card-body">
                 <table className="tablePostPage">
                     <tbody>
-                        <TrTable
-                            thValue={'Địa chỉ'}
-                            tdValue={'63 Lê Đức Thọ'}
-                        />
-                        <TrTable
-                            thValue={'Khu vực'}
-                            tdValue={'Gần đại học quốc gia'}
-                        />
-                        <TrTable thValue={'Loại phòng'} tdValue={'Phòng trọ'} />
-                        <TrTable
-                            thValue={'Người đăng'}
-                            tdValue={'Nguyễn Duy Nam'}
-                        />
-                        <TrTable thValue={'Điện thoại'} tdValue={'123456789'} />
-                        <TrTable thValue={'Diện tích'} tdValue={'25m2'} />
-                        <TrTable
-                            thValue={'Giá cho thuê'}
-                            tdValue={'2.8 triệu/tháng'}
-                        />
-                        <TrTable
-                            thValue={'Ngày cập nhật'}
-                            tdValue={'11:11 11/11/1111'}
-                        />
-                        <TrTable
-                            thValue={'Ngày hết hạn'}
-                            tdValue={'11:11 11/11/1111'}
-                        />
+                        <tr>
+                            <td className="title">Địa chỉ</td>
+                            <td colSpan={7}>
+                                118/8 Đường Trần Quang Diệu, Phường 14, Quận 3,
+                                Hồ Chí Minh
+                            </td>
+                        </tr>
+                        <tr>
+                            <td className="title">Khu vực</td>
+                            <td colSpan={7}>
+                                Cho thuê Phòng trọ Quận 3 - Hồ Chí Minh
+                            </td>
+                        </tr>
+                        <tr>
+                            <td className="title">Loại tin rao:</td>
+                            <td colSpan={7}>Phòng trọ</td>
+                        </tr>
+                        <tr>
+                            <td className="title">Người đăng</td>
+                            <td colSpan={3}>Nguyễn Duy Nam</td>
+                            <td className="title">Điện thoại</td>
+                            <td colSpan={3}>337470773</td>
+                        </tr>
+                        <tr>
+                            <td className="title">Diện tích</td>
+                            <td colSpan={3}>30m2</td>
+                            <td className="title">Giá cho thuê:</td>
+                            <td colSpan={3}>6.3 triệu/tháng</td>
+                        </tr>
+                        <tr>
+                            <td className="title">Ngày cập nhật</td>
+                            <td colSpan={3}>11/12/20 13:58</td>
+                            <td className="title">Ngày hết hạn</td>
+                            <td colSpan={3}>18/12/20 13:58</td>
+                        </tr>
+                        <tr>
+                            <td className="title">Chung chủ</td>
+                            <td>Có</td>
+                            <td className="title">Phòng tắm</td>
+                            <td>Có</td>
+                            <td className="title">Phòng bếp</td>
+                            <td>Có</td>
+                            <td className="title">Điều hòa</td>
+                            <td>Có</td>
+                        </tr>
+                        <tr>
+                            <td className="title">Ban công</td>
+                            <td>Có</td>
+                            <td className="title">Điện nước</td>
+                            <td>Có</td>
+                            <td className="title">Tiện ích khác</td>
+                            <td colSpan={3}></td>
+                        </tr>
                     </tbody>
                 </table>
             </div>

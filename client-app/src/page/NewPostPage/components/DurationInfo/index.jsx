@@ -1,5 +1,5 @@
-import React from 'react'
-import PropTypes from 'prop-types'
+import React from 'react';
+import PropTypes from 'prop-types';
 import {
     FormGroup,
     FormLabel,
@@ -8,32 +8,32 @@ import {
     TableBody,
     TableCell,
     TableHead,
-} from '@material-ui/core'
-import Select from 'react-select'
+} from '@material-ui/core';
+import Select from 'react-select';
 
-DurationInfo.propTypes = {}
+DurationInfo.propTypes = {};
 
 function DurationInfo(props) {
-    const {handleDurationInfoChange} = props;
+    const { handleDurationInfoChange } = props;
     const packageTypeArr = [
         { value: 1, label: 'Đăng theo tuần', price: 1000, type: 'tuần' },
         { value: 2, label: 'Đăng theo tháng', price: 3000, type: 'tháng' },
         { value: 3, label: 'Đăng theo quý', price: 11000, type: 'quý' },
         { value: 4, label: 'Đăng theo năm', price: 33000, type: 'năm' },
-    ]
-    const [packageType, setPackageType] = React.useState(packageTypeArr[0])
-    const [numberOfTime, setNumberOfTime] = React.useState(1)
+    ];
+    const [packageType, setPackageType] = React.useState(packageTypeArr[0]);
+    const [numberOfTime, setNumberOfTime] = React.useState(1);
 
     const handlePackageChange = (value) => {
-        console.log(value)
-        setPackageType(value)
-    }
+        console.log(value);
+        setPackageType(value);
+    };
     const handleNumberTimeChange = (value) => {
-        setNumberOfTime(value.target.value)
+        setNumberOfTime(value.target.value);
         //console.log(value.target.value)
-    }
+    };
     return (
-        <div class="card">
+        <div class="card mt-4">
             <h5 class="card-header">Lịch đăng tin</h5>
             <div class="card-body">
                 <FormGroup>
@@ -69,7 +69,7 @@ function DurationInfo(props) {
                 </Table>
             </div>
         </div>
-    )
+    );
 }
 
-export default DurationInfo
+export default DurationInfo;

@@ -35,7 +35,7 @@ function ContactInfo(props) {
 
     return (
         <div>
-            <div class="card">
+            <div class="card mt-4">
                 <h5 class="card-header">Thông tin liên hệ</h5>
                 <div class="card-body">
                     <FormGroup>

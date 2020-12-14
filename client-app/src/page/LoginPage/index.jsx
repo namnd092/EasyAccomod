@@ -83,6 +83,7 @@ function LoginPage(props) {
             >
                 {({ errors, touched, isValid }) => (
                     <Form className={'from'}>
+                        {message && <span>{message}</span>}
                         <FormGroup className={'form__group'}>
                             <InputLabel>Tên đăng nhập</InputLabel>
                             <Field

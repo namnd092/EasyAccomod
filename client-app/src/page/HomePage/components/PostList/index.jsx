@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import './style.css';
 import PostItem from './PostItem';
 
 PostList.propTypes = {
@@ -11,13 +12,28 @@ PostList.defaultProp = {
 
 function PostList(props) {
     return (
-        <div>
-            <h1>PostList</h1>
-            {props.postList.map((post, index) => (
+        <div className="post_list">
+            {/* {props.postList.map((post, index) => (
                 <div key={index}>
                     <PostItem/>
                 </div>
-            ))}
+            ))} */}
+            <div className="row">
+                <div className="main_list col-12 col-lg-9">
+                    <PostItem />
+                    <PostItem />
+                    <PostItem />
+                    <PostItem />
+                    <PostItem />
+                    <PostItem />
+                    <PostItem />
+                    <PostItem />
+                    <PostItem />
+                </div>
+                <div className="recommend_list col-12 col-lg-2">
+                    <h2>Recommend List</h2>
+                </div>
+            </div>
         </div>
     );
 }

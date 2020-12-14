@@ -5,3 +5,11 @@
     border: 1px solid gray;
     border-collapse: collapse;
 }
+.tablePostPage td{
+    padding: 5px 10px;
+    font-weight: 500;
+}
+.tablePostPage .title{
+    background-color: antiquewhite;
+    font-weight: bolder;
+}

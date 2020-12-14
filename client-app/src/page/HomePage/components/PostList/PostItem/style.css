@@ -1,0 +1,68 @@
+.post__item{
+    display: flex;
+    height: 200px;
+    border-top: 2px solid #ffdcb5;
+    border-bottom: 2px solid #ffdcb5;
+    font-weight: 400;
+    -webkit-transition: all 0.25s ease;
+    transition: all 0.25s ease;
+    padding: 10px 20px;
+    background-color: #f9f9f9;
+}
+.post__item:hover{
+    background: white !important;
+    z-index: 5;
+    border-color: transparent;
+    box-shadow: 0 0 5px 1px #bcbcbc;
+}
+.post__item:nth-child(odd){
+    background-color: #fff1e1;
+}
+.post__item:hover .post__title{
+    color: #EA2635;
+    cursor: pointer;
+}
+.post__item .post__title{
+    text-overflow: ellipsis;
+    overflow: hidden;
+    max-height: 33px;
+}
+.post__item > .left img{
+    width: auto;
+    height: 100px;
+    border: 2px solid #cccccc;
+    margin-top: 20px;
+}
+.post__item > .right{
+    margin-left: 20px;
+}
+.post__item .post__description{
+    text-overflow: ellipsis;
+    height: 40px;
+    line-height: 20px;
+    color: #727272;
+    text-align: justify;
+    overflow: hidden;
+    line-height: 1.3em;
+}
+.post__item .price-rating{
+    display: flex;
+}
+.post__item .post__title{
+    margin-bottom: 15px;
+}
+.post__item .bottom{
+    display: flex;
+    justify-content: space-between;
+}
+.post__item .bottom-left{
+    display: flex;
+}
+.post__item .bottom-area{
+    margin-right: 10px;
+}
+.post__item .price{
+    color: #68ba50;
+    font-weight: bolder;
+    margin-right: 10px;
+}
