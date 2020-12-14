@@ -13,4 +13,13 @@ namespace EasyAccomod.Models
         [Required]
         public string Name { get; set; }
     }
+
+    public class RentalPostStatusName
+    {
+        public const string PendingApproval = "Đang chờ duyệt";
+        public const string Approved = "Được duyệt";
+        public const string Rejected = "Không được duyệt";
+        public const string Editing = "Đang chỉnh sửa";
+        public const string WaitingEditPermission = "Đang chờ quyền chỉnh sửa";
+    }
 }

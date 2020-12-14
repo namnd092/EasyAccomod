@@ -13,4 +13,10 @@ namespace EasyAccomod.Models
         [Required]
         public string Name { get; set; }
     }
+
+    public class AccommodationStatusName
+    {
+        public const string Rented = "Đã cho thuê";
+        public const string NotRented = "Chưa cho thuê";
+    }
 }

@@ -29,8 +29,9 @@ namespace EasyAccomod.Controllers
             , byte provinceId = 0, int districtId = 0, int wardId = 0, string street = "", string publicLocationNearby = ""
             , byte paymentTypeId = 0, int minPrice = 0, int maxPrice = 0
             , byte accommodationTypeId = 0, byte roomAreaRangeId = 0
-            , bool liveWithOwner = false, bool haveClosedBathroom = false, bool haveWaterHeater = false
-            , byte kitchenTypeId = 0, bool haveAirConditioner = false, bool haveBalcony = false)
+            , bool liveWithOwner = true, bool haveClosedBathroom = false, bool haveWaterHeater = false
+            , byte kitchenTypeId = 0, bool haveAirConditioner = false, bool haveBalcony = false
+            , int isExpired = 0, byte statusId = 0)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -43,8 +44,11 @@ namespace EasyAccomod.Controllers
 
             var rentalPostsInDb = _context.AccommodationRentalPosts
                 .Include(p => p.Accommodation.Address)
-                .Include(p => p.AccommodationPictures)
-                .Where(p => p.DateExpired > DateTime.Now && p.Status.Name == "Được duyệt");
+                .Include(p => p.AccommodationPictures);
+
+            // Don't show expired post
+            rentalPostsInDb = rentalPostsInDb
+                .Where(p => p.DateExpired > DateTime.Now && p.Status.Name == RentalPostStatusName.Approved);
 
             // Search by Address
             if (wardId != 0)
@@ -90,12 +94,15 @@ namespace EasyAccomod.Controllers
                 rentalPostsInDb = rentalPostsInDb.Where(p => p.Accommodation.HaveClosedBathroom);
             if (haveWaterHeater)
                 rentalPostsInDb = rentalPostsInDb.Where(p => p.Accommodation.HaveWaterHeater);
-            if (liveWithOwner)
-                rentalPostsInDb = rentalPostsInDb.Where(p => p.Accommodation.LiveWithOwner);
+            if (!liveWithOwner)
+                rentalPostsInDb = rentalPostsInDb.Where(p => !p.Accommodation.LiveWithOwner);
             if (kitchenTypeId != 0)
                 rentalPostsInDb = rentalPostsInDb.Where(p => p.Accommodation.KitchenTypeId == kitchenTypeId);
 
             // Page and limit result
+            if (_page > Math.Ceiling(1.0 * rentalPostsInDb.Count() / _limit))
+                return NotFound();
+
             var rentalPosts = rentalPostsInDb.OrderBy(p => p.Id)
                 .Skip(_limit * (_page - 1))
                 .Take(_limit)
@@ -118,9 +125,25 @@ namespace EasyAccomod.Controllers
             var rentalPost = _context.AccommodationRentalPosts
                 .Include(p => p.Accommodation.Address)
                 .Include(p => p.AccommodationPictures)
+                .Include(p => p.Status)
+                .Include(p => p.Accommodation.Owner.AccountId)
                 .SingleOrDefault(r => r.Id == id);
             if (rentalPost == null)
                 return NotFound();
+
+            if (!User.IsInRole(RoleName.Admin) || !User.IsInRole(RoleName.Owner))
+            {
+                if (rentalPost.DateExpired < DateTime.Now || rentalPost.Status.Name != RentalPostStatusName.Approved)
+                    return NotFound();
+            }
+            else if (User.IsInRole(RoleName.Owner))
+            {
+                if (rentalPost.DateExpired < DateTime.Now || rentalPost.Status.Name != RentalPostStatusName.Approved)
+                {
+                    if (rentalPost.Accommodation.Owner.AccountId != User.Identity.GetUserId())
+                        return NotFound();
+                }
+            }
 
             var rentalPostDto = Mapper.Map<AccommodationRentalPost, AccommodationRentalPostDto>(rentalPost);
 
@@ -162,12 +185,12 @@ namespace EasyAccomod.Controllers
             accommodationRentalPostDto.DateExpired = DateTime.Now.Add(new TimeSpan((int)accommodationRentalPostDto.TimeDisplayed, 0, 0, 0));
 
             accommodationRentalPostDto.Accommodation.StatusId =
-                _context.AccommodationStatuses.Single(s => s.Name == "Chưa cho thuê").Id;
+                _context.AccommodationStatuses.Single(s => s.Name == AccommodationStatusName.NotRented).Id;
 
             if (User.IsInRole(RoleName.Owner))
             {
                 accommodationRentalPostDto.StatusId =
-                    _context.RentalPostStatuses.Single(s => s.Name == "Đang chờ duyệt").Id;
+                    _context.RentalPostStatuses.Single(s => s.Name == RentalPostStatusName.PendingApproval).Id;
 
                 var accountId = User.Identity.GetUserId();
                 accommodationRentalPostDto.Accommodation.OwnerId =
@@ -176,7 +199,7 @@ namespace EasyAccomod.Controllers
             else
             {
                 accommodationRentalPostDto.StatusId =
-                    _context.RentalPostStatuses.Single(s => s.Name == "Được duyệt").Id;
+                    _context.RentalPostStatuses.Single(s => s.Name == RentalPostStatusName.Approved).Id;
             }
 
             var rentalPost = Mapper.Map<AccommodationRentalPostDto, AccommodationRentalPost>(accommodationRentalPostDto);
@@ -204,40 +227,32 @@ namespace EasyAccomod.Controllers
             if (rentalPostInDb == null)
                 return NotFound();
 
-            if (rentalPostInDb.Status.Name != "Đang chờ duyệt")
+            if (rentalPostInDb.Status.Name != RentalPostStatusName.Editing)
                 return BadRequest("Can not edit post. Post status: " + rentalPostInDb.Status.Name);
 
             Mapper.Map(accommodationRentalPostDto, rentalPostInDb);
+
+            rentalPostInDb.StatusId =
+                _context.RentalPostStatuses.Single(s => s.Name == RentalPostStatusName.PendingApproval).Id;
 
             _context.SaveChanges();
 
             return Ok();
         }
 
-        // PUT	/api/RentalPosts/1/SetStatus
-        [Authorize(Roles = RoleName.Admin)]
-        [HttpPut]
-        [Route("{id}/SetStatus")]
-        public IHttpActionResult SetRentalPostStatus(int id, RentalPostStatusDto rentalPostStatusDto)
+        // GET api/RentalPosts/Fee
+        [HttpGet]
+        [Authorize(Roles = RoleName.Admin + ", " + RoleName.Owner)]
+        [Route("Fee")]
+        public IHttpActionResult GetPostFee(int timeDisplayed)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var rentalPostInDb = _context.AccommodationRentalPosts
-                .Include(p => p.Status)
-                .SingleOrDefault(p => p.Id == id);
+            if (timeDisplayed < 7 || timeDisplayed > 365)
+                return BadRequest("Time to display post should be between 7 to 365 days.");
 
-            if (rentalPostInDb == null)
-                return NotFound();
-
-            var status = _context.RentalPostStatuses.SingleOrDefault(s => s.Id == rentalPostStatusDto.Id);
-            if (status == null)
-                return BadRequest("Status does not exist.");
-
-            rentalPostInDb.StatusId = (byte)rentalPostStatusDto.Id;
-            _context.SaveChanges();
-
-            return Ok();
+            return Ok(timeDisplayed * 5000);
         }
     }
 }
