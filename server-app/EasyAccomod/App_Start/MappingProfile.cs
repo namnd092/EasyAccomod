@@ -27,6 +27,8 @@ namespace Vidly.App_Start
 
             Mapper.CreateMap<ExtendRentalPostPeriod, ExtendRentalPostPeriodDto>();
 
+            Mapper.CreateMap<Like, LikeDto>();
+
             // Dto to Domain
             Mapper.CreateMap<DistrictDto, District>();
             Mapper.CreateMap<ProvinceDto, Province>();
@@ -42,8 +44,12 @@ namespace Vidly.App_Start
                 .ForMember(p => p.Id, opt => opt.Ignore());
             Mapper.CreateMap<AccommodationPictureDto, AccommodationPicture>()
                 .ForMember(p => p.Id, opt => opt.Ignore());
+
             Mapper.CreateMap<ExtendRentalPostPeriodDto, ExtendRentalPostPeriod>()
                 .ForMember(e => e.Id, opt => opt.Ignore());
+
+            Mapper.CreateMap<LikeDto, Like>()
+                .ForMember(l => l.Id, opt => opt.Ignore());
         }
     }
 }

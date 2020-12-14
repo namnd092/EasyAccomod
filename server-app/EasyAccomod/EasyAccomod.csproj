@@ -216,6 +216,7 @@
     <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\OwnerController.cs" />
+    <Compile Include="Controllers\RenterController.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
     <Compile Include="Dtos\AccommodationDto.cs" />
     <Compile Include="Dtos\AccommodationPaymentTypeDto.cs" />
@@ -227,6 +228,7 @@
     <Compile Include="Dtos\DistrictDto.cs" />
     <Compile Include="Dtos\ExtendRentalPostPeriodDto.cs" />
     <Compile Include="Dtos\KitchenTypeDto.cs" />
+    <Compile Include="Dtos\LikeDto.cs" />
     <Compile Include="Dtos\OwnerDto.cs" />
     <Compile Include="Dtos\ProvinceDto.cs" />
     <Compile Include="Dtos\RentalPostStatusDto.cs" />
