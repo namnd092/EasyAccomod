@@ -28,19 +28,33 @@ namespace EasyAccomod.Controllers
         // GET	api/Admin/Owners
         [HttpGet]
         [Route("Owners")]
-        public IHttpActionResult GetOwners(int _page = 1, int _limit = 15, bool isApproved = false)
+        public IHttpActionResult GetOwners(int _page = 1, int _limit = 15, int confirmationStatus = -1)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var listOwnersInDb = _context.Owners.AsQueryable();
-
             if (_page < 1)
                 return BadRequest();
 
-            if (isApproved)
-                listOwnersInDb = listOwnersInDb
-                    .Where(o => _userManager.IsInRole(o.AccountId, RoleName.Owner));
+            var listOwnersInDb = _context.Owners.AsQueryable();
+
+            switch (confirmationStatus)
+            {
+                case 1:
+                    listOwnersInDb = listOwnersInDb
+                        .Where(o => _userManager.IsInRole(o.AccountId, RoleName.Owner));
+                    break;
+
+                case -1:
+                    listOwnersInDb = listOwnersInDb
+                        .Where(o => _userManager.IsInRole(o.AccountId, RoleName.WaitForConfirmation));
+                    break;
+
+                default:
+                    if (confirmationStatus != 0)
+                        return BadRequest("Invalid input: confirmationStatus.");
+                    break;
+            }
 
             var listOwners = listOwnersInDb
                     .OrderBy(o => o.Id)
