@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using AutoMapper;
 using EasyAccomod.Dtos;
 using EasyAccomod.Models;
 using Microsoft.AspNet.Identity;
@@ -22,6 +23,38 @@ namespace EasyAccomod.Controllers
         {
             _context = new ApplicationDbContext();
             _userManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(_context));
+        }
+
+        // GET	api/Admin/Owners
+        [HttpGet]
+        [Route("Owners")]
+        public IHttpActionResult GetOwners(int _page = 1, int _limit = 15, bool isApproved = false)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var listOwnersInDb = _context.Owners.AsQueryable();
+
+            if (_page < 1)
+                return BadRequest();
+
+            if (isApproved)
+                listOwnersInDb = listOwnersInDb
+                    .Where(o => _userManager.IsInRole(o.AccountId, RoleName.Owner));
+
+            var listOwners = listOwnersInDb
+                    .OrderBy(o => o.Id)
+                    .Skip(_limit * (_page - 1))
+                    .Take(_limit)
+                    .ToList();
+
+            var listOwnersDto = new ListOwnersDto()
+            {
+                Owners = listOwners.ConvertAll(Mapper.Map<Owner, OwnerDto>),
+                MaxPage = (int)Math.Ceiling(1.0 * listOwnersInDb.Count() / _limit)
+            };
+
+            return Ok(listOwnersDto);
         }
 
         // POST api/Admin/SetOwner
