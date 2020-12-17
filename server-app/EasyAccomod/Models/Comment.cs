@@ -20,9 +20,13 @@ namespace EasyAccomod.Models
         [Required]
         public int AccommodationRentalPostId { get; set; }
 
+        [Required]
+        [Range(1, 5)]
+        public byte Rate { get; set; }
+
         [Required] public string Content { get; set; }
 
-        public string Status { get; set; }
+        [Required] public bool IsApproved { get; set; }
 
         [Required] public DateTime Time { get; set; }
     }

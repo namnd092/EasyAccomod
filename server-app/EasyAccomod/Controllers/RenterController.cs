@@ -52,5 +52,33 @@ namespace EasyAccomod.Controllers
 
             return Ok("Like");
         }
+
+        // POST	api/Renter/RentalPost/Comment
+        [HttpPost]
+        [Route("RentalPost/Comment")]
+        public IHttpActionResult Comment(CommentDto commentDto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            if (_context.AccommodationRentalPosts.SingleOrDefault(p => p.Id == commentDto.AccommodationRentalPostId)
+                == null)
+            {
+                return BadRequest("Post does not exist.");
+            }
+
+            commentDto.RenterId = _context.Renters.Single(r => r.AccountId == User.Identity.GetUserId()).Id;
+            if (_context.Comments.SingleOrDefault(c => c.RenterId == commentDto.RenterId) != null)
+                return BadRequest("Each Renter should be comment only 1 time.");
+
+            var comment = Mapper.Map<CommentDto, Comment>(commentDto);
+            comment.IsApproved = false;
+            comment.Time = DateTime.Now;
+
+            _context.Comments.Add(comment);
+            _context.SaveChanges();
+
+            return Ok();
+        }
     }
 }

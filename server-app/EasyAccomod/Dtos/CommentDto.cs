@@ -7,7 +7,7 @@ using EasyAccomod.Models;
 
 namespace EasyAccomod.Dtos
 {
-    public class LikeDto
+    public class CommentDto
     {
         public int Id { get; set; }
 
@@ -17,6 +17,14 @@ namespace EasyAccomod.Dtos
 
         [Required]
         public int AccommodationRentalPostId { get; set; }
+
+        [Required]
+        [Range(1, 5)]
+        public byte? Rate { get; set; }
+
+        [Required] public string Content { get; set; }
+
+        public bool IsApproved { get; set; }
 
         public DateTime Time { get; set; }
     }

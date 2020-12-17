@@ -225,6 +225,7 @@
     <Compile Include="Dtos\AccommodationStatusDto.cs" />
     <Compile Include="Dtos\AccommodationTypeDto.cs" />
     <Compile Include="Dtos\AddressDto.cs" />
+    <Compile Include="Dtos\CommentDto.cs" />
     <Compile Include="Dtos\DistrictDto.cs" />
     <Compile Include="Dtos\ExtendRentalPostPeriodDto.cs" />
     <Compile Include="Dtos\KitchenTypeDto.cs" />
@@ -309,6 +310,10 @@
     <Compile Include="Migrations\202012141447016_AddExtendRentalPostPeriod.cs" />
     <Compile Include="Migrations\202012141447016_AddExtendRentalPostPeriod.Designer.cs">
       <DependentUpon>202012141447016_AddExtendRentalPostPeriod.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202012170416360_EditCommentModel.cs" />
+    <Compile Include="Migrations\202012170416360_EditCommentModel.Designer.cs">
+      <DependentUpon>202012170416360_EditCommentModel.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Accommodation.cs" />
@@ -488,6 +493,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202012141447016_AddExtendRentalPostPeriod.resx">
       <DependentUpon>202012141447016_AddExtendRentalPostPeriod.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202012170416360_EditCommentModel.resx">
+      <DependentUpon>202012170416360_EditCommentModel.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
