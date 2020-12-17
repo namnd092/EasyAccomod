@@ -234,6 +234,7 @@
     <Compile Include="Dtos\OwnerDto.cs" />
     <Compile Include="Dtos\ProvinceDto.cs" />
     <Compile Include="Dtos\RentalPostStatusDto.cs" />
+    <Compile Include="Dtos\ReportDto.cs" />
     <Compile Include="Dtos\RoomAreaRangeDto.cs" />
     <Compile Include="Dtos\WardDto.cs" />
     <Compile Include="Global.asax.cs">
@@ -314,6 +315,10 @@
     <Compile Include="Migrations\202012170416360_EditCommentModel.cs" />
     <Compile Include="Migrations\202012170416360_EditCommentModel.Designer.cs">
       <DependentUpon>202012170416360_EditCommentModel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202012171031001_EditReportModel.cs" />
+    <Compile Include="Migrations\202012171031001_EditReportModel.Designer.cs">
+      <DependentUpon>202012171031001_EditReportModel.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Accommodation.cs" />
@@ -496,6 +501,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202012170416360_EditCommentModel.resx">
       <DependentUpon>202012170416360_EditCommentModel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202012171031001_EditReportModel.resx">
+      <DependentUpon>202012171031001_EditReportModel.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

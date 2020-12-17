@@ -48,7 +48,9 @@ namespace EasyAccomod.Controllers
 
             var like = Mapper.Map<LikeDto, Like>(likeDto);
             _context.Likes.Add(like);
-            _context.SaveChanges();
+            var result = _context.SaveChangesAsync();
+            if (!result.IsCompleted)
+                return InternalServerError(result.Exception);
 
             return Ok("Like");
         }
@@ -76,7 +78,39 @@ namespace EasyAccomod.Controllers
             comment.Time = DateTime.Now;
 
             _context.Comments.Add(comment);
-            _context.SaveChanges();
+            var result = _context.SaveChangesAsync();
+            if (!result.IsCompleted)
+                return InternalServerError(result.Exception);
+
+            return Ok();
+        }
+
+        // POST	api/Renter/RenterPost/Report
+        [HttpPost]
+        [Route("RentalPost/Report")]
+        public IHttpActionResult Report(ReportDto reportDto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            if (_context.AccommodationRentalPosts.SingleOrDefault(p => p.Id == reportDto.AccommodationRentalPostId)
+                == null)
+            {
+                return BadRequest("Post does not exist.");
+            }
+
+            reportDto.RenterId = _context.Renters.Single(r => r.AccountId == User.Identity.GetUserId()).Id;
+            if (_context.Comments.SingleOrDefault(c => c.RenterId == reportDto.RenterId) != null)
+                return BadRequest("Each Renter should be comment only 1 time.");
+
+            var report = Mapper.Map<ReportDto, Report>(reportDto);
+            report.IsSolved = false;
+            report.Time = DateTime.Now;
+
+            _context.Reports.Add(report);
+            var result = _context.SaveChangesAsync();
+            if (!result.IsCompleted)
+                return InternalServerError(result.Exception);
 
             return Ok();
         }

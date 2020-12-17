@@ -31,6 +31,8 @@ namespace Vidly.App_Start
                 .ForMember(l => l.RenterName, act => act.MapFrom(l => l.Renter.Name));
             Mapper.CreateMap<Comment, CommentDto>()
                 .ForMember(c => c.RenterName, act => act.MapFrom(c => c.Renter.Name));
+            Mapper.CreateMap<Report, ReportDto>()
+                .ForMember(r => r.RenterName, act => act.MapFrom(r => r.Renter.Name));
 
             // Dto to Domain
             Mapper.CreateMap<DistrictDto, District>();
@@ -53,9 +55,10 @@ namespace Vidly.App_Start
 
             Mapper.CreateMap<LikeDto, Like>()
                 .ForMember(l => l.Id, opt => opt.Ignore());
-
             Mapper.CreateMap<CommentDto, Comment>()
                 .ForMember(c => c.Id, opt => opt.Ignore());
+            Mapper.CreateMap<ReportDto, Report>()
+                .ForMember(r => r.Id, opt => opt.Ignore());
         }
     }
 }
