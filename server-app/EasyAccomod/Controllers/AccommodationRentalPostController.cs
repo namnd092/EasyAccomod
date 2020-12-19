@@ -247,6 +247,14 @@ namespace EasyAccomod.Controllers
             else
                 rentalPostDto.Rate = 0;
 
+            var view = new View()
+            {
+                AccommodationRentalPostId = id,
+                Time = DateTime.Now
+            };
+            _context.Views.Add(view);
+            _context.SaveChangesAsync();
+
             return Ok(rentalPostDto);
         }
 
@@ -353,6 +361,20 @@ namespace EasyAccomod.Controllers
                 return BadRequest("Time to display post should be between 7 to 365 days.");
 
             return Ok(timeDisplayed * 5000);
+        }
+
+        // GET	api/RentalPosts/1/Views
+        [HttpGet]
+        [Route("{id}/Views")]
+        public IHttpActionResult GetViews(int id)
+        {
+            var post = _context.AccommodationRentalPosts.SingleOrDefault(p => p.Id == id);
+            if (post == null)
+                return BadRequest("Post does not exist.");
+
+            var views = _context.Views.Count(v => v.AccommodationRentalPostId == post.Id);
+
+            return Ok(views);
         }
     }
 }
