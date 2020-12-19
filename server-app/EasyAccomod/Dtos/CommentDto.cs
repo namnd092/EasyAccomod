@@ -28,4 +28,11 @@ namespace EasyAccomod.Dtos
 
         public DateTime Time { get; set; }
     }
+
+    public class ListCommentsDto
+    {
+        public IEnumerable<CommentDto> ListCommentDtos { get; set; }
+
+        public int MaxPage { get; set; }
+    }
 }

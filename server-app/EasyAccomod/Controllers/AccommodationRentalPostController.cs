@@ -376,5 +376,52 @@ namespace EasyAccomod.Controllers
 
             return Ok(views);
         }
+
+        // GET	api/RentalPosts/1/Likes
+        [HttpGet]
+        [Route("{id}/Likes")]
+        public IHttpActionResult GetLikes(int id)
+        {
+            var post = _context.AccommodationRentalPosts.SingleOrDefault(p => p.Id == id);
+            if (post == null)
+                return BadRequest("Post does not exist.");
+
+            var likes = _context.Likes.Count(v => v.AccommodationRentalPostId == post.Id);
+
+            return Ok(likes);
+        }
+
+        // GET	api/RentalPosts/1/Comments
+        [HttpGet]
+        [Route("{id}/Comments")]
+        public IHttpActionResult GetComments(int id, int _page = 1, int _limit = 10)
+        {
+            if (_page < 1)
+                return BadRequest("Page must be at least 1.");
+
+            var post = _context.AccommodationRentalPosts.SingleOrDefault(p => p.Id == id);
+            if (post == null)
+                return BadRequest("Post does not exist.");
+
+            var commentsInDb = _context.Comments
+                .Include(c => c.Renter)
+                .Where(c => c.AccommodationRentalPostId == id && c.IsApproved);
+
+            var listComments = new ListCommentsDto()
+            {
+                MaxPage = (int)Math.Ceiling(1.0 * commentsInDb.Count() / _limit)
+            };
+
+            if (_page > listComments.MaxPage)
+                return NotFound();
+
+            listComments.ListCommentDtos = commentsInDb
+                .OrderBy(c => c.Id)
+                .Skip(_limit * (_page - 1))
+                .Take(_limit)
+                .ToList().ConvertAll(Mapper.Map<Comment, CommentDto>);
+
+            return Ok(listComments);
+        }
     }
 }
