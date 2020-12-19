@@ -12,6 +12,7 @@ using Microsoft.AspNet.Identity;
 namespace EasyAccomod.Controllers
 {
     [Authorize(Roles = RoleName.Renter)]
+    [RoutePrefix("api/Renter")]
     public class RenterController : ApiController
     {
         private readonly ApplicationDbContext _context;
@@ -33,7 +34,8 @@ namespace EasyAccomod.Controllers
                 null)
                 return BadRequest("Post does not exist.");
 
-            likeDto.RenterId = _context.Renters.Single(r => r.AccountId == User.Identity.GetUserId()).Id;
+            var accountId = User.Identity.GetUserId();
+            likeDto.RenterId = _context.Renters.Single(r => r.AccountId == accountId).Id;
             likeDto.Time = DateTime.Now;
 
             var likeInDb = _context.Likes
@@ -48,9 +50,7 @@ namespace EasyAccomod.Controllers
 
             var like = Mapper.Map<LikeDto, Like>(likeDto);
             _context.Likes.Add(like);
-            var result = _context.SaveChangesAsync();
-            if (!result.IsCompleted)
-                return InternalServerError(result.Exception);
+            var result = _context.SaveChanges();
 
             return Ok("Like");
         }
@@ -69,7 +69,8 @@ namespace EasyAccomod.Controllers
                 return BadRequest("Post does not exist.");
             }
 
-            commentDto.RenterId = _context.Renters.Single(r => r.AccountId == User.Identity.GetUserId()).Id;
+            var accountId = User.Identity.GetUserId();
+            commentDto.RenterId = _context.Renters.Single(r => r.AccountId == accountId).Id;
             if (_context.Comments.SingleOrDefault(c => c.RenterId == commentDto.RenterId) != null)
                 return BadRequest("Each Renter should be comment only 1 time.");
 
@@ -78,9 +79,7 @@ namespace EasyAccomod.Controllers
             comment.Time = DateTime.Now;
 
             _context.Comments.Add(comment);
-            var result = _context.SaveChangesAsync();
-            if (!result.IsCompleted)
-                return InternalServerError(result.Exception);
+            var result = _context.SaveChanges();
 
             return Ok();
         }
@@ -99,20 +98,19 @@ namespace EasyAccomod.Controllers
                 return BadRequest("Post does not exist.");
             }
 
-            reportDto.RenterId = _context.Renters.Single(r => r.AccountId == User.Identity.GetUserId()).Id;
-            if (_context.Comments.SingleOrDefault(c => c.RenterId == reportDto.RenterId) != null)
-                return BadRequest("Each Renter should be comment only 1 time.");
+            var accountId = User.Identity.GetUserId();
+            reportDto.RenterId = _context.Renters.Single(r => r.AccountId == accountId).Id;
+            if (_context.Reports.SingleOrDefault(c => c.RenterId == reportDto.RenterId) != null)
+                return BadRequest("Each Renter should be report only 1 time.");
 
             var report = Mapper.Map<ReportDto, Report>(reportDto);
             report.IsSolved = false;
             report.Time = DateTime.Now;
 
             _context.Reports.Add(report);
-            var result = _context.SaveChangesAsync();
-            if (!result.IsCompleted)
-                return InternalServerError(result.Exception);
+            var result = _context.SaveChanges();
 
-            return Ok();
+            return Ok("Reported");
         }
     }
 }
