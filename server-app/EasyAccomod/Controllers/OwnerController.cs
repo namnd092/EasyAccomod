@@ -13,6 +13,7 @@ using Microsoft.AspNet.Identity;
 namespace EasyAccomod.Controllers
 {
     [Authorize(Roles = RoleName.Owner)]
+    [RoutePrefix("api/Owner")]
     public class OwnerController : ApiController
     {
         private readonly ApplicationDbContext _context;

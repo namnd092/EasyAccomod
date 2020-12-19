@@ -38,5 +38,7 @@ namespace EasyAccomod.Dtos
         public RentalPostStatus Status { get; set; }
 
         public byte StatusId { get; set; }
+
+        public double Rate { get; set; }
     }
 }

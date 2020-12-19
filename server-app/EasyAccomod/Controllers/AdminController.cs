@@ -14,6 +14,7 @@ using Microsoft.AspNet.Identity.EntityFramework;
 namespace EasyAccomod.Controllers
 {
     [Authorize(Roles = RoleName.Admin)]
+    [RoutePrefix("api/Admin")]
     public class AdminController : ApiController
     {
         private ApplicationDbContext _context;
