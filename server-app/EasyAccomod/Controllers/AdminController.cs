@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using AutoMapper;
 using EasyAccomod.Dtos;
 using EasyAccomod.Models;
 using Microsoft.AspNet.Identity;
@@ -13,6 +14,7 @@ using Microsoft.AspNet.Identity.EntityFramework;
 namespace EasyAccomod.Controllers
 {
     [Authorize(Roles = RoleName.Admin)]
+    [RoutePrefix("api/Admin")]
     public class AdminController : ApiController
     {
         private ApplicationDbContext _context;
@@ -22,6 +24,52 @@ namespace EasyAccomod.Controllers
         {
             _context = new ApplicationDbContext();
             _userManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(_context));
+        }
+
+        // GET	api/Admin/Owners
+        [HttpGet]
+        [Route("Owners")]
+        public IHttpActionResult GetOwners(int _page = 1, int _limit = 15, int confirmationStatus = -1)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            if (_page < 1)
+                return BadRequest();
+
+            var listOwnersInDb = _context.Owners.AsQueryable();
+
+            switch (confirmationStatus)
+            {
+                case 1:
+                    listOwnersInDb = listOwnersInDb
+                        .Where(o => _userManager.IsInRole(o.AccountId, RoleName.Owner));
+                    break;
+
+                case -1:
+                    listOwnersInDb = listOwnersInDb
+                        .Where(o => _userManager.IsInRole(o.AccountId, RoleName.WaitForConfirmation));
+                    break;
+
+                default:
+                    if (confirmationStatus != 0)
+                        return BadRequest("Invalid input: confirmationStatus.");
+                    break;
+            }
+
+            var listOwners = listOwnersInDb
+                    .OrderBy(o => o.Id)
+                    .Skip(_limit * (_page - 1))
+                    .Take(_limit)
+                    .ToList();
+
+            var listOwnersDto = new ListOwnersDto()
+            {
+                Owners = listOwners.ConvertAll(Mapper.Map<Owner, OwnerDto>),
+                MaxPage = (int)Math.Ceiling(1.0 * listOwnersInDb.Count() / _limit)
+            };
+
+            return Ok(listOwnersDto);
         }
 
         // POST api/Admin/SetOwner
