@@ -8,6 +8,7 @@ using AutoMapper;
 using EasyAccomod.Dtos;
 using EasyAccomod.Models;
 using Microsoft.AspNet.Identity;
+using System.Data.Entity;
 
 namespace EasyAccomod.Controllers
 {
@@ -22,6 +23,47 @@ namespace EasyAccomod.Controllers
             _context = new ApplicationDbContext();
         }
 
+        // GET	api/Renter/RenterPost/Likes
+        [HttpGet]
+        [Route("RentalPost/Likes")]
+        public IHttpActionResult GetLikedPost(int _page = 1, int _limit = 15)
+        {
+            if (_page < 1)
+                return BadRequest("Page must be at least 1.");
+
+            var accountId = User.Identity.GetUserId();
+            var renterId = _context.Renters.Single(r => r.AccountId == accountId).Id;
+
+            var listLikedPostsInDb = _context.AccommodationRentalPosts
+                .Include(p => p.Status)
+                .Include(p => p.AccommodationPictures)
+                .Include(p => p.Accommodation.Address.Province)
+                .Include(p => p.Accommodation.PaymentType)
+                .Include(p => p.Accommodation.RoomAreaRange)
+                .Where(p => _context.Likes.Any(l =>
+                                l.AccommodationRentalPostId == p.Id && l.RenterId == renterId))
+                .Where(p => p.DateExpired > DateTime.Now && p.Status.Name == RentalPostStatusName.Approved);
+
+            var listSimplePosts = new ListSimplePost()
+            {
+                MaxPage = (int)Math.Ceiling(1.0 * listLikedPostsInDb.Count() / _limit)
+            };
+
+            if (_page > listSimplePosts.MaxPage)
+                return NotFound();
+
+            var listLikedPosts = listLikedPostsInDb
+                .OrderBy(p => p.Id)
+                .Skip(_limit * (_page - 1))
+                .Take(_limit)
+                .ToList();
+
+            listSimplePosts.SimplePostDtos =
+                listLikedPosts.ConvertAll(Mapper.Map<AccommodationRentalPost, SimplePostDto>);
+
+            return Ok(listSimplePosts);
+        }
+
         // POST	api/Renter/RenterPost/Like
         [HttpPost]
         [Route("RentalPost/Like")]
@@ -30,8 +72,11 @@ namespace EasyAccomod.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            if (_context.AccommodationRentalPosts.SingleOrDefault(p => p.Id == likeDto.AccommodationRentalPostId) ==
-                null)
+            var post = _context.AccommodationRentalPosts
+                .Include(p => p.Status)
+                .SingleOrDefault(p => p.Id == likeDto.AccommodationRentalPostId);
+
+            if (post == null || post.Status.Name != RentalPostStatusName.Approved || post.DateExpired < DateTime.Now)
                 return BadRequest("Post does not exist.");
 
             var accountId = User.Identity.GetUserId();

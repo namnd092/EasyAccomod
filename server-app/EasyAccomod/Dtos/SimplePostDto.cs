@@ -27,4 +27,10 @@ namespace EasyAccomod.Dtos
 
         public double Rate { get; set; }
     }
+
+    public class ListSimplePost
+    {
+        public IEnumerable<SimplePostDto> SimplePostDtos { get; set; }
+        public int MaxPage { get; set; }
+    }
 }

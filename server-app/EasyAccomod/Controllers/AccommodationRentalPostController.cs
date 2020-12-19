@@ -171,7 +171,12 @@ namespace EasyAccomod.Controllers
                 rentalPostsInDb = rentalPostsInDb.Where(p => p.Accommodation.KitchenTypeId == kitchenTypeId);
 
             // Page and limit result
-            if (_page > Math.Ceiling(1.0 * rentalPostsInDb.Count() / _limit))
+            var listSimplePost = new ListSimplePost()
+            {
+                MaxPage = (int)Math.Ceiling(1.0 * rentalPostsInDb.Count() / _limit)
+            };
+
+            if (_page > listSimplePost.MaxPage)
                 return NotFound();
 
             var rentalPosts = rentalPostsInDb.OrderBy(p => p.Id)
@@ -193,7 +198,9 @@ namespace EasyAccomod.Controllers
                     simplePostDto.Rate = 0;
             }
 
-            return Ok(simplePostDtos);
+            listSimplePost.SimplePostDtos = simplePostDtos;
+
+            return Ok(listSimplePost);
         }
 
         // GET	/api/RentalPosts/Get/1
