@@ -80,7 +80,7 @@ namespace EasyAccomod.Controllers
         }
 
         // GET api/Accommodations/Types
-        [Authorize(Roles = RoleName.Owner + ", " + RoleName.Admin)]
+        [AllowAnonymous]
         [HttpGet]
         [Route("Types")]
         public IHttpActionResult GetAccommodationTypes()
@@ -89,7 +89,7 @@ namespace EasyAccomod.Controllers
         }
 
         // GET api/Accommodations/PaymentTypes
-        [Authorize(Roles = RoleName.Owner + ", " + RoleName.Admin)]
+        [AllowAnonymous]
         [HttpGet]
         [Route("PaymentTypes")]
         public IHttpActionResult GetAccommodationPaymentTypes()
@@ -98,7 +98,7 @@ namespace EasyAccomod.Controllers
         }
 
         // GET api/Accommodations/KitchenTypes
-        [Authorize(Roles = RoleName.Owner + ", " + RoleName.Admin)]
+        [AllowAnonymous]
         [HttpGet]
         [Route("KitchenTypes")]
         public IHttpActionResult GetAccommodationKitchenTypes()
@@ -107,7 +107,7 @@ namespace EasyAccomod.Controllers
         }
 
         // GET api/Accommodations/RoomAreaRanges
-        [Authorize(Roles = RoleName.Owner + ", " + RoleName.Admin)]
+        [AllowAnonymous]
         [HttpGet]
         [Route("RoomAreaRanges")]
         public IHttpActionResult GetRoomAreaRanges()
@@ -116,7 +116,7 @@ namespace EasyAccomod.Controllers
         }
 
         // GET api/Accommodations/Statuses
-        [Authorize(Roles = RoleName.Owner + ", " + RoleName.Admin)]
+        [AllowAnonymous]
         [HttpGet]
         [Route("Statuses")]
         public IHttpActionResult GetAccommodationStatuses()

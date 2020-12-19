@@ -133,40 +133,41 @@ namespace EasyAccomod.Controllers
             var roleId = _context.Users.Single(u => u.Id == accountId).Roles.Single().RoleId;
             var roleName = _context.Roles.Single(r => r.Id == roleId).Name;
 
-            int userId = -1;
-
-            string name = "";
+            var userInfo = new InfoViewModel()
+            {
+                AccountId = accountId,
+                Role = roleName
+            };
 
             switch (roleName)
             {
                 case RoleName.Admin:
                     var admin = _context.Admins.Single(a => a.AccountId == accountId);
-                    userId = admin.Id;
-                    name = admin.Name;
+                    userInfo.UserId = admin.Id;
+                    userInfo.Name = admin.Name;
+                    userInfo.Email = admin.Email;
                     break;
 
                 case RoleName.WaitForConfirmation:
                 case RoleName.Owner:
                     var owner = _context.Owners.Single(o => o.AccountId == accountId);
-                    userId = owner.Id;
-                    name = owner.Name;
+                    userInfo.UserId = owner.Id;
+                    userInfo.Name = owner.Name;
+                    userInfo.Email = owner.Email;
+                    userInfo.Address = owner.Address;
+                    userInfo.Identification = owner.Identification;
+                    userInfo.Phone = owner.Phone;
                     break;
 
                 case RoleName.Renter:
                     var renter = _context.Renters.Single(r => r.AccountId == accountId);
-                    userId = renter.Id;
-                    name = renter.Name;
+                    userInfo.UserId = renter.Id;
+                    userInfo.Name = renter.Name;
+                    userInfo.Email = renter.Email;
                     break;
             }
 
-            var result = new InfoViewModel()
-            {
-                AccountId = accountId,
-                Name = name,
-                Role = roleName,
-                UserId = userId
-            };
-            return Ok(result);
+            return Ok(userInfo);
         }
 
         // POST api/Account/Logout

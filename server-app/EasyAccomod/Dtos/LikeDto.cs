@@ -13,6 +13,8 @@ namespace EasyAccomod.Dtos
 
         public int RenterId { get; set; }
 
+        public string RenterName { get; set; }
+
         [Required]
         public int AccommodationRentalPostId { get; set; }
 

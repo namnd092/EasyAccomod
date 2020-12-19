@@ -31,6 +31,7 @@ namespace EasyAccomod
             ConfigureAuth(app);
             CreateRolesAndUsers();
             GenerateAddressDataInDb();
+            _context.Dispose();
         }
 
         private void CreateRolesAndUsers()
@@ -39,9 +40,9 @@ namespace EasyAccomod
 
             var userManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(_context));
 
-            if (!roleManager.RoleExists("Admin"))
+            if (!roleManager.RoleExists(RoleName.Admin))
             {
-                var role = new IdentityRole("Admin");
+                var role = new IdentityRole(RoleName.Admin);
                 roleManager.Create(role);
 
                 var user = new ApplicationUser
@@ -56,12 +57,12 @@ namespace EasyAccomod
 
                 if (result.Succeeded)
                 {
-                    userManager.AddToRole(user.Id, "Admin");
+                    userManager.AddToRole(user.Id, RoleName.Admin);
                 }
 
                 var admin = new Admin()
                 {
-                    Name = "Admin",
+                    Name = user.UserName,
                     Email = user.Email,
                     AccountId = user.Id
                 };
@@ -74,18 +75,99 @@ namespace EasyAccomod
             {
                 var role = new IdentityRole(RoleName.Owner);
                 roleManager.Create(role);
+
+                var user = new ApplicationUser
+                {
+                    Email = "owner1@owner.com",
+                    UserName = "Owner1"
+                };
+
+                string userPassword = "Owner1234.";
+
+                var result = userManager.Create(user, userPassword);
+
+                if (result.Succeeded)
+                {
+                    userManager.AddToRole(user.Id, RoleName.Owner);
+                }
+
+                var owner = new Owner()
+                {
+                    Name = user.UserName,
+                    Email = user.Email,
+                    AccountId = user.Id,
+                    Address = "HN",
+                    Identification = "123456789",
+                    Phone = "0987654321"
+                };
+
+                _context.Owners.Add(owner);
+                _context.SaveChanges();
             }
 
             if (!roleManager.RoleExists(RoleName.Renter))
             {
                 var role = new IdentityRole(RoleName.Renter);
                 roleManager.Create(role);
+
+                var user = new ApplicationUser
+                {
+                    Email = "renter1@renter.com",
+                    UserName = "Renter1"
+                };
+
+                string userPassword = "Renter1234.";
+
+                var result = userManager.Create(user, userPassword);
+
+                if (result.Succeeded)
+                {
+                    userManager.AddToRole(user.Id, RoleName.Renter);
+                }
+
+                var renter = new Renter()
+                {
+                    Name = user.UserName,
+                    Email = user.Email,
+                    AccountId = user.Id
+                };
+
+                _context.Renters.Add(renter);
+                _context.SaveChanges();
             }
 
             if (!roleManager.RoleExists(RoleName.WaitForConfirmation))
             {
                 var role = new IdentityRole(RoleName.WaitForConfirmation);
                 roleManager.Create(role);
+
+                var user = new ApplicationUser
+                {
+                    Email = "owner2@owner.com",
+                    UserName = "Owner2"
+                };
+
+                string userPassword = "Owner1234.";
+
+                var result = userManager.Create(user, userPassword);
+
+                if (result.Succeeded)
+                {
+                    userManager.AddToRole(user.Id, RoleName.WaitForConfirmation);
+                }
+
+                var owner = new Owner()
+                {
+                    Name = user.UserName,
+                    Email = user.Email,
+                    AccountId = user.Id,
+                    Address = "HN",
+                    Identification = "123456789",
+                    Phone = "0987654321"
+                };
+
+                _context.Owners.Add(owner);
+                _context.SaveChanges();
             }
         }
 

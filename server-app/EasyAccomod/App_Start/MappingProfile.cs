@@ -22,12 +22,24 @@ namespace Vidly.App_Start
             Mapper.CreateMap<RoomAreaRange, RoomAreaRangeDto>();
             Mapper.CreateMap<KitchenType, KitchenTypeDto>();
             Mapper.CreateMap<Owner, OwnerDto>();
-            Mapper.CreateMap<AccommodationRentalPost, AccommodationRentalPostDto>();
             Mapper.CreateMap<AccommodationPicture, AccommodationPictureDto>();
+
+            Mapper.CreateMap<AccommodationRentalPost, AccommodationRentalPostDto>();
+            Mapper.CreateMap<AccommodationRentalPost, SimplePostDto>()
+                .ForMember(p => p.AccommodationPrice,
+                    act => act.MapFrom(p => p.Accommodation.Price + "đ/" + p.Accommodation.PaymentType.Name))
+                .ForMember(p => p.AccommodationProvince, act => act.MapFrom(p => p.Accommodation.Address.Province.Name))
+                .ForMember(p => p.Pictures, act => act.MapFrom(p => p.AccommodationPictures))
+                .ForMember(p => p.RoomArea, act => act.MapFrom(p => p.Accommodation.RoomAreaRange.Range));
 
             Mapper.CreateMap<ExtendRentalPostPeriod, ExtendRentalPostPeriodDto>();
 
-            Mapper.CreateMap<Like, LikeDto>();
+            Mapper.CreateMap<Like, LikeDto>()
+                .ForMember(l => l.RenterName, act => act.MapFrom(l => l.Renter.Name));
+            Mapper.CreateMap<Comment, CommentDto>()
+                .ForMember(c => c.RenterName, act => act.MapFrom(c => c.Renter.Name));
+            Mapper.CreateMap<Report, ReportDto>()
+                .ForMember(r => r.RenterName, act => act.MapFrom(r => r.Renter.Name));
 
             // Dto to Domain
             Mapper.CreateMap<DistrictDto, District>();
@@ -50,6 +62,10 @@ namespace Vidly.App_Start
 
             Mapper.CreateMap<LikeDto, Like>()
                 .ForMember(l => l.Id, opt => opt.Ignore());
+            Mapper.CreateMap<CommentDto, Comment>()
+                .ForMember(c => c.Id, opt => opt.Ignore());
+            Mapper.CreateMap<ReportDto, Report>()
+                .ForMember(r => r.Id, opt => opt.Ignore());
         }
     }
 }

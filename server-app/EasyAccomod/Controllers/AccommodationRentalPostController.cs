@@ -42,8 +42,10 @@ namespace EasyAccomod.Controllers
                 return NotFound();
 
             var rentalPostsInDb = _context.AccommodationRentalPosts
-                .Include(p => p.Accommodation.Address)
-                .Include(p => p.AccommodationPictures);
+                .Include(p => p.Accommodation.Address.Province)
+                .Include(p => p.AccommodationPictures)
+                .Include(p => p.Accommodation.PaymentType)
+                .Include(p => p.Accommodation.RoomAreaRange);
 
             // Don't show expired post
             rentalPostsInDb = rentalPostsInDb
@@ -169,7 +171,12 @@ namespace EasyAccomod.Controllers
                 rentalPostsInDb = rentalPostsInDb.Where(p => p.Accommodation.KitchenTypeId == kitchenTypeId);
 
             // Page and limit result
-            if (_page > Math.Ceiling(1.0 * rentalPostsInDb.Count() / _limit))
+            var listSimplePost = new ListSimplePost()
+            {
+                MaxPage = (int)Math.Ceiling(1.0 * rentalPostsInDb.Count() / _limit)
+            };
+
+            if (_page > listSimplePost.MaxPage)
                 return NotFound();
 
             var rentalPosts = rentalPostsInDb.OrderBy(p => p.Id)
@@ -177,10 +184,23 @@ namespace EasyAccomod.Controllers
                 .Take(_limit)
                 .ToList();
 
-            var rentalPostDtos =
-                rentalPosts.ConvertAll(Mapper.Map<AccommodationRentalPost, AccommodationRentalPostDto>);
+            var simplePostDtos =
+                rentalPosts.ConvertAll(Mapper.Map<AccommodationRentalPost, SimplePostDto>);
 
-            return Ok(rentalPostDtos);
+            foreach (var simplePostDto in simplePostDtos)
+            {
+                var comments = _context.Comments
+                    .Where(c => c.IsApproved && c.AccommodationRentalPostId == simplePostDto.Id)
+                    .ToList();
+                if (comments.Count > 0)
+                    simplePostDto.Rate = comments.Average(c => c.Rate * 1.0);
+                else
+                    simplePostDto.Rate = 0;
+            }
+
+            listSimplePost.SimplePostDtos = simplePostDtos;
+
+            return Ok(listSimplePost);
         }
 
         // GET	/api/RentalPosts/Get/1
@@ -195,7 +215,7 @@ namespace EasyAccomod.Controllers
                 .Include(p => p.Accommodation.Address)
                 .Include(p => p.AccommodationPictures)
                 .Include(p => p.Status)
-                .Include(p => p.Accommodation.Owner.AccountId)
+                .Include(p => p.Accommodation.Owner)
                 .SingleOrDefault(r => r.Id == id);
             if (rentalPost == null)
                 return NotFound();
@@ -215,6 +235,25 @@ namespace EasyAccomod.Controllers
             }
 
             var rentalPostDto = Mapper.Map<AccommodationRentalPost, AccommodationRentalPostDto>(rentalPost);
+            rentalPostDto.Accommodation.Owner.Identification = null;
+            rentalPostDto.Accommodation.Owner.Address = null;
+            rentalPostDto.Accommodation.Owner.AccountId = null;
+
+            var comments = _context.Comments
+                .Where(c => c.IsApproved && c.AccommodationRentalPostId == rentalPostDto.Id)
+                .ToList();
+            if (comments.Count > 0)
+                rentalPostDto.Rate = comments.Average(c => c.Rate * 1.0);
+            else
+                rentalPostDto.Rate = 0;
+
+            var view = new View()
+            {
+                AccommodationRentalPostId = id,
+                Time = DateTime.Now
+            };
+            _context.Views.Add(view);
+            _context.SaveChangesAsync();
 
             return Ok(rentalPostDto);
         }
@@ -322,6 +361,67 @@ namespace EasyAccomod.Controllers
                 return BadRequest("Time to display post should be between 7 to 365 days.");
 
             return Ok(timeDisplayed * 5000);
+        }
+
+        // GET	api/RentalPosts/1/Views
+        [HttpGet]
+        [Route("{id}/Views")]
+        public IHttpActionResult GetViews(int id)
+        {
+            var post = _context.AccommodationRentalPosts.SingleOrDefault(p => p.Id == id);
+            if (post == null)
+                return BadRequest("Post does not exist.");
+
+            var views = _context.Views.Count(v => v.AccommodationRentalPostId == post.Id);
+
+            return Ok(views);
+        }
+
+        // GET	api/RentalPosts/1/Likes
+        [HttpGet]
+        [Route("{id}/Likes")]
+        public IHttpActionResult GetLikes(int id)
+        {
+            var post = _context.AccommodationRentalPosts.SingleOrDefault(p => p.Id == id);
+            if (post == null)
+                return BadRequest("Post does not exist.");
+
+            var likes = _context.Likes.Count(v => v.AccommodationRentalPostId == post.Id);
+
+            return Ok(likes);
+        }
+
+        // GET	api/RentalPosts/1/Comments
+        [HttpGet]
+        [Route("{id}/Comments")]
+        public IHttpActionResult GetComments(int id, int _page = 1, int _limit = 10)
+        {
+            if (_page < 1)
+                return BadRequest("Page must be at least 1.");
+
+            var post = _context.AccommodationRentalPosts.SingleOrDefault(p => p.Id == id);
+            if (post == null)
+                return BadRequest("Post does not exist.");
+
+            var commentsInDb = _context.Comments
+                .Include(c => c.Renter)
+                .Where(c => c.AccommodationRentalPostId == id && c.IsApproved);
+
+            var listComments = new ListCommentsDto()
+            {
+                MaxPage = (int)Math.Ceiling(1.0 * commentsInDb.Count() / _limit)
+            };
+
+            if (_page > listComments.MaxPage)
+                return NotFound();
+
+            listComments.ListCommentDtos = commentsInDb
+                .OrderBy(c => c.Id)
+                .Skip(_limit * (_page - 1))
+                .Take(_limit)
+                .ToList().ConvertAll(Mapper.Map<Comment, CommentDto>);
+
+            return Ok(listComments);
         }
     }
 }
