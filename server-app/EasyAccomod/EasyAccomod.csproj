@@ -236,6 +236,7 @@
     <Compile Include="Dtos\RentalPostStatusDto.cs" />
     <Compile Include="Dtos\ReportDto.cs" />
     <Compile Include="Dtos\RoomAreaRangeDto.cs" />
+    <Compile Include="Dtos\SimplePostDto.cs" />
     <Compile Include="Dtos\WardDto.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>

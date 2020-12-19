@@ -42,8 +42,10 @@ namespace EasyAccomod.Controllers
                 return NotFound();
 
             var rentalPostsInDb = _context.AccommodationRentalPosts
-                .Include(p => p.Accommodation.Address)
-                .Include(p => p.AccommodationPictures);
+                .Include(p => p.Accommodation.Address.Province)
+                .Include(p => p.AccommodationPictures)
+                .Include(p => p.Accommodation.PaymentType)
+                .Include(p => p.Accommodation.RoomAreaRange);
 
             // Don't show expired post
             rentalPostsInDb = rentalPostsInDb
@@ -177,10 +179,21 @@ namespace EasyAccomod.Controllers
                 .Take(_limit)
                 .ToList();
 
-            var rentalPostDtos =
-                rentalPosts.ConvertAll(Mapper.Map<AccommodationRentalPost, AccommodationRentalPostDto>);
+            var simplePostDtos =
+                rentalPosts.ConvertAll(Mapper.Map<AccommodationRentalPost, SimplePostDto>);
 
-            return Ok(rentalPostDtos);
+            foreach (var simplePostDto in simplePostDtos)
+            {
+                var comments = _context.Comments
+                    .Where(c => c.IsApproved && c.AccommodationRentalPostId == simplePostDto.Id)
+                    .ToList();
+                if (comments.Count > 0)
+                    simplePostDto.Rate = comments.Average(c => c.Rate * 1.0);
+                else
+                    simplePostDto.Rate = 0;
+            }
+
+            return Ok(simplePostDtos);
         }
 
         // GET	/api/RentalPosts/Get/1
@@ -195,7 +208,7 @@ namespace EasyAccomod.Controllers
                 .Include(p => p.Accommodation.Address)
                 .Include(p => p.AccommodationPictures)
                 .Include(p => p.Status)
-                .Include(p => p.Accommodation.Owner.AccountId)
+                .Include(p => p.Accommodation.Owner)
                 .SingleOrDefault(r => r.Id == id);
             if (rentalPost == null)
                 return NotFound();
@@ -215,6 +228,17 @@ namespace EasyAccomod.Controllers
             }
 
             var rentalPostDto = Mapper.Map<AccommodationRentalPost, AccommodationRentalPostDto>(rentalPost);
+            rentalPostDto.Accommodation.Owner.Identification = null;
+            rentalPostDto.Accommodation.Owner.Address = null;
+            rentalPostDto.Accommodation.Owner.AccountId = null;
+
+            var comments = _context.Comments
+                .Where(c => c.IsApproved && c.AccommodationRentalPostId == rentalPostDto.Id)
+                .ToList();
+            if (comments.Count > 0)
+                rentalPostDto.Rate = comments.Average(c => c.Rate * 1.0);
+            else
+                rentalPostDto.Rate = 0;
 
             return Ok(rentalPostDto);
         }
