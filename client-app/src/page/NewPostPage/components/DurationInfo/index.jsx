@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import {
     FormGroup,
     FormLabel,
-    Input,
     Table,
     TableBody,
     TableCell,
@@ -47,10 +46,11 @@ function DurationInfo(props) {
                 </FormGroup>
                 <FormGroup>
                     <FormLabel>Số {packageType.type}</FormLabel>
-                    <Input
+                    <input
                         type={'number'}
                         onChange={handleNumberTimeChange}
                         name="numberOfTime"
+                        className="form-control"
                     />
                 </FormGroup>
                 <Table>

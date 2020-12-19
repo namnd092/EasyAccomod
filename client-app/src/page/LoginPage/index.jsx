@@ -38,10 +38,10 @@ function LoginPage(props) {
     };
     const useStyles = makeStyles((theme) => ({
         backdrop: {
-          zIndex: theme.zIndex.drawer + 1,
-          color: '#fff',
+            zIndex: theme.zIndex.drawer + 1,
+            color: '#fff',
         },
-      }));
+    }));
     const classes = useStyles();
     const validationSchema = Yup.object().shape({
         username: Yup.string().required('Tên đăng nhập không được bỏ trống'),
@@ -69,7 +69,7 @@ function LoginPage(props) {
         } catch (error) {
             console.log(error);
             setMessage('Bạn đã nhập sai tên đăng nhập hoặc mật khẩu');
-        }finally{
+        } finally {
             setIsLoading(false);
         }
     };
@@ -81,15 +81,18 @@ function LoginPage(props) {
                 onSubmit={(value) => handleSubmit(value)}
                 initialValues={initialValues}
             >
-                {({ errors, touched, isValid }) => (
+                {({ errors, values, touched, isValid, handleChange }) => (
                     <Form className={'from'}>
                         {message && <span>{message}</span>}
                         <FormGroup className={'form__group'}>
                             <InputLabel>Tên đăng nhập</InputLabel>
-                            <Field
+                            <input
                                 id="username"
                                 label="Tên Đăng Nhập"
                                 name="username"
+                                className="form-control"
+                                value={values.username}
+                                onChange={handleChange}
                             />
                             {errors && errors.username && touched.username ? (
                                 <span>{errors.username}</span>
@@ -97,11 +100,14 @@ function LoginPage(props) {
                         </FormGroup>
                         <FormGroup className={'form__group'}>
                             <InputLabel>Mật khẩu</InputLabel>
-                            <Field
+                            <input
                                 id="password"
                                 label="Mật khẩu"
                                 name="password"
                                 type="password"
+                                className="form-control"
+                                value={values.password}
+                                onChange={handleChange}
                             />
                             {errors && errors.password && touched.password ? (
                                 <span>{errors.password}</span>
@@ -120,9 +126,15 @@ function LoginPage(props) {
                     </Form>
                 )}
             </Formik>
-            {isLoading && <Backdrop className={classes.backdrop} open={() => setIsLoading(true)} onClick={() => setIsLoading(false)}>
-                <CircularProgress color="inherit" />
-            </Backdrop>}
+            {isLoading && (
+                <Backdrop
+                    className={classes.backdrop}
+                    open={() => setIsLoading(true)}
+                    onClick={() => setIsLoading(false)}
+                >
+                    <CircularProgress color="inherit" />
+                </Backdrop>
+            )}
         </Fragment>
     );
 }

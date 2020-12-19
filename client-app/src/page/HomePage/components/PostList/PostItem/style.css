@@ -27,11 +27,25 @@
     overflow: hidden;
     max-height: 33px;
 }
+.post__item > .left{
+    position: relative;
+    height: 100px;
+    margin-top: 20px;
+}
 .post__item > .left img{
     width: auto;
     height: 100px;
     border: 2px solid #cccccc;
-    margin-top: 20px;
+}
+.post__item > .left .numberOfImg{
+    position: absolute;
+    right: 2px;
+    bottom: 1px;
+    background-color: rgba(0, 0, 0, 0.438);
+}
+.post__item > .left .numberOfImg > span{
+    color: white;
+    font-size: smaller;
 }
 .post__item > .right{
     margin-left: 20px;

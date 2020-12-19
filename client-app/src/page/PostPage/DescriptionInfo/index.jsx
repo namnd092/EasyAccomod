@@ -1,25 +1,24 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import Card from '../../../share/components/card';
 
-DescriptionInfo.propTypes = {
-    
-};
+DescriptionInfo.propTypes = {};
 
 function DescriptionInfo(props) {
     return (
-        <div class="card mt-2">
-                <h5 class="card-header">Mô tả</h5>
-                <div class="card-body">
-                    <h5 class="card-title">Special title treatment</h5>
-                    <p class="card-text">
-                        With supporting text below as a natural lead-in to
-                        additional content.
-                    </p>
-                    <a href="#" class="btn btn-primary">
-                        Go somewhere
-                    </a>
-                </div>
-            </div>
+        <div>
+            <Card title="Mô tả">
+                <p>
+                    Cho thuê căn hộ mini cao cấp 30m2, giá 2.5 triệu - 3
+                    triệu/tháng. Có thang máy, giờ tự do, có bảo vệ 24/24. Có
+                    Wifi, máy nước nóng, trường hình cáp. Địa chỉ: 796 Lê Đức
+                    Thọ, Phường 15, Quận Gò Vấp, Tp. Hồ Chí Minh. Liên hệ:
+                    0328837249 Chị Giang.
+                    --------------------------------------------- ☎️ Điện thoại
+                    liên hệ: 0328837249
+                </p>
+            </Card>
+        </div>
     );
 }
 

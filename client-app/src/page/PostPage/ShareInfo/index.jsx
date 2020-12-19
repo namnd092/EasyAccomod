@@ -3,7 +3,7 @@ import Rating from '@material-ui/lab/Rating';
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import ReportProblemIcon from '@material-ui/icons/ReportProblem';
-import { Button, makeStyles } from '@material-ui/core';
+import { Button, makeStyles, TextareaAutosize } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
     modal: {
@@ -23,9 +23,17 @@ function ShareInfo(props) {
     const classes = useStyles();
     const [isFavorite, setIsFavorite] = React.useState(false);
     const [openModal, setOpenModal] = React.useState(false);
+    const [reportContent, setReportContent] = React.useState('');
     const handleChangeFavorite = () => {
-        //call Api here
+        try {
+        } catch (error) {}
         setIsFavorite(!isFavorite);
+    };
+    const handleChangeReport = (value) => {
+        setReportContent(value.target.value);
+    };
+    const handleSubmitReport = () => {
+        console.log(reportContent);
     };
     return (
         <div class="card mt-2">
@@ -45,11 +53,13 @@ function ShareInfo(props) {
                 </Button>
                 <Button
                     className="btn btn-danger"
+                    variant="contained"
+                    color="secondary"
                     data-toggle="modal"
                     data-target="#exampleModalCenter"
                     onClick={() => setOpenModal(true)}
                 >
-                    <ReportProblemIcon /> <span>Report</span>
+                    <ReportProblemIcon /> <span>Báo cáo</span>
                 </Button>
                 <h5>Chia sẻ:</h5>
             </div>
@@ -69,7 +79,7 @@ function ShareInfo(props) {
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title" id="exampleModalLongTitle">
-                                Report
+                                Báo cáo
                             </h5>
                             <button
                                 type="button"
@@ -80,17 +90,29 @@ function ShareInfo(props) {
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
-                        <div class="modal-body">...</div>
+                        <div class="modal-body">
+                            <TextareaAutosize
+                                rowsMin={5}
+                                maxLength={1000}
+                                placeholder="Viết phản hồi của bạn (tối đa 1000 ký tự)"
+                                className="form-control"
+                                onChange={(value) => handleChangeReport(value)}
+                            />
+                        </div>
                         <div class="modal-footer">
                             <button
                                 type="button"
                                 class="btn btn-secondary"
                                 data-dismiss="modal"
                             >
-                                Close
+                                Đóng
                             </button>
-                            <button type="button" class="btn btn-primary">
-                                Save changes
+                            <button
+                                type="button"
+                                class="btn btn-primary"
+                                onClick={handleSubmitReport}
+                            >
+                                Gửi
                             </button>
                         </div>
                     </div>

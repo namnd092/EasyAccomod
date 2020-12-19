@@ -1,24 +1,29 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import { AppBar, CardHeader, Tab, Tabs } from '@material-ui/core'
-import './style.css'
-import TabPanel from './components/TabPanel'
+import React from 'react';
+import { AppBar, Tab, Tabs } from '@material-ui/core';
+import './style.css';
+import TabPanel from '../../share/components/tab-panel';
+import RentalPost from './components/RentalPost';
+import Account from './components/Account';
+import Comment from './components/Comment';
+import EditRenterPost from './components/EditRentalPost';
+import Extend from './components/Extend';
+import Report from './components/Report';
 
-ApprovedPage.propTypes = {}
+ApprovedPage.propTypes = {};
 
 function a11yProps(index) {
     return {
         id: `scrollable-auto-tab-${index}`,
         'aria-controls': `scrollable-auto-tabpanel-${index}`,
-    }
+    };
 }
 
 function ApprovedPage(props) {
-    const [value, setValue] = React.useState(0)
+    const [value, setValue] = React.useState(0);
 
     const handleChange = (event, newValue) => {
-        setValue(newValue)
-    }
+        setValue(newValue);
+    };
     return (
         <div className="approvedPage">
             <div>
@@ -42,45 +47,29 @@ function ApprovedPage(props) {
                         <Tab label="Chỉnh sửa bài đăng" {...a11yProps(3)} />
                         <Tab label="Gia hạn" {...a11yProps(4)} />
                         <Tab label="Report" {...a11yProps(5)} />
-                        {/* <Tab label="Item Seven" {...a11yProps(6)} /> */}
                     </Tabs>
                 </AppBar>
                 <TabPanel value={value} index={0}>
-                    <div class="card">
-                        <h5 class="card-header">Bài đăng đang chờ</h5>
-                        <div class="card-body">
-                            <h5 class="card-title">Special title treatment</h5>
-                            <p class="card-text">
-                                With supporting text below as a natural lead-in
-                                to additional content.
-                            </p>
-                            <a href="#" class="btn btn-primary">
-                                Go somewhere
-                            </a>
-                        </div>
-                    </div>
+                    <RentalPost />
                 </TabPanel>
                 <TabPanel value={value} index={1}>
-                    Item Two
+                    <Account />
                 </TabPanel>
                 <TabPanel value={value} index={2}>
-                    Item Three
+                    <Comment />
                 </TabPanel>
                 <TabPanel value={value} index={3}>
-                    Item Four
+                    <EditRenterPost />
                 </TabPanel>
                 <TabPanel value={value} index={4}>
-                    Item Five
+                    <Extend />
                 </TabPanel>
                 <TabPanel value={value} index={5}>
-                    Item Six
-                </TabPanel>
-                <TabPanel value={value} index={6}>
-                    Item Seven
+                    <Report />
                 </TabPanel>
             </div>
         </div>
-    )
+    );
 }
 
-export default ApprovedPage
+export default ApprovedPage;

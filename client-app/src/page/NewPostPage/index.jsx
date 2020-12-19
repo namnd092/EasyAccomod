@@ -7,7 +7,6 @@ import DescriptionInfo from './components/DescriptionInfo';
 import ImgInfo from './components/ImgInfo';
 import DurationInfo from './components/DurationInfo';
 import PostingTutorial from './components/PostingTutorial';
-import ContactInfo from './components/ContactInfo';
 import uploadMultipleFile from '../../utils/cloudinaryUpload';
 import newPostInitialValue from '../../models/InitialValueForm/newPost';
 import newPostValidationSchema from '../../models/ValidateForm/newPost';
@@ -25,9 +24,6 @@ function NewPostPage(props) {
     const handleDescriptionInfoChange = (descriptionInfo) => {
         setNewPostFormValue({ ...newPostFormValue, ...descriptionInfo });
     };
-    const handleContactInfoChange = (contactInfo) => {
-        setNewPostFormValue({ ...newPostFormValue, ...contactInfo });
-    };
     const handleImgInfoChange = (imgInfo) => {
         setNewPostFormValue({ ...newPostFormValue, ...imgInfo });
     };
@@ -43,7 +39,10 @@ function NewPostPage(props) {
     return (
         <div className="newPostPage">
             <div className="row">
-                <div className="col-8">
+                <div className="col-12 col-lg-4">
+                    <PostingTutorial />
+                </div>
+                <div className="col-12 col-lg-8">
                     <Formik
                         onSubmit={handleSubmit}
                         initialValues={newPostInitialValue}
@@ -65,13 +64,6 @@ function NewPostPage(props) {
                                     errors={errors}
                                     touched={touched}
                                 />
-                                <ContactInfo
-                                    handleContactInfoChange={
-                                        handleContactInfoChange
-                                    }
-                                    errors={errors}
-                                    touched={touched}
-                                />
                                 <ImgInfo
                                     handleImgInfoChange={handleImgInfoChange}
                                     errors={errors}
@@ -84,10 +76,20 @@ function NewPostPage(props) {
                                     errors={errors}
                                     touched={touched}
                                 />
-                                <div>
+                                <div
+                                    style={{
+                                        display: 'flex',
+                                        justifyContent: 'center',
+                                    }}
+                                >
                                     <Button
                                         type="submit"
+                                        color="primary"
+                                        size="large"
+                                        variant="contained"
+                                        style={{ margin: '20px' }}
                                         onClick={handleSubmit}
+                                        disabled={!isValid}
                                     >
                                         Đăng Tin
                                     </Button>
@@ -95,9 +97,6 @@ function NewPostPage(props) {
                             </Form>
                         )}
                     </Formik>
-                </div>
-                <div className="col-4">
-                    <PostingTutorial />
                 </div>
             </div>
         </div>

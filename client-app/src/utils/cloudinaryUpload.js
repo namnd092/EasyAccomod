@@ -1,4 +1,5 @@
 import Axios from 'axios';
+import ApiUrl from '../constants/ApiUrl';
 
 async function uploadMultipleFile(files) {
     const resultImages = [];
@@ -12,13 +13,9 @@ async function uploadMultipleFile(files) {
         formData.append('timestamp', (Date.now() / 1000) | 0);
 
         // Make an AJAX upload request using Axios (replace Cloudinary URL below with your own)
-        return Axios.post(
-            'https://api.cloudinary.com/v1_1/dsysolkex/image/upload',
-            formData,
-            {
-                headers: { 'X-Requested-With': 'XMLHttpRequest' },
-            }
-        )
+        return Axios.post(ApiUrl.CLOUDINARY_UPLOAD_URL, formData, {
+            headers: { 'X-Requested-With': 'XMLHttpRequest' },
+        })
             .then((response) => {
                 const data = response.data;
                 const fileURL = data.secure_url; // You should store this URL for future references in your app

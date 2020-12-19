@@ -35,21 +35,23 @@ const useStyles = makeStyles((theme) => ({
 }));
 function SearchFrom(props) {
     const classes = useStyles();
+    const { isLoading } = props;
     const initialValues = {
-        province: null,
-        town: null,
-        ward: null,
-        street: null,
-        roomPrice: 0,
-        roomArea: 0,
-        roomQuantity: null,
-        haveKitchen: 0,
+        provinceId: 0,
+        districtId: 0,
+        wardId: 0,
+        street: '',
+        publicLocationNearby: '',
+        accommodationTypeId: 0,
+        paymentTypeId: 0,
+        minPrice: 0,
+        maxPrice: 0,
+        roomAreaRanged: 0,
+        kitchenTypeId: 0,
         haveAirConditioner: 0,
         haveBalcony: 0,
         haveClosedBathroom: 0,
         haveWaterHeater: 0,
-        waterPrice: null,
-        electricityPrice: null,
         liveWithOwner: 0,
     };
     const roomPriceArr = [
@@ -70,23 +72,7 @@ function SearchFrom(props) {
         { value: -1, label: 'Không' },
     ];
     const defaultData = [{ value: 0, label: 'Tất cả' }];
-    const [filterValues, setFilterValues] = useState({
-        province: 0,
-        district: 0,
-        ward: 0,
-        street: null,
-        roomPrice: 0,
-        roomArea: 0,
-        roomType: 0,
-        haveKitchen: 0,
-        haveAirConditioner: 0,
-        haveBalcony: 0,
-        haveClosedBathroom: 0,
-        haveWaterHeater: 0,
-        waterPrice: 0,
-        electricityPrice: 0,
-        liveWithOwner: 0,
-    });
+    const [filterValues, setFilterValues] = useState(initialValues);
     const [provinceData, setProvinceData] = useState([defaultData]);
     const [districtData, setDistrictData] = useState([defaultData]);
     const [wardData, setWardData] = useState([defaultData]);
@@ -149,7 +135,6 @@ function SearchFrom(props) {
         async function effectGetKitchenType() {
             try {
                 const response = await roomApi.getAllKitchenType();
-                console.log(response);
                 setKitchenTypeData(
                     defaultData.concat(
                         [...response].map((e) => ({
@@ -167,12 +152,11 @@ function SearchFrom(props) {
 
     const handleProvinceChange = async (value) => {
         const provinceId = value.value;
-        console.log(provinceId);
         setFilterValues({
             ...filterValues,
-            province: provinceId,
-            district: 0,
-            ward: 0,
+            provinceId,
+            districtId: 0,
+            wardId: 0,
         });
         try {
             if (provinceId === 0) {
@@ -200,8 +184,8 @@ function SearchFrom(props) {
         const districtId = value.value;
         setFilterValues({
             ...filterValues,
-            district: districtId,
-            ward: 0,
+            districtId,
+            wardId: 0,
         });
         try {
             if (districtId === 0) {
@@ -224,6 +208,17 @@ function SearchFrom(props) {
         }
     };
 
+    const handleRoomPriceChange = (value) => {
+        const roomPriceString = value.value;
+        if (roomPriceString === 'all') {
+            setFilterValues({ ...filterValues, minPrice: 0, maxPrice: 0 });
+            return;
+        }
+        const roomPriceArray = roomPriceString.split('_').map((e) => Number(e));
+        const [minPrice, maxPrice] = roomPriceArray;
+        setFilterValues({ ...filterValues, minPrice, maxPrice });
+    };
+
     const handleSubmit = (value) => {
         props.onSubmit(filterValues);
     };
@@ -240,7 +235,7 @@ function SearchFrom(props) {
                             <Accordion>
                                 <AccordionSummary
                                     expandIcon={
-                                        <ExpandMoreIcon fontSize={'24px'} />
+                                        <ExpandMoreIcon fontSize={'large'} />
                                     }
                                     aria-controls="panel1a-content"
                                     id="panel1a-header"
@@ -250,26 +245,7 @@ function SearchFrom(props) {
                                 <AccordionDetails>
                                     <div style={{ width: '100%' }}>
                                         <div className="row">
-                                            <FormGroup className="col-12 col-md-6 col-xl-3">
-                                                <FormLabel>
-                                                    Loại Phòng
-                                                </FormLabel>
-                                                <Select
-                                                    defaultValue={
-                                                        roomTypeData[0]
-                                                    }
-                                                    options={roomTypeData}
-                                                    name="roomType"
-                                                    onChange={(value) =>
-                                                        setFilterValues({
-                                                            ...filterValues,
-                                                            roomType:
-                                                                value.value,
-                                                        })
-                                                    }
-                                                />
-                                            </FormGroup>
-                                            <FormGroup className="col-12 col-md-6 col-xl-3">
+                                            <FormGroup className="col-12 col-md-6 col-xl-4">
                                                 <FormLabel>
                                                     Tỉnh/Thành phố
                                                 </FormLabel>
@@ -280,10 +256,10 @@ function SearchFrom(props) {
                                                     value={provinceData.find(
                                                         (e) =>
                                                             e.value ===
-                                                            filterValues.province
+                                                            filterValues.provinceId
                                                     )}
                                                     options={provinceData}
-                                                    name="province"
+                                                    name="provinceId"
                                                     onChange={(value) =>
                                                         handleProvinceChange(
                                                             value
@@ -291,21 +267,21 @@ function SearchFrom(props) {
                                                     }
                                                 />
                                             </FormGroup>
-                                            <FormGroup className="col-12 col-md-6 col-xl-3">
+                                            <FormGroup className="col-12 col-md-6 col-xl-4">
                                                 <FormLabel>
                                                     Quận/Huyện
                                                 </FormLabel>
                                                 <Select
                                                     defaultValue={
-                                                        filterValues.district
+                                                        filterValues.districtId
                                                     }
                                                     value={districtData.find(
                                                         (e) =>
                                                             e.value ===
-                                                            filterValues.district
+                                                            filterValues.districtId
                                                     )}
                                                     options={districtData}
-                                                    name="district"
+                                                    name="districtId"
                                                     onChange={(value) =>
                                                         handleDistrictChange(
                                                             value
@@ -313,23 +289,76 @@ function SearchFrom(props) {
                                                     }
                                                 />
                                             </FormGroup>
-                                            <FormGroup className="col-12 col-md-6 col-xl-3">
+                                            <FormGroup className="col-12 col-md-6 col-xl-4">
                                                 <FormLabel>Xã/Phường</FormLabel>
                                                 <Select
                                                     defaultValue={
-                                                        filterValues.ward
+                                                        filterValues.wardId
                                                     }
                                                     value={wardData.find(
                                                         (e) =>
                                                             e.value ===
-                                                            filterValues.ward
+                                                            filterValues.wardId
                                                     )}
                                                     options={wardData}
-                                                    name="ward"
+                                                    name="wardId"
                                                     onChange={(value) =>
                                                         setFilterValues({
                                                             ...filterValues,
-                                                            ward: value.value,
+                                                            wardId: value.value,
+                                                        })
+                                                    }
+                                                />
+                                            </FormGroup>
+                                            <FormGroup className="col-12 col-md-6 col-xl-4">
+                                                <FormLabel>
+                                                    Loại Phòng
+                                                </FormLabel>
+                                                <Select
+                                                    defaultValue={
+                                                        roomTypeData[0]
+                                                    }
+                                                    options={roomTypeData}
+                                                    name="accommodationTypeId"
+                                                    onChange={(value) =>
+                                                        setFilterValues({
+                                                            ...filterValues,
+                                                            accommodationTypeId:
+                                                                value.value,
+                                                        })
+                                                    }
+                                                />
+                                            </FormGroup>
+                                            <FormGroup className="col-12 col-md-6 col-xl-4">
+                                                <FormLabel>Mức giá</FormLabel>
+                                                <Select
+                                                    defaultValue={
+                                                        roomPriceArr[0]
+                                                    }
+                                                    options={roomPriceArr}
+                                                    name="roomPrice"
+                                                    isSearchable={false}
+                                                    onChange={(value) =>
+                                                        handleRoomPriceChange(
+                                                            value
+                                                        )
+                                                    }
+                                                />
+                                            </FormGroup>
+                                            <FormGroup className="col-12 col-md-6 col-xl-4">
+                                                <FormLabel>Diện tích</FormLabel>
+                                                <Select
+                                                    defaultValue={
+                                                        roomAreaData[0]
+                                                    }
+                                                    options={roomAreaData}
+                                                    name="roomAreaRanged"
+                                                    isSearchable={false}
+                                                    onChange={(value) =>
+                                                        setFilterValues({
+                                                            ...filterValues,
+                                                            roomAreaRanged:
+                                                                value.value,
                                                         })
                                                     }
                                                 />
@@ -337,7 +366,7 @@ function SearchFrom(props) {
                                         </div>
 
                                         <div className="row">
-                                            <FormGroup className="col-12 col-xl-6 mt-3">
+                                            <FormGroup className="col-12 col-lg-6">
                                                 <FormLabel>
                                                     Đường/Số nhà
                                                 </FormLabel>
@@ -356,38 +385,21 @@ function SearchFrom(props) {
                                                     }
                                                 />
                                             </FormGroup>
-                                            <FormGroup className="col-12 col-md-6 col-xl-3">
-                                                <FormLabel>Mức giá</FormLabel>
-                                                <Select
-                                                    defaultValue={
-                                                        roomPriceArr[0]
-                                                    }
-                                                    options={roomPriceArr}
-                                                    name="roomPrice"
-                                                    isSearchable={false}
-                                                    onChange={(value) =>
+                                            <FormGroup className="col-12 col-lg-6">
+                                                <FormLabel>
+                                                    Gần địa điểm nào
+                                                </FormLabel>
+                                                <input
+                                                    label="Gần địa điểm nào"
+                                                    variant="outlined"
+                                                    name="strpublicLocationNearbyeet"
+                                                    className="form-control"
+                                                    onBlur={(value) =>
                                                         setFilterValues({
                                                             ...filterValues,
-                                                            roomPrice:
-                                                                value.value,
-                                                        })
-                                                    }
-                                                />
-                                            </FormGroup>
-                                            <FormGroup className="col-12 col-md-6 col-xl-3">
-                                                <FormLabel>Diện tích</FormLabel>
-                                                <Select
-                                                    defaultValue={
-                                                        roomAreaData[0]
-                                                    }
-                                                    options={roomAreaData}
-                                                    name="roomArea"
-                                                    isSearchable={false}
-                                                    onChange={(value) =>
-                                                        setFilterValues({
-                                                            ...filterValues,
-                                                            roomArea:
-                                                                value.value,
+                                                            publicLocationNearby:
+                                                                value.target
+                                                                    .value,
                                                         })
                                                     }
                                                 />
@@ -398,7 +410,9 @@ function SearchFrom(props) {
                             </Accordion>
                             <Accordion>
                                 <AccordionSummary
-                                    expandIcon={<ExpandMoreIcon />}
+                                    expandIcon={
+                                        <ExpandMoreIcon fontSize={'large'} />
+                                    }
                                     aria-controls="panel2a-content"
                                     id="panel2a-header"
                                 >
@@ -407,7 +421,7 @@ function SearchFrom(props) {
                                 <AccordionDetails>
                                     <div style={{ width: '100%' }}>
                                         <div className="row">
-                                            <FormGroup className="col-12 col-md-6 col-lg-4 col-xl-2">
+                                            <FormGroup className="col-12 col-md-6 col-lg-4">
                                                 <FormLabel>Chung chủ</FormLabel>
                                                 <Select
                                                     defaultValue={choseData[0]}
@@ -423,7 +437,7 @@ function SearchFrom(props) {
                                                     }
                                                 />
                                             </FormGroup>
-                                            <FormGroup className="col-12 col-md-6 col-lg-4 col-xl-2">
+                                            <FormGroup className="col-12 col-md-6 col-lg-4">
                                                 <FormLabel>Nóng lạnh</FormLabel>
                                                 <Select
                                                     defaultValue={choseData[0]}
@@ -439,7 +453,7 @@ function SearchFrom(props) {
                                                     }
                                                 />
                                             </FormGroup>
-                                            <FormGroup className="col-12 col-md-6 col-lg-4 col-xl-2">
+                                            <FormGroup className="col-12 col-md-6 col-lg-4">
                                                 <FormLabel>Ban công</FormLabel>
                                                 <Select
                                                     defaultValue={choseData[0]}
@@ -455,7 +469,7 @@ function SearchFrom(props) {
                                                     }
                                                 />
                                             </FormGroup>
-                                            <FormGroup className="col-12 col-md-6 col-lg-4 col-xl-2">
+                                            <FormGroup className="col-12 col-md-6 col-lg-4">
                                                 <FormLabel>Điều hòa</FormLabel>
                                                 <Select
                                                     defaultValue={choseData[0]}
@@ -471,7 +485,7 @@ function SearchFrom(props) {
                                                     }
                                                 />
                                             </FormGroup>
-                                            <FormGroup className="col-12 col-md-6 col-lg-4 col-xl-2">
+                                            <FormGroup className="col-12 col-md-6 col-lg-4">
                                                 <FormLabel>
                                                     Nhà tắm riêng
                                                 </FormLabel>
@@ -489,19 +503,19 @@ function SearchFrom(props) {
                                                     }
                                                 />
                                             </FormGroup>
-                                            <FormGroup className="col-12 col-md-6 col-lg-4 col-xl-2">
+                                            <FormGroup className="col-12 col-md-6 col-lg-4">
                                                 <FormLabel>Bếp riêng</FormLabel>
                                                 <Select
                                                     defaultValue={
                                                         kitchenTypeData[0]
                                                     }
                                                     options={kitchenTypeData}
-                                                    name="haveKitchen"
+                                                    name="kitchenTypeId"
                                                     isSearchable={false}
                                                     onChange={(value) =>
                                                         setFilterValues({
                                                             ...filterValues,
-                                                            haveKitchen:
+                                                            kitchenTypeId:
                                                                 value.value,
                                                         })
                                                     }
@@ -517,6 +531,7 @@ function SearchFrom(props) {
                                 type={'submit'}
                                 color={'secondary'}
                                 variant="contained"
+                                disabled={isLoading}
                             >
                                 Tìm kiếm
                             </Button>

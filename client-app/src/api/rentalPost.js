@@ -1,6 +1,11 @@
 import axiosClient from './axiosClient';
 import ApiUrl from '../constants/ApiUrl';
 const rentalPost = {
+    getPostBySearch(query) {
+        const url = ApiUrl.GET_RENTAL_POST + '?' + query;
+        console.log(url);
+        return axiosClient.get(url);
+    },
     postNewPost(data) {
         const url = ApiUrl.rentalPost;
         const {

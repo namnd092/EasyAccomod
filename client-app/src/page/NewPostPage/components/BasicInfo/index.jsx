@@ -1,26 +1,24 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
-    Box,
     Checkbox,
     FormControlLabel,
     FormGroup,
     FormLabel,
-    Input,
     Radio,
     RadioGroup,
 } from '@material-ui/core';
 import Select from 'react-select';
 import addressApi from '../../../../api/addressApi';
 import roomApi from '../../../../api/roomApi';
-import { ErrorMessage } from 'formik';
+import { DebounceInput } from 'react-debounce-input';
 
 BasicInfo.propTypes = {
     handleBasicInfoChange: PropTypes.func,
 };
 
 function BasicInfo(props) {
-    const { handleBasicInfoChange, errors, touched } = props;
+    const { handleBasicInfoChange, errors, touched, defaultValue } = props;
 
     const [waterElectricity, setWaterElectricity] = React.useState('rent');
     const [roomTypeData, setRoomTypeData] = React.useState([]);
@@ -247,116 +245,195 @@ function BasicInfo(props) {
             <div class="card-body">
                 <FormGroup>
                     <FormLabel>Tiêu đề</FormLabel>
-                    <Input
+                    <DebounceInput
                         type="text"
                         name="title"
-                        onBlur={handleTitleChange}
+                        className="form-control"
+                        onChange={handleTitleChange}
                     />
                     {errors && touched && <span>{errors.title}</span>}
                 </FormGroup>
+                <div className="row">
+                    <FormGroup className="col-3">
+                        <FormLabel>Số lượng phòng</FormLabel>
+                        <DebounceInput
+                            type="number"
+                            name="roomQuantity"
+                            className="form-control"
+                            onChange={handleRoomQuantityChange}
+                        />
+                    </FormGroup>
+                    <FormGroup className="col-4">
+                        <FormLabel>Loại Phòng</FormLabel>
+                        <Select
+                            name="roomType"
+                            defaultValue={roomTypeData[0]}
+                            options={roomTypeData}
+                            onChange={handleRoomTypeChange}
+                        />
+                        {errors && touched && <span>{errors.title}</span>}
+                    </FormGroup>
+                    <FormGroup className="col-5">
+                        <FormLabel>Số nhà, Đường</FormLabel>
+                        <DebounceInput
+                            type="text"
+                            name="street"
+                            className="form-control"
+                            onChange={handleStreetChange}
+                        />
+                        {errors && touched && <span>{errors.title}</span>}
+                    </FormGroup>
+                </div>
                 <FormGroup>
-                    <FormLabel>Loại Phòng</FormLabel>
-                    <Select
-                        name="roomType"
-                        defaultValue={roomTypeData[0]}
-                        options={roomTypeData}
-                        onChange={handleRoomTypeChange}
-                    />
-                    {errors && touched && <span>{errors.title}</span>}
-                </FormGroup>
-                <FormGroup>
-                    <FormLabel>Tỉnh/Thành phố</FormLabel>
-                    <Select
-                        name="province"
-                        defaultValue={provinceData[0]}
-                        options={provinceData}
-                        value={
-                            formValues.province
-                                ? provinceData.find(
-                                      (e) => e.value === formValues.province
-                                  )
-                                : null
-                        }
-                        onChange={handleProvinceChange}
-                    />
-                    {errors && touched && <span>{errors.title}</span>}
-                </FormGroup>
-                <FormGroup>
-                    <FormLabel>Quận/Huyện</FormLabel>
-                    <Select
-                        name="district"
-                        defaultValue={districtData[0]}
-                        options={districtData}
-                        value={
-                            formValues.district
-                                ? districtData.find(
-                                      (e) => e.value === formValues.district
-                                  )
-                                : null
-                        }
-                        onChange={handleDistrictChange}
-                    />
-                    {errors && touched && <span>{errors.title}</span>}
-                </FormGroup>
-                <FormGroup>
-                    <FormLabel>Xã/Phường</FormLabel>
-                    <Select
-                        name="ward"
-                        defaultValue={wardData[0]}
-                        options={wardData}
-                        value={
-                            formValues.ward
-                                ? wardData.find(
-                                      (e) => e.value === formValues.ward
-                                  )
-                                : null
-                        }
-                        onChange={handleWardChange}
-                    />
-                    {errors && touched && <span>{errors.title}</span>}
-                </FormGroup>
-                <FormGroup>
-                    <FormLabel>Số nhà, Đường</FormLabel>
-                    <Input
+                    <FormLabel>Gần địa điểm công cộng</FormLabel>
+                    <DebounceInput
                         type="text"
-                        name="street"
-                        onBlur={handleStreetChange}
+                        className="form-control"
+                        name="publicLocationNearby"
                     />
-                    {errors && touched && <span>{errors.title}</span>}
                 </FormGroup>
+                <div className="row">
+                    <FormGroup className="col-4">
+                        <FormLabel>Tỉnh/Thành phố</FormLabel>
+                        <Select
+                            name="province"
+                            defaultValue={provinceData[0]}
+                            options={provinceData}
+                            value={
+                                formValues.province
+                                    ? provinceData.find(
+                                          (e) => e.value === formValues.province
+                                      )
+                                    : null
+                            }
+                            onChange={handleProvinceChange}
+                        />
+                        {errors && touched && <span>{errors.title}</span>}
+                    </FormGroup>
+                    <FormGroup className="col-4">
+                        <FormLabel>Quận/Huyện</FormLabel>
+                        <Select
+                            name="district"
+                            defaultValue={districtData[0]}
+                            options={districtData}
+                            value={
+                                formValues.district
+                                    ? districtData.find(
+                                          (e) => e.value === formValues.district
+                                      )
+                                    : null
+                            }
+                            onChange={handleDistrictChange}
+                        />
+                        {errors && touched && <span>{errors.title}</span>}
+                    </FormGroup>
+                    <FormGroup className="col-4">
+                        <FormLabel>Xã/Phường</FormLabel>
+                        <Select
+                            name="ward"
+                            defaultValue={wardData[0]}
+                            options={wardData}
+                            value={
+                                formValues.ward
+                                    ? wardData.find(
+                                          (e) => e.value === formValues.ward
+                                      )
+                                    : null
+                            }
+                            onChange={handleWardChange}
+                        />
+                        {errors && touched && <span>{errors.title}</span>}
+                    </FormGroup>
+                </div>
                 <FormGroup>
                     <FormLabel>Giá tiền(vnd)</FormLabel>
-                    <Input
-                        type={'number'}
-                        className={'form-control'}
-                        name="roomPrice"
-                        onBlur={handleRoomPriceChange}
-                    />
-                    <Select
-                        name="roomPaymentType"
-                        defaultValue={roomPaymentTypeData[0]}
-                        options={roomPaymentTypeData}
-                        onChange={handleRoomPaymentTypeChange}
-                    />
+                    <div style={{ display: 'flex' }}>
+                        <DebounceInput
+                            type={'number'}
+                            className="form-control col-8"
+                            name="roomPrice"
+                            onChange={handleRoomPriceChange}
+                        />
+                        <Select
+                            name="roomPaymentType"
+                            defaultValue={roomPaymentTypeData[0]}
+                            options={roomPaymentTypeData}
+                            className="col-4"
+                            onChange={handleRoomPaymentTypeChange}
+                        />
+                    </div>
                     {errors && touched && <span>{errors.title}</span>}
                 </FormGroup>
+                <div className="row">
+                    <FormGroup className="col-6">
+                        <FormLabel>Diện tích</FormLabel>
+                        <Select
+                            name="roomArea"
+                            defaultValue={roomAreaRangeData[0]}
+                            options={roomAreaRangeData}
+                            onChange={handleRoomAreaChange}
+                        />
+                    </FormGroup>
+                    <FormGroup className="col-6">
+                        <FormLabel>Bếp(Nấu ăn)</FormLabel>
+                        <Select
+                            name="kitchenType"
+                            defaultValue={kitchenTypeData[0]}
+                            options={kitchenTypeData}
+                            onChange={handleKitchenTypeChange}
+                        />
+                    </FormGroup>
+                </div>
                 <FormGroup>
-                    <FormLabel>Diện tích</FormLabel>
-                    <Select
-                        name="roomArea"
-                        defaultValue={roomAreaRangeData[0]}
-                        options={roomAreaRangeData}
-                        onChange={handleRoomAreaChange}
-                    />
+                    <FormLabel>Điện nước</FormLabel>
+                    <RadioGroup
+                        aria-label="gender"
+                        name="waterElectricity"
+                        value={waterElectricity}
+                        onChange={handleWaterElectricityChange}
+                    >
+                        <div className="row">
+                            <FormControlLabel
+                                value="rent"
+                                control={<Radio />}
+                                label="Giá thuê"
+                                className="col-6"
+                            />
+                            <FormControlLabel
+                                value="normal"
+                                control={<Radio />}
+                                className="col-5"
+                                label="Giá dân"
+                            />
+                        </div>
+                    </RadioGroup>
                 </FormGroup>
-                <FormGroup>
-                    <FormLabel>Số lượng phòng</FormLabel>
-                    <Input
-                        type="number"
-                        name="roomQuantity"
-                        onChange={handleRoomQuantityChange}
-                    />
-                </FormGroup>
+                <div
+                    style={{
+                        display: waterElectricity === 'normal' ? 'none' : '',
+                    }}
+                >
+                    <div className="row">
+                        <FormGroup className="col-6">
+                            <FormLabel>Giá điện</FormLabel>
+                            <DebounceInput
+                                type="number"
+                                name="electricityPrice"
+                                className="form-control"
+                                onChange={handleElectricityPriceChange}
+                            />
+                        </FormGroup>
+                        <FormGroup className="col-6">
+                            <FormLabel>Giá nước</FormLabel>
+                            <DebounceInput
+                                type="number"
+                                name="waterPrice"
+                                className="form-control"
+                                onChange={handleWaterPriceChange}
+                            />
+                        </FormGroup>
+                    </div>
+                </div>
                 <FormGroup>
                     <FormLabel>Chung chủ (Có/Không)</FormLabel>
                     <Checkbox
@@ -392,57 +469,6 @@ function BasicInfo(props) {
                         onChange={handleHaveBalconyChange}
                     />
                 </FormGroup>
-                <FormGroup>
-                    <FormLabel>Bếp(Nấu ăn)</FormLabel>
-                    <Select
-                        name="kitchenType"
-                        defaultValue={kitchenTypeData[0]}
-                        options={kitchenTypeData}
-                        onChange={handleKitchenTypeChange}
-                    />
-                </FormGroup>
-                <FormGroup>
-                    <FormLabel>Điện nước</FormLabel>
-                    <RadioGroup
-                        aria-label="gender"
-                        name="waterElectricity"
-                        value={waterElectricity}
-                        onChange={handleWaterElectricityChange}
-                    >
-                        <FormControlLabel
-                            value="rent"
-                            control={<Radio />}
-                            label="Giá thuê"
-                        />
-                        <FormControlLabel
-                            value="normal"
-                            control={<Radio />}
-                            label="Giá dân"
-                        />
-                    </RadioGroup>
-                </FormGroup>
-                <div
-                    style={{
-                        display: waterElectricity === 'normal' ? 'none' : '',
-                    }}
-                >
-                    <FormGroup>
-                        <FormLabel>Giá điện</FormLabel>
-                        <Input
-                            type="number"
-                            name="electricityPrice"
-                            onChange={handleElectricityPriceChange}
-                        />
-                    </FormGroup>
-                    <FormGroup>
-                        <FormLabel>Giá nước</FormLabel>
-                        <Input
-                            type="number"
-                            name="waterPrice"
-                            onChange={handleWaterPriceChange}
-                        />
-                    </FormGroup>
-                </div>
             </div>
         </div>
     );

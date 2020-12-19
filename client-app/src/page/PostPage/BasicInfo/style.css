@@ -1,13 +1,15 @@
 .tablePostPage{
     width: 100%;
 }
-.tablePostPage th, td{
+.tablePostPage th{
     border: 1px solid gray;
     border-collapse: collapse;
 }
 .tablePostPage td{
     padding: 5px 10px;
     font-weight: 500;
+    border: 1px solid gray;
+    border-collapse: collapse;
 }
 .tablePostPage .title{
     background-color: antiquewhite;

@@ -12,6 +12,9 @@ function PostItem(props) {
     return (
         <div className="post__item">
             <div className="left">
+                <div className="numberOfImg">
+                    <span>3 ảnh</span>
+                </div>
                 <img
                     src="https://res.cloudinary.com/dsysolkex/image/upload/v1605235138/c9m24v6ubivwyo5daf11.jpg"
                     alt=""

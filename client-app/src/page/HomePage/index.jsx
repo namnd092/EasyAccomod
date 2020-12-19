@@ -5,36 +5,56 @@ import './styles.css';
 import SearchFrom from './components/SearchFrom';
 import PostList from './components/PostList';
 import HomePagination from './components/HomePagination';
+import rentalPostApi from '../../api/rentalPost';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import LinearProgress from '@material-ui/core/LinearProgress';
 
 export const HomePage = () => {
     const [totalRow, setTotalRow] = React.useState(0);
     const [postList, setPostList] = React.useState([]);
+    const [isLoading, setIsLoading] = React.useState(false);
     const [filterSearch, setFilterSearch] = React.useState({
-        province: null,
-        district: null,
-        ward: null,
-        street: null,
-        roomPrice: null,
-        roomArea: null,
-        roomQuantity: null,
-        haveKitchen: 0,
+        provinceId: 0,
+        districtId: 0,
+        wardId: 0,
+        street: '',
+        publicLocationNearby: '',
+        accommodationTypeId: 0,
+        paymentTypeId: 0,
+        minPrice: 0,
+        maxPrice: 0,
+        roomAreaRanged: 0,
+        kitchenTypeId: 0,
         haveAirConditioner: 0,
         haveBalcony: 0,
-        haveClosedBathroom: null,
-        haveWaterHeater: null,
-        waterPrice: null,
-        electricityPrice: null,
-        liveWithOwner: null,
+        haveClosedBathroom: 0,
+        haveWaterHeater: 0,
+        liveWithOwner: 0,
         _page: 1,
         _limit: 15,
     });
     React.useEffect(() => {
         async function searchByFilter() {
-            const query = queryString.stringify(filterSearch);
-            console.log(query);
+            const { street, publicLocationNearby } = filterSearch;
+            let newFilterSearch = { ...filterSearch };
+            if (!street) {
+                delete newFilterSearch.street;
+            }
+            if (!publicLocationNearby) {
+                delete newFilterSearch.publicLocationNearby;
+            }
+            const query = queryString.stringify(newFilterSearch);
+            try {
+                setIsLoading(true);
+                const response = await rentalPostApi.getPostBySearch(query);
+                console.log(response);
+            } catch (error) {
+                console.log(error);
+            } finally {
+                setIsLoading(false);
+            }
         }
         searchByFilter();
-        return () => {};
     }, [filterSearch]);
     const handleFilterChange = (value) => {
         setFilterSearch({ ...filterSearch, ...value });
@@ -45,16 +65,24 @@ export const HomePage = () => {
     return (
         <div className="homePage">
             <div className="homepage__searchFrom">
-                <SearchFrom onSubmit={handleFilterChange} />
-            </div>
-            <PostList postList={postList} />
-            <div className="homePage__pagination">
-                <HomePagination
-                    onPageChange={handlePageChange}
-                    totalRow={totalRow}
-                    page={filterSearch._page}
+                <SearchFrom
+                    onSubmit={handleFilterChange}
+                    isLoading={isLoading}
                 />
             </div>
+            <button onClick={() => setIsLoading(!isLoading)}>
+                Set Loading
+            </button>
+            {isLoading ? <LinearProgress /> : <PostList postList={postList} />}
+            {!isLoading && (
+                <div className="homePage__pagination">
+                    <HomePagination
+                        onPageChange={handlePageChange}
+                        totalRow={totalRow}
+                        page={filterSearch._page}
+                    />
+                </div>
+            )}
         </div>
     );
 };
