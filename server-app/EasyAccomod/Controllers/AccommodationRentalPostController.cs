@@ -212,10 +212,15 @@ namespace EasyAccomod.Controllers
                 return BadRequest(ModelState);
 
             var rentalPost = _context.AccommodationRentalPosts
-                .Include(p => p.Accommodation.Address)
+                .Include(p => p.Accommodation.Address.Ward.District.Province)
                 .Include(p => p.AccommodationPictures)
                 .Include(p => p.Status)
                 .Include(p => p.Accommodation.Owner)
+                .Include(p => p.Accommodation.AccommodationType)
+                .Include(p => p.Accommodation.KitchenType)
+                .Include(p => p.Accommodation.PaymentType)
+                .Include(p => p.Accommodation.RoomAreaRange)
+                .Include(p => p.Accommodation.Status)
                 .SingleOrDefault(r => r.Id == id);
             if (rentalPost == null)
                 return NotFound();
