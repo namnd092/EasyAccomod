@@ -92,16 +92,22 @@ namespace EasyAccomod.Controllers
             switch (result.role)
             {
                 case RoleName.Admin:
-                    result.user_id = _context.Admins.Single(a => a.AccountId == result.account_id).Id;
+                    var admin = _context.Admins.Single(a => a.AccountId == result.account_id);
+                    result.user_id = admin.Id;
+                    result.name = admin.Name;
                     break;
 
                 case RoleName.WaitForConfirmation:
                 case RoleName.Owner:
-                    result.user_id = _context.Owners.Single(o => o.AccountId == result.account_id).Id;
+                    var owner = _context.Owners.Single(o => o.AccountId == result.account_id);
+                    result.user_id = owner.Id;
+                    result.name = owner.Name;
                     break;
 
                 case RoleName.Renter:
-                    result.user_id = _context.Renters.Single(r => r.AccountId == result.account_id).Id;
+                    var renter = _context.Renters.Single(r => r.AccountId == result.account_id);
+                    result.user_id = renter.Id;
+                    result.name = renter.Name;
                     break;
             }
 
