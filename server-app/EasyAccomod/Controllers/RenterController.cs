@@ -157,5 +157,56 @@ namespace EasyAccomod.Controllers
 
             return Ok("Reported");
         }
+
+        // GET	api/Renter/RenterPost/IsLiked
+        [HttpGet]
+        [Route("RenterPost/IsLiked")]
+        public IHttpActionResult GetLikeStatus(int postId = 0)
+        {
+            if (_context.AccommodationRentalPosts.SingleOrDefault(p => p.Id == postId)
+                == null)
+            {
+                return BadRequest("Post does not exist.");
+            }
+
+            var accountId = User.Identity.GetUserId();
+            var renterId = _context.Renters.Single(r => r.AccountId == accountId).Id;
+
+            return Ok(_context.Likes.Any(l => l.RenterId == renterId && l.AccommodationRentalPostId == postId));
+        }
+
+        // GET	api/Renter/RenterPost/IsCommented
+        [HttpGet]
+        [Route("RenterPost/IsCommented")]
+        public IHttpActionResult GetCommentStatus(int postId = 0)
+        {
+            if (_context.AccommodationRentalPosts.SingleOrDefault(p => p.Id == postId)
+                == null)
+            {
+                return BadRequest("Post does not exist.");
+            }
+
+            var accountId = User.Identity.GetUserId();
+            var renterId = _context.Renters.Single(r => r.AccountId == accountId).Id;
+
+            return Ok(_context.Comments.Any(l => l.RenterId == renterId && l.AccommodationRentalPostId == postId));
+        }
+
+        // GET	api/Renter/RenterPost/IsLiked
+        [HttpGet]
+        [Route("RenterPost/IsReported")]
+        public IHttpActionResult GetReportStatus(int postId = 0)
+        {
+            if (_context.AccommodationRentalPosts.SingleOrDefault(p => p.Id == postId)
+                == null)
+            {
+                return BadRequest("Post does not exist.");
+            }
+
+            var accountId = User.Identity.GetUserId();
+            var renterId = _context.Renters.Single(r => r.AccountId == accountId).Id;
+
+            return Ok(_context.Reports.Any(l => l.RenterId == renterId && l.AccommodationRentalPostId == postId));
+        }
     }
 }
