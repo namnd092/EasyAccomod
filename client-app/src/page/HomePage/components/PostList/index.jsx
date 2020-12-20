@@ -11,6 +11,7 @@ PostList.defaultProp = {
 };
 
 function PostList(props) {
+    const { postList } = props;
     return (
         <div className="post_list">
             {/* {props.postList.map((post, index) => (
@@ -20,15 +21,9 @@ function PostList(props) {
             ))} */}
             <div className="row">
                 <div className="main_list col-12 col-lg-9">
-                    <PostItem />
-                    <PostItem />
-                    <PostItem />
-                    <PostItem />
-                    <PostItem />
-                    <PostItem />
-                    <PostItem />
-                    <PostItem />
-                    <PostItem />
+                    {postList.map((item) => (
+                        <PostItem key={item.id} rentalPost={item} />
+                    ))}
                 </div>
                 <div className="recommend_list col-12 col-lg-2">
                     <h2>Recommend List</h2>

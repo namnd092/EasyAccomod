@@ -2,41 +2,64 @@ import React from 'react';
 import Rating from '@material-ui/lab/Rating';
 import './style.css';
 import { useHistory } from 'react-router-dom';
+import moment from 'moment';
+
+function getDistanceTime(time) {
+    const distanceTime = Date.now() - Date.parse(new Date(`${time}`));
+
+    if (distanceTime < 60000)
+        return `${Math.floor(distanceTime / 1000)} giây trước`;
+    if (distanceTime < 3600000)
+        return `${Math.floor(distanceTime / 60000)} phút trước`;
+    if (distanceTime < 3600 * 24 * 1000)
+        return `${Math.floor(distanceTime / 3600000)} giờ trước`;
+    return `${Math.floor(distanceTime / (3600 * 24 * 1000))} ngày trước`;
+}
 
 function PostItem(props) {
     const history = useHistory();
-    const { postId } = props;
+    const { rentalPost } = props;
+    const {
+        id,
+        title,
+        content,
+        pictures,
+        dateAdded,
+        rate,
+        roomArea,
+        accommodationPrice,
+        accommodationProvince,
+    } = rentalPost;
     const handleClickTitle = () => {
-        history.push(`/post/${postId}`);
+        history.push(`/post/${id}`);
     };
     return (
         <div className="post__item">
             <div className="left">
                 <div className="numberOfImg">
-                    <span>3 ảnh</span>
+                    <span>{pictures.length} ảnh</span>
                 </div>
                 <img
-                    src="https://res.cloudinary.com/dsysolkex/image/upload/v1605235138/c9m24v6ubivwyo5daf11.jpg"
+                    src={
+                        pictures[Math.floor(Math.random() * pictures.length)]
+                            .pictureLink
+                    }
                     alt=""
                 />
             </div>
             <div className="right">
                 <h3 className="post__title" onClick={handleClickTitle}>
-                    Cho thuê phòng trọ gần chân cầu vượt mễ trì
+                    {title}
                 </h3>
-                <p className="post__description">
-                    Vị trí : gần ngay các trục đường chính như Tố Hữu Mễ Trì Đỗ
-                    Đức Giục Diện tích: 40m2 có thể chia thành 2 phòng làm việc
-                    Khu vực xung quanh thoáng mát trong lành view nhìn ra hồ
-                </p>
+                <p className="post__description">{content}</p>
                 <div className="price-rating">
                     <div className="price">
-                        <p>4 Triệu/tháng</p>
+                        <p>{accommodationPrice}</p>
                     </div>
                     <div className="rating">
                         <Rating
                             name="half-rating-read"
-                            defaultValue={3.5}
+                            defaultValue={Math.round(rate * 2) / 2}
                             precision={0.5}
                             readOnly={true}
                         />
@@ -48,7 +71,7 @@ function PostItem(props) {
                             <p style={{ color: 'rgb(151,136,136)' }}>
                                 Diện tích:{' '}
                                 <span style={{ fontWeight: 'bolder' }}>
-                                    40 m2
+                                    {roomArea}
                                 </span>
                             </p>
                         </div>
@@ -56,7 +79,7 @@ function PostItem(props) {
                             <p style={{ color: 'rgb(151,136,136)' }}>
                                 Khu vực:{' '}
                                 <span style={{ fontWeight: 'bolder' }}>
-                                    Nam Từ Liêm, Hà Nội
+                                    {accommodationProvince}
                                 </span>
                             </p>
                         </div>
@@ -68,7 +91,7 @@ function PostItem(props) {
                                 color: 'rgb(151,136,136)',
                             }}
                         >
-                            5/12/2020
+                            {getDistanceTime(dateAdded)}
                         </p>
                     </div>
                 </div>

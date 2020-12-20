@@ -71,6 +71,31 @@ const rentalPost = {
         };
         return axiosClient.post(url, body);
     },
+    getRentalPostInfo(id) {
+        const url = ApiUrl.GET_RENTAL_POST_INFO + id;
+        return axiosClient.get(url);
+    },
+    postComment(params) {
+        const url = ApiUrl.POST_COMMENT;
+        return axiosClient.post(url, params);
+    },
+    getAllCommentByPostId(postId, _limit, _page) {
+        const url = ApiUrl.GET_ALL_RENTAL_POST_COMMENT(postId, _limit, _page);
+        return axiosClient.get(url);
+    },
+    getRenterIsLikeRentalPost(postId) {},
+    postRenterLikeRentalPost(postId) {
+        const url = ApiUrl.POST_LIKE_RENTAL_POST;
+        return axiosClient.post(url, { AccommodationRentalPostId: postId });
+    },
+    getAllFavoriteRentalPost() {
+        const url = ApiUrl.GET_ALL_FAVORITE_RENTAL_POST;
+        return axiosClient.get(url);
+    },
+    postReport(params) {
+        const url = ApiUrl.POST_REPORT;
+        return axiosClient.post(url, params);
+    },
 };
 
 export default rentalPost;

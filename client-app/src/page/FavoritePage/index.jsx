@@ -1,8 +1,21 @@
 import React from 'react';
+import rentalPost from '../../api/rentalPost';
 import Card from '../../share/components/card';
 import PostItem from '../HomePage/components/PostList/PostItem';
 
 export default function FavoritePage() {
+    const [postList, setPostList] = React.useState([]);
+    React.useEffect(() => {
+        async function getPostListEffect() {
+            try {
+                const response = await rentalPost.getAllFavoriteRentalPost();
+                console.log(response);
+            } catch (error) {
+                console.log(error);
+            }
+        }
+        getPostListEffect();
+    });
     return (
         <div>
             <Card title="Bài đăng yêu thích">
@@ -19,9 +32,7 @@ export default function FavoritePage() {
                     <tbody>
                         <tr>
                             <th scope="row">1</th>
-                            <td>
-                                <PostItem />
-                            </td>
+                            <td>{/* <PostItem /> */}</td>
                             <td>
                                 <button className="btn btn-danger">
                                     <i class="fas fa-heart"></i> Bỏ thích
@@ -30,16 +41,12 @@ export default function FavoritePage() {
                         </tr>
                         <tr>
                             <th scope="row">2</th>
-                            <td>
-                                <PostItem />
-                            </td>
+                            <td>{/* <PostItem /> */}</td>
                             <td>@fat</td>
                         </tr>
                         <tr>
                             <th scope="row">3</th>
-                            <td>
-                                <PostItem />
-                            </td>
+                            <td>{/* <PostItem /> */}</td>
                             <td>@twitter</td>
                         </tr>
                     </tbody>

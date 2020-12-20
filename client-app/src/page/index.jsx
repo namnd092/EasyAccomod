@@ -27,18 +27,33 @@ import NewPostPage from './NewPostPage';
 import FavoritePage from './FavoritePage';
 import MyPostPage from './MyPostPage';
 import EditPostPage from './EditPostPage';
+import Role from '../models/data/role';
+import ApiUrl from '../constants/ApiUrl';
+import Axios from 'axios';
 
 export const Page = () => {
     const dispatch = useDispatch();
     const [role, setRole] = React.useState('');
+    const token = localStorage.getItem('token') || '';
     useEffect(() => {
         async function effectGetInfo() {
-            const response = await authApi.getAccountInfoByToken();
-            const { role } = await response;
-            setRole(role);
+            Axios.get('https://localhost:44360/' + ApiUrl.GET_ACCOUNT_INFO, {
+                headers: {
+                    'content-type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+            })
+                .then(async (response) => {
+                    const infoResponse = await response.data;
+                    await dispatch(setUser({ ...infoResponse }));
+                })
+                .catch((error) => console.log(error));
         }
+
         effectGetInfo();
-    }, []);
+
+        return () => {};
+    });
 
     return (
         <Router>
@@ -61,46 +76,45 @@ export const Page = () => {
                         <Route path="/profile">
                             <ProfilePage />
                         </Route> */}
-                        <Route path="/approved">
+                        {/* <Route path="/approved">
                             <ApprovedPage />
-                        </Route>
-                        <Route path="/newpost">
+                        </Route> */}
+                        <PrivateRoute
+                            path="/approved"
+                            component={ApprovedPage}
+                            roles={[Role.ADMIN]}
+                        />
+                        <PrivateRoute
+                            path="/newpost"
+                            component={NewPostPage}
+                            roles={[Role.ADMIN, Role.OWNER]}
+                        />
+                        {/* <PrivateRoute path="/newpost">
                             <NewPostPage />
-                        </Route>
+                        </PrivateRoute> */}
                         <PrivateRoute
                             component={FavoritePage}
-                            roles={['renter']}
+                            roles={[Role.RENTER]}
                             path="/favorite"
-                            role={role}
                         />
                         <PrivateRoute
                             component={MyPostPage}
-                            roles={['owner']}
+                            roles={[Role.OWNER]}
                             path="/my-post"
-                            role={role}
                         />
-                        <AuthRoute
-                            component={LoginPage}
-                            path="/login"
-                            role={role}
-                        />
-                        <AuthRoute
-                            component={RegisterPage}
-                            path="/register"
-                            role={role}
-                        />
+                        <AuthRoute component={LoginPage} path="/login" />
+                        <AuthRoute component={RegisterPage} path="/register" />
                         <PrivateRoute
                             component={ProfilePage}
-                            roles={['admin', 'renter', 'owner']}
+                            roles={[Role.OWNER, Role.OWNER_PENDING]}
                             path="/profile"
-                            role={role}
                         />
                         <PrivateRoute
                             component={EditPostPage}
-                            roles={['admin', 'renter', 'owner']}
+                            roles={[Role.ADMIN, Role.OWNER]}
                             path="/post/:id/edit"
-                            role={role}
                         />
+                        <Route component={NotFound} path="/notfound" />
                         <Route component={NotFound} />
                     </Switch>
                 </div>

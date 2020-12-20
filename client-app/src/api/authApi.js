@@ -18,6 +18,10 @@ const authApi = {
         const url = ApiUrl.RENTER_REGISTER;
         return axiosClient.post(url, value);
     },
+    logout: () => {
+        const url = ApiUrl.LOG_OUT;
+        return axiosClient.post(url);
+    },
 };
 
 export default authApi;

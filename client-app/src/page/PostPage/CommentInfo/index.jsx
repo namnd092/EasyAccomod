@@ -7,6 +7,7 @@ import {
     TextareaAutosize,
 } from '@material-ui/core';
 import CommentItem from './CommentItem';
+import rentalPost from '../../../api/rentalPost';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -18,8 +19,10 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 function CommentInfo(props) {
+    const { postId } = props;
     const [starValue, setStarValue] = React.useState(5);
     const [commentContent, setCommentContent] = React.useState('');
+    const [commentList, setCommentList] = React.useState([]);
     const classes = useStyles();
     const _handleChangeStar = (value) => {
         const star = Number(value.target.value);
@@ -28,10 +31,35 @@ function CommentInfo(props) {
     const _handleChangeComment = (value) => {
         setCommentContent(value.target.value);
     };
-    const _handleSubmit = (e) => {
+    const _handleSubmit = async (e) => {
         e.preventDefault();
-        console.log(starValue, commentContent);
+        const params = {
+            AccommodationRentalPostId: postId,
+            rate: starValue,
+            content: commentContent,
+        };
+        try {
+            const response = await rentalPost.postComment(params);
+            console.log(response);
+        } catch (error) {
+            console.log(error);
+        }
     };
+    React.useEffect(() => {
+        async function getCommentListEffect() {
+            try {
+                const response = await rentalPost.getAllCommentByPostId(
+                    postId,
+                    10,
+                    1
+                );
+                console.log(response);
+            } catch (error) {
+                console.log(error);
+            }
+        }
+        getCommentListEffect();
+    }, [commentList]);
     return (
         <div class="card mt-2">
             <h5 class="card-header">Bình luận</h5>

@@ -35,6 +35,9 @@ header a:hover{
     text-decoration: none;
     color: white;
 }
+header .dropdown-menu{
+    left: -100px;
+}
 .header__account__dropdown{
     background-color: var(--bg-color);
 }

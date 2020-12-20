@@ -18,20 +18,20 @@ HomePagination.defaultProp = {
 };
 
 function HomePagination(props) {
+    const { maxPage, activePage } = props;
 
     const handlePageChange = (page) => {
-        props.onPageChange(page)
-    }
+        props.onPageChange(page);
+    };
 
     return (
         <div>
             <Pagination
-                page={props.activePage}
+                page={activePage}
                 showFirstButton={true}
                 showLastButton={true}
-                // count={Math.ceil(props.totalItemsCount / props.limit)}
-                count={10}
-                size={"large"}
+                count={maxPage}
+                size={'large'}
                 onChange={(event, page) => handlePageChange(page)}
             />
         </div>

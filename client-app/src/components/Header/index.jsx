@@ -5,22 +5,35 @@ import logo from '../../assets/img/logo.png';
 import { useLocation, useHistory } from 'react-router-dom';
 import { removeUser } from '../../redux/slice/userSlice';
 import { useDispatch, useSelector } from 'react-redux';
+import authApi from '../../api/authApi';
+import { isDisplayByRole } from '../../helper/auth';
+import Role from '../../models/data/role';
 
 const Header = (props) => {
+    const { role } = props;
     const pathname = useLocation().pathname;
     const history = useHistory();
     const dispatch = useDispatch();
-
+    const user = useSelector((state) => state.user);
     const auth = !!localStorage.getItem('token');
+    const authRole = useSelector((state) => state.user.role);
+
     const gotoHome = () => {
         history.push('/');
     };
     const handleLogout = async () => {
-        await localStorage.removeItem('token');
-        await localStorage.removeItem('role');
-        dispatch(removeUser());
-        history.push('/login');
+        try {
+            const response = await authApi.logout();
+            console.log(response);
+            await localStorage.removeItem('token');
+            await localStorage.removeItem('role');
+            dispatch(removeUser());
+            history.push('/login');
+        } catch (error) {
+            console.log(error);
+        }
     };
+    console.log(isDisplayByRole([Role.ADMIN, Role.OWNER], role));
     return (
         <header>
             <div className="header width_box">
@@ -53,12 +66,28 @@ const Header = (props) => {
                                     Tìm phòng
                                 </NavLink>
                             </li>
-                            <li className="nav-item">
+                            <li
+                                className="nav-item"
+                                style={{
+                                    display: isDisplayByRole(
+                                        [Role.ADMIN, Role.OWNER],
+                                        authRole
+                                    ),
+                                }}
+                            >
                                 <NavLink className="nav-link" to="/newpost">
                                     Đăng bài
                                 </NavLink>
                             </li>
-                            <li className="nav-item">
+                            <li
+                                className="nav-item"
+                                style={{
+                                    display: isDisplayByRole(
+                                        [Role.ADMIN],
+                                        authRole
+                                    ),
+                                }}
+                            >
                                 <NavLink className="nav-link" to="/approved">
                                     Phê duyệt
                                 </NavLink>
@@ -102,7 +131,7 @@ const Header = (props) => {
                                     aria-haspopup="true"
                                     aria-expanded="false"
                                 >
-                                    Nguyễn Duy Nam
+                                    {user.name || 'Tài khoản'}
                                 </NavLink>
                                 <div
                                     className="dropdown-menu header__account__dropdown"
@@ -111,6 +140,15 @@ const Header = (props) => {
                                     <Link
                                         className="dropdown-item"
                                         to="/profile"
+                                        style={{
+                                            display: isDisplayByRole(
+                                                [
+                                                    Role.OWNER,
+                                                    Role.OWNER_PENDING,
+                                                ],
+                                                authRole
+                                            ),
+                                        }}
                                     >
                                         <i class="fas fa-user-circle"></i> Quản
                                         lý tài khoản
@@ -118,6 +156,12 @@ const Header = (props) => {
                                     <Link
                                         className="dropdown-item"
                                         to="/favorite"
+                                        style={{
+                                            display: isDisplayByRole(
+                                                [Role.RENTER],
+                                                authRole
+                                            ),
+                                        }}
                                     >
                                         <i class="fas fa-heart"></i> Phòng trọ
                                         yêu thích
@@ -125,6 +169,12 @@ const Header = (props) => {
                                     <Link
                                         className="dropdown-item"
                                         to="/my-post"
+                                        style={{
+                                            display: isDisplayByRole(
+                                                [Role.OWNER],
+                                                authRole
+                                            ),
+                                        }}
                                     >
                                         <i class="far fa-clipboard"></i> Phòng
                                         trọ của tôi

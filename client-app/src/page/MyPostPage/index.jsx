@@ -19,9 +19,7 @@ export default function MyPostPage() {
                     <tbody>
                         <tr>
                             <th scope="row">1</th>
-                            <td>
-                                <PostItem />
-                            </td>
+                            <td>{/* <PostItem /> */}</td>
                             <td>
                                 <button className="btn btn-primary">
                                     <i class="fas fa-edit"></i> Cập nhật trạng
@@ -47,16 +45,12 @@ export default function MyPostPage() {
                         </tr>
                         <tr>
                             <th scope="row">2</th>
-                            <td>
-                                <PostItem />
-                            </td>
+                            <td>{/* <PostItem /> */}</td>
                             <td>@fat</td>
                         </tr>
                         <tr>
                             <th scope="row">3</th>
-                            <td>
-                                <PostItem />
-                            </td>
+                            <td>{/* <PostItem /> */}</td>
                             <td>@twitter</td>
                         </tr>
                     </tbody>
@@ -76,9 +70,7 @@ export default function MyPostPage() {
                     <tbody>
                         <tr>
                             <th scope="row">1</th>
-                            <td>
-                                <PostItem />
-                            </td>
+                            <td>{/* <PostItem /> */}</td>
                             <td>
                                 <button className="btn btn-primary">
                                     <i class="fas fa-edit"></i> Chỉnh sửa
@@ -90,16 +82,12 @@ export default function MyPostPage() {
                         </tr>
                         <tr>
                             <th scope="row">2</th>
-                            <td>
-                                <PostItem />
-                            </td>
+                            <td>{/* <PostItem /> */}</td>
                             <td>@fat</td>
                         </tr>
                         <tr>
                             <th scope="row">3</th>
-                            <td>
-                                <PostItem />
-                            </td>
+                            <td>{/* <PostItem /> */}</td>
                             <td>@twitter</td>
                         </tr>
                     </tbody>
@@ -119,9 +107,7 @@ export default function MyPostPage() {
                     <tbody>
                         <tr>
                             <th scope="row">1</th>
-                            <td>
-                                <PostItem />
-                            </td>
+                            <td>{/* <PostItem /> */}</td>
                             <td>
                                 <button className="btn btn-danger">
                                     <i class="fas fa-trash-alt"></i> Xóa
@@ -130,16 +116,12 @@ export default function MyPostPage() {
                         </tr>
                         <tr>
                             <th scope="row">2</th>
-                            <td>
-                                <PostItem />
-                            </td>
+                            <td>{/* <PostItem /> */}</td>
                             <td>@fat</td>
                         </tr>
                         <tr>
                             <th scope="row">3</th>
-                            <td>
-                                <PostItem />
-                            </td>
+                            <td>{/* <PostItem /> */}</td>
                             <td>@twitter</td>
                         </tr>
                     </tbody>

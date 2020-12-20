@@ -1,11 +1,14 @@
 import React from 'react';
 import SimpleImageSlider from 'react-simple-image-slider';
+import rentalPost from '../../../api/rentalPost';
+import Card from '../../../share/components/card';
 import './style.css';
 
 ImgInfo.propTypes = {};
 
 function ImgInfo(props) {
-    const image = [
+    const { imgInfo } = props;
+    const image1 = [
         {
             url:
                 'https://res.cloudinary.com/dsysolkex/image/upload/v1604751491/jcnqq8zdrtsxc4fkm9bt.jpg',
@@ -23,14 +26,23 @@ function ImgInfo(props) {
                 'https://res.cloudinary.com/dsysolkex/image/upload/v1607705664/pexels-simon-matzinger-1183099_zxzit1.jpg',
         },
     ];
+    const [imgArr, setImgArr] = React.useState(image1);
+    React.useEffect(() => {
+        async function getImgPostInfoEffect() {
+            if (imgInfo) {
+                setImgArr([...imgInfo].map((e) => ({ url: e.pictureLink })));
+            }
+        }
+        getImgPostInfoEffect();
+    }, imgInfo);
+
     return (
-        <div className="card mt-2">
-            <h5 className="card-header">Hình ảnh</h5>
-            <div className="card-body">
+        <div>
+            <Card title="Hình ảnh">
                 <div className="slider_block">
                     <div className="slider">
                         <SimpleImageSlider
-                            images={image}
+                            images={imgArr}
                             width={'97%'}
                             height={'80%'}
                             showNavs={true}
@@ -40,7 +52,7 @@ function ImgInfo(props) {
                         />
                     </div>
                 </div>
-            </div>
+            </Card>
         </div>
     );
 }

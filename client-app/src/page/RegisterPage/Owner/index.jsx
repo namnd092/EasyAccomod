@@ -1,15 +1,18 @@
 import { Button, FormGroup, FormLabel } from '@material-ui/core';
 import { Field, Form, Formik } from 'formik';
 import React from 'react';
+import { useHistory } from 'react-router-dom';
 import authApi from '../../../api/authApi';
 import { ownerRegisterInitialValue } from '../../../models/InitialValueForm/register';
 import { ownerRegisterValidationSchema } from '../../../models/ValidateForm/register';
 
 export default function OwnerRegister(props) {
+    const history = useHistory();
     const handleSubmit = async (values) => {
         try {
             const response = await authApi.ownerRegister(values);
             console.log(response);
+            history.push('/login');
         } catch (error) {
             console.log(error);
         }

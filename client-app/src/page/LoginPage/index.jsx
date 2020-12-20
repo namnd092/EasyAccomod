@@ -18,6 +18,8 @@ import './style.css';
 import authApi from '../../api/authApi';
 import { setUser } from '../../redux/slice/userSlice';
 import { useSelector, useDispatch } from 'react-redux';
+import Axios from 'axios';
+import ApiUrl from '../../constants/ApiUrl';
 
 LoginPage.propTypes = {
     handle: PropTypes.func,
@@ -58,14 +60,25 @@ function LoginPage(props) {
         const { username, password } = value;
         try {
             setIsLoading(true);
-            const response = await authApi.postLogin(username, password);
-            const { access_token, account_id, role, user_id, name } = response;
-            await dispatch(setUser({ account_id, user_id, role, name }));
-            console.log(response);
-            await localStorage.setItem('token', access_token);
-            setRole(role);
-            setMessage('Bạn đã đăng nhập thành công');
-            history.push('/');
+            const loginResponse = await authApi.postLogin(username, password);
+            const { access_token } = await loginResponse;
+            localStorage.setItem('token', access_token);
+            console.log(localStorage.getItem('token'));
+            Axios.get('https://localhost:44360/' + ApiUrl.GET_ACCOUNT_INFO, {
+                headers: {
+                    'content-type': 'application/json',
+                    Authorization: `Bearer ${access_token}`,
+                },
+            })
+                .then(async (response) => {
+                    const infoResponse = await response.data;
+                    await dispatch(setUser({ ...infoResponse }));
+                    setMessage('Bạn đã đăng nhập thành công');
+                    history.push('/');
+                })
+                .catch((error) => console.log(error));
+            // const infoResponse = await authApi.getAccountInfoByToken();
+            // console.log(infoResponse);
         } catch (error) {
             console.log(error);
             setMessage('Bạn đã nhập sai tên đăng nhập hoặc mật khẩu');

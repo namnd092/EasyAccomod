@@ -3,6 +3,8 @@ import './style.css';
 import TrTable from '../../../share/components/tr';
 
 function BasicInfo(props) {
+    const { basicInfo } = props;
+    const { accommodation, dateAdded, dateExpired } = basicInfo;
     return (
         <div class="card">
             <h5 class="card-header">Thông tin</h5>

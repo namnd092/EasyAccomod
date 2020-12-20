@@ -49,6 +49,7 @@
 }
 .post__item > .right{
     margin-left: 20px;
+    width: 100%;
 }
 .post__item .post__description{
     text-overflow: ellipsis;

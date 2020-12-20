@@ -4,6 +4,7 @@ import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import ReportProblemIcon from '@material-ui/icons/ReportProblem';
 import { Button, makeStyles, TextareaAutosize } from '@material-ui/core';
+import rentalPost from '../../../api/rentalPost';
 
 const useStyles = makeStyles((theme) => ({
     modal: {
@@ -20,6 +21,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function ShareInfo(props) {
+    const { shareInfo, postId } = props;
+    const { rate } = props;
     const classes = useStyles();
     const [isFavorite, setIsFavorite] = React.useState(false);
     const [openModal, setOpenModal] = React.useState(false);
@@ -32,9 +35,20 @@ function ShareInfo(props) {
     const handleChangeReport = (value) => {
         setReportContent(value.target.value);
     };
-    const handleSubmitReport = () => {
+    const handleSubmitReport = async () => {
         console.log(reportContent);
+        try {
+            const params = {
+                AccommodationRentalPostId: postId,
+                content: reportContent,
+            };
+            const response = await rentalPost.postReport(params);
+            console.log(response);
+        } catch (error) {
+            console.log(error);
+        }
     };
+    React.useEffect(() => {}, []);
     return (
         <div class="card mt-2">
             <h5 class="card-header">Chia sẻ</h5>
@@ -44,7 +58,7 @@ function ShareInfo(props) {
                 <h5>Xếp hạng</h5>
                 <Rating
                     name="half-rating-read"
-                    defaultValue={3.5}
+                    defaultValue={Math.round(rate * 2) / 2}
                     precision={0.5}
                     readOnly={true}
                 />
@@ -111,6 +125,7 @@ function ShareInfo(props) {
                                 type="button"
                                 class="btn btn-primary"
                                 onClick={handleSubmitReport}
+                                data-dismiss="modal"
                             >
                                 Gửi
                             </button>

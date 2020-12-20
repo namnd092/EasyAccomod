@@ -10,7 +10,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import LinearProgress from '@material-ui/core/LinearProgress';
 
 export const HomePage = () => {
-    const [totalRow, setTotalRow] = React.useState(0);
+    const [maxPage, setMaxPage] = React.useState(0);
     const [postList, setPostList] = React.useState([]);
     const [isLoading, setIsLoading] = React.useState(false);
     const [filterSearch, setFilterSearch] = React.useState({
@@ -48,8 +48,11 @@ export const HomePage = () => {
                 setIsLoading(true);
                 const response = await rentalPostApi.getPostBySearch(query);
                 console.log(response);
+                setPostList(response.simplePostDtos);
+                setMaxPage(response.maxPage);
             } catch (error) {
                 console.log(error);
+                setPostList([]);
             } finally {
                 setIsLoading(false);
             }
@@ -70,16 +73,14 @@ export const HomePage = () => {
                     isLoading={isLoading}
                 />
             </div>
-            <button onClick={() => setIsLoading(!isLoading)}>
-                Set Loading
-            </button>
             {isLoading ? <LinearProgress /> : <PostList postList={postList} />}
             {!isLoading && (
                 <div className="homePage__pagination">
                     <HomePagination
                         onPageChange={handlePageChange}
-                        totalRow={totalRow}
+                        maxPage={maxPage}
                         page={filterSearch._page}
+                        activePage={filterSearch._page}
                     />
                 </div>
             )}

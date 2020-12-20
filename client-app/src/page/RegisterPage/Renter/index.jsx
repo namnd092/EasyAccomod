@@ -1,9 +1,11 @@
 import { Button, FormGroup, FormLabel } from '@material-ui/core';
 import { Field, Form, Formik } from 'formik';
 import React from 'react';
+import { useHistory } from 'react-router-dom';
 import authApi from '../../../api/authApi';
 
 export default function RenterRegister(props) {
+    const history = useHistory();
     const initialValues = {
         username: '',
         password: '',
@@ -13,11 +15,14 @@ export default function RenterRegister(props) {
     };
     const validationSchema = {};
     const handleSubmit = async (values) => {
+        console.log(values);
         try {
             const response = await authApi.renterRegister(values);
             console.log(response);
-        } catch (error) {}
-        console.log(values);
+            history.push('/login');
+        } catch (error) {
+            console.log(error);
+        }
     };
     return (
         <div>
