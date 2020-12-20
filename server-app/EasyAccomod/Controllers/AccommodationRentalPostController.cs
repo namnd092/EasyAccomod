@@ -212,10 +212,15 @@ namespace EasyAccomod.Controllers
                 return BadRequest(ModelState);
 
             var rentalPost = _context.AccommodationRentalPosts
-                .Include(p => p.Accommodation.Address)
+                .Include(p => p.Accommodation.Address.Ward.District.Province)
                 .Include(p => p.AccommodationPictures)
                 .Include(p => p.Status)
                 .Include(p => p.Accommodation.Owner)
+                .Include(p => p.Accommodation.AccommodationType)
+                .Include(p => p.Accommodation.KitchenType)
+                .Include(p => p.Accommodation.PaymentType)
+                .Include(p => p.Accommodation.RoomAreaRange)
+                .Include(p => p.Accommodation.Status)
                 .SingleOrDefault(r => r.Id == id);
             if (rentalPost == null)
                 return NotFound();
@@ -335,13 +340,17 @@ namespace EasyAccomod.Controllers
             if (rentalPostInDb == null)
                 return NotFound();
 
-            if (rentalPostInDb.Status.Name != RentalPostStatusName.Editing)
-                return BadRequest("Can not edit post. Post status: " + rentalPostInDb.Status.Name);
+            if (User.IsInRole(RoleName.Owner))
+            {
+                if (rentalPostInDb.Status.Name != RentalPostStatusName.Editing)
+                    return BadRequest("Can not edit post. Post status: " + rentalPostInDb.Status.Name);
+            }
 
             Mapper.Map(accommodationRentalPostDto, rentalPostInDb);
 
-            rentalPostInDb.StatusId =
-                _context.RentalPostStatuses.Single(s => s.Name == RentalPostStatusName.PendingApproval).Id;
+            rentalPostInDb.StatusId = User.IsInRole(RoleName.Owner)
+                ? _context.RentalPostStatuses.Single(s => s.Name == RentalPostStatusName.PendingApproval).Id
+                : _context.RentalPostStatuses.Single(s => s.Name == RentalPostStatusName.Approved).Id;
 
             _context.SaveChanges();
 
