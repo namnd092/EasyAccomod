@@ -340,13 +340,17 @@ namespace EasyAccomod.Controllers
             if (rentalPostInDb == null)
                 return NotFound();
 
-            if (rentalPostInDb.Status.Name != RentalPostStatusName.Editing)
-                return BadRequest("Can not edit post. Post status: " + rentalPostInDb.Status.Name);
+            if (User.IsInRole(RoleName.Owner))
+            {
+                if (rentalPostInDb.Status.Name != RentalPostStatusName.Editing)
+                    return BadRequest("Can not edit post. Post status: " + rentalPostInDb.Status.Name);
+            }
 
             Mapper.Map(accommodationRentalPostDto, rentalPostInDb);
 
-            rentalPostInDb.StatusId =
-                _context.RentalPostStatuses.Single(s => s.Name == RentalPostStatusName.PendingApproval).Id;
+            rentalPostInDb.StatusId = User.IsInRole(RoleName.Owner)
+                ? _context.RentalPostStatuses.Single(s => s.Name == RentalPostStatusName.PendingApproval).Id
+                : _context.RentalPostStatuses.Single(s => s.Name == RentalPostStatusName.Approved).Id;
 
             _context.SaveChanges();
 
