@@ -1,0 +1,9 @@
+.newPostPage .card-header{
+    background-color: pink;
+}
+.newPostPage .MuiFormGroup-root{
+    margin-top: 16px;
+}
+.newPostPage .MuiFormLabel-root{
+    color: black;
+}

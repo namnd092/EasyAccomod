@@ -1,51 +1,155 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import { Formik, Field, Form } from 'formik'
-import * as Yup from 'yup'
-import { TextField, Button } from '@material-ui/core'
-import { useHistory } from 'react-router-dom'
+import React, { Fragment, useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
+import { Formik, Field, Form } from 'formik';
+import * as Yup from 'yup';
+import {
+    TextField,
+    Button,
+    FormControl,
+    Input,
+    FormGroup,
+    InputLabel,
+    Backdrop,
+    CircularProgress,
+    makeStyles,
+} from '@material-ui/core';
+import { useHistory } from 'react-router-dom';
+import './style.css';
+import authApi from '../../api/authApi';
+import { setUser } from '../../redux/slice/userSlice';
+import { useSelector, useDispatch } from 'react-redux';
+import Axios from 'axios';
+import ApiUrl from '../../constants/ApiUrl';
 
-LoginPage.propTypes = {}
+LoginPage.propTypes = {
+    handle: PropTypes.func,
+};
+LoginPage.defaultType = {
+    handle: null,
+};
 
 function LoginPage(props) {
-    const history = useHistory()
+    const history = useHistory();
+    const dispatch = useDispatch();
+    const [message, setMessage] = useState('');
+    const [role, setRole] = useState('');
+    const [isLoading, setIsLoading] = React.useState(false);
     const initialValues = {
         username: '',
         password: '',
-    }
+    };
+    const useStyles = makeStyles((theme) => ({
+        backdrop: {
+            zIndex: theme.zIndex.drawer + 1,
+            color: '#fff',
+        },
+    }));
+    const classes = useStyles();
     const validationSchema = Yup.object().shape({
-        username: Yup.string()
-            .required('Tên đăng nhập không được bỏ trống')
-            .min(6, 'Tên đăng nhập phải từ 6 ký tự trở lên'),
-    })
-    const gotoRegister = () => {
-        history.push('/register')
-    }
-    const handleSubmit = (value) => {
-        console.log('Submit Login', value)
-    }
-    
+        username: Yup.string().required('Tên đăng nhập không được bỏ trống'),
+        password: Yup.string()
+            .required('Mật khẩu không được bỏ trống')
+            .min(6, 'Mật khẩu phải chứa ít nhất 6 ký tự')
+            .matches(
+                /\w*(?:[A-Z]+)\w*(?:[\W.]+)\w*/,
+                'Mật khẩu phải chứa ít nhất 1 ký tự in hoa và 1 ký tự đặc biệt'
+            ),
+    });
+    const handleSubmit = async (value) => {
+        console.log('Submit Login', value);
+        const { username, password } = value;
+        try {
+            setIsLoading(true);
+            const loginResponse = await authApi.postLogin(username, password);
+            const { access_token } = await loginResponse;
+            localStorage.setItem('token', access_token);
+            console.log(localStorage.getItem('token'));
+            Axios.get('https://localhost:44360/' + ApiUrl.GET_ACCOUNT_INFO, {
+                headers: {
+                    'content-type': 'application/json',
+                    Authorization: `Bearer ${access_token}`,
+                },
+            })
+                .then(async (response) => {
+                    const infoResponse = await response.data;
+                    await dispatch(setUser({ ...infoResponse }));
+                    setMessage('Bạn đã đăng nhập thành công');
+                    history.push('/');
+                })
+                .catch((error) => console.log(error));
+            // const infoResponse = await authApi.getAccountInfoByToken();
+            // console.log(infoResponse);
+        } catch (error) {
+            console.log(error);
+            setMessage('Bạn đã nhập sai tên đăng nhập hoặc mật khẩu');
+        } finally {
+            setIsLoading(false);
+        }
+    };
     return (
-        <div>
+        <Fragment>
             <h1>Login</h1>
             <Formik
                 validationSchema={validationSchema}
                 onSubmit={(value) => handleSubmit(value)}
                 initialValues={initialValues}
             >
-                {({ errors, touched, isValid }) => (
-                    <Form>
-                        <TextField id="username" label="Tên Đăng Nhập" />
-                        {errors && errors.username && touched.username ? (
-                            <span>{errors.username}</span>
-                        ) : null}
-                        <Button type="submit" disabled={isValid}>Submit</Button>
+                {({ errors, values, touched, isValid, handleChange }) => (
+                    <Form className={'from'}>
+                        {message && <span>{message}</span>}
+                        <FormGroup className={'form__group'}>
+                            <InputLabel>Tên đăng nhập</InputLabel>
+                            <input
+                                id="username"
+                                label="Tên Đăng Nhập"
+                                name="username"
+                                className="form-control"
+                                value={values.username}
+                                onChange={handleChange}
+                            />
+                            {errors && errors.username && touched.username ? (
+                                <span>{errors.username}</span>
+                            ) : null}
+                        </FormGroup>
+                        <FormGroup className={'form__group'}>
+                            <InputLabel>Mật khẩu</InputLabel>
+                            <input
+                                id="password"
+                                label="Mật khẩu"
+                                name="password"
+                                type="password"
+                                className="form-control"
+                                value={values.password}
+                                onChange={handleChange}
+                            />
+                            {errors && errors.password && touched.password ? (
+                                <span>{errors.password}</span>
+                            ) : null}
+                        </FormGroup>
+                        <FormControl>
+                            <Button
+                                type="submit"
+                                disabled={!isValid}
+                                variant="contained"
+                                color="primary"
+                            >
+                                Submit
+                            </Button>
+                        </FormControl>
                     </Form>
                 )}
             </Formik>
-            <button onClick={gotoRegister}>Register</button>
-        </div>
-    )
+            {isLoading && (
+                <Backdrop
+                    className={classes.backdrop}
+                    open={() => setIsLoading(true)}
+                    onClick={() => setIsLoading(false)}
+                >
+                    <CircularProgress color="inherit" />
+                </Backdrop>
+            )}
+        </Fragment>
+    );
 }
 
-export default LoginPage
+export default LoginPage;
