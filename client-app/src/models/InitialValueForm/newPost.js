@@ -22,7 +22,13 @@ const newPostInitialValue = {
     roomImageArr: [],
     kitchenType: null,
     publicLocationNearby: null,
-    package: { value: 1, label: 'Đăng theo tuần', price: 1000, type: 'tuần' },
+    packageType: {
+        value: 1,
+        label: 'Đăng theo tuần',
+        price: 1000,
+        type: 'tuần',
+        day: 7,
+    },
     numberOfTime: 1,
     owner: {},
 };

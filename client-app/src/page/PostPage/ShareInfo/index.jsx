@@ -49,7 +49,7 @@ function ShareInfo(props) {
         console.log(reportContent);
         try {
             const params = {
-                AccommodationRentalPostId: postId,
+                AccommodationRentalPostId: Number(postId),
                 content: reportContent,
             };
             const response = await rentalPost.postReport(params);

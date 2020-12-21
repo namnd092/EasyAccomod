@@ -24,6 +24,7 @@ import { Button } from '@material-ui/core';
 import uploadMultipleFile from '../../utils/cloudinaryUpload';
 import { useParams } from 'react-router-dom';
 import rentalPost from '../../api/rentalPost';
+import EditPostForm from './Form';
 
 // Register the plugins
 registerPlugin(FilePondPluginImageExifOrientation, FilePondPluginImagePreview);
@@ -45,7 +46,7 @@ const EditPostPage = () => {
         setFiles(fileArr);
         setNewPostFormValue({ ...newPostFormValue, roomImageArr: fileArr });
     };
-    const [newPostFormValue, setNewPostFormValue] = React.useState({
+    let [newPostFormValue, setNewPostFormValue] = React.useState({
         title: null,
         roomType: {},
         province: null,
@@ -78,6 +79,8 @@ const EditPostPage = () => {
         numberOfTime: 1,
         owner: {},
     });
+    const [defaultValue, setDefaultValue] = React.useState(null);
+    const resetRef = React.useRef(false);
     const handleSubmit = async (value) => {
         console.log(value);
         const newFiles = files.map((file) => file.file);
@@ -89,90 +92,29 @@ const EditPostPage = () => {
         //     console.log(error);
         // }
     };
+
     React.useEffect(() => {
         async function getDefaultValue() {
             try {
                 const response = await rentalPost.getRentalPostInfo(id);
                 console.log(response);
-                setNewPostFormValue({
-                    ...newPostFormValue,
-                    street: 'xd',
-                });
-                console.log({ ...newPostFormValue });
+                setDefaultValue(response);
             } catch (error) {
                 console.log(error);
             }
         }
         getDefaultValue();
     }, []);
+    console.log(defaultValue);
     return (
         <div className="editPostPage">
-            <div className="row">
-                <div className="col-12 col-lg-4">
-                    <PostingTutorial />
-                </div>
-                <div className="col-12 col-lg-8">
-                    <Formik
-                        enableReinitialize
-                        initialValues={newPostInitialValue}
-                        onSubmit={(value) => handleSubmit(value)}
-                    >
-                        {({
-                            errors,
-                            touched,
-                            isValid,
-                            handleChange,
-                            values,
-                            handleBlur,
-                            setFieldTouched,
-                            setFieldValue,
-                        }) => (
-                            <Form>
-                                <BasicInfo
-                                    handleChange={handleChange}
-                                    errors={errors}
-                                    touched={touched}
-                                    values={values}
-                                    setFieldTouched={setFieldTouched}
-                                    setFieldValue={setFieldValue}
-                                />
-                                <DescriptionInfo
-                                    name="description"
-                                    errors={errors}
-                                    touched={touched}
-                                    values={values}
-                                    setFieldValue={setFieldValue}
-                                />
-                                <Card title="Hình ảnh">
-                                    <FilePond
-                                        files={files}
-                                        allowReorder={true}
-                                        allowMultiple={true}
-                                        onupdatefiles={handleChangeFile}
-                                        labelIdle={'Thêm ảnh'}
-                                    />
-                                </Card>
-                                <div
-                                    style={{
-                                        display: 'flex',
-                                        justifyContent: 'center',
-                                    }}
-                                >
-                                    <Button
-                                        type="submit"
-                                        color="primary"
-                                        size="large"
-                                        variant="contained"
-                                        style={{ margin: '20px' }}
-                                    >
-                                        Xác nhận
-                                    </Button>
-                                </div>
-                            </Form>
-                        )}
-                    </Formik>
-                </div>
-            </div>
+            <EditPostForm
+                newPostInitialValue={newPostInitialValue}
+                handleSubmit={handleSubmit}
+                files={files}
+                handleChangeFile={handleChangeFile}
+                defaultValue={defaultValue}
+            />
         </div>
     );
 };

@@ -7,7 +7,7 @@ const rentalPost = {
         return axiosClient.get(url);
     },
     postNewPost(data) {
-        const url = ApiUrl.rentalPost;
+        const url = ApiUrl.POST_RENTAL_POST;
         const {
             title,
             description,
@@ -28,14 +28,13 @@ const rentalPost = {
             waterElectricity,
             electricityPrice,
             waterPrice,
-            numberOfDay,
             kitchenType,
+            publicLocationNearby,
             ownerId,
-            name,
-            phone,
-            email,
-            ownerAddress,
-            totalPrice,
+            roomPaymentType,
+            roomOption,
+            packageType,
+            numberOfTime,
         } = data;
         const body = {
             Title: title,
@@ -43,32 +42,33 @@ const rentalPost = {
             AccommodationPictures: accommodationPictures,
             Accommodation: {
                 Address: {
-                    ProvinceId: province,
-                    DistrictId: district,
-                    WardId: ward,
+                    ProvinceId: province.value,
+                    DistrictId: district.value,
+                    WardId: ward.value,
                     Street: street,
-                    PublicLocationNearby: '',
+                    PublicLocationNearby: publicLocationNearby,
                 },
-                AccommodationTypeId: roomType,
+                AccommodationTypeId: roomType.value,
                 RoomQuantity: roomQuantity,
-                PaymentTypeId: '',
+                PaymentTypeId: roomPaymentType.value,
                 Price: roomPrice,
-                RoomAreaRangeId: roomArea,
+                RoomAreaRangeId: roomArea.value,
                 LiveWithOwner: liveWithOwner,
                 HaveClosedBathroom: closeBathroom,
                 HaveWaterHeater: haveWaterHeader,
-                KitchenTypeId: kitchenType,
+                KitchenTypeId: kitchenType.value,
                 HaveAirConditioner: haveAirCondition,
                 HaveBalcony: haveBalcony,
                 IsStateElectricityPrice: waterElectricity === 'normal',
                 ElectricityPrice: electricityPrice,
                 IsStateWaterPrice: waterElectricity === 'normal',
                 WaterPrice: waterPrice,
-                RoomOptions: '',
-                OwnerId: ownerId || null,
+                RoomOptions: roomOption,
+                OwnerId: ownerId ? ownerId.value : 0,
             },
-            TimeDisplayed: numberOfDay,
+            TimeDisplayed: Number(packageType.day) * Number(numberOfTime),
         };
+        console.log(body);
         return axiosClient.post(url, body);
     },
     getRentalPostInfo(id) {

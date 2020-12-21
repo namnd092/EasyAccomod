@@ -34,45 +34,30 @@ function NewPostPage(props) {
     }));
     const classes = useStyles();
     const [isLoading, setIsLoading] = React.useState(false);
-    const [newPostFormValue, setNewPostFormValue] = React.useState({
-        roomImageArr: [],
-    });
-    const handleImgInfoChange = (imgInfo) => {
-        setNewPostFormValue({ ...newPostFormValue, ...imgInfo });
-        console.log(newPostFormValue);
-    };
     const handleSubmit = async (values) => {
-        // event.preventDefault();
+        //event.preventDefault();
         console.log(values);
-        // const { roomImageArr } = newPostFormValue;
-        // console.log(newPostFormValue);
-        // try {
-        //     setIsLoading(true);
-        //     const accommodationPictures = await uploadMultipleFile(
-        //         roomImageArr
-        //     );
-        //     const newAccommodationPictures = accommodationPictures.map((e) => ({
-        //         PictureLink: e,
-        //     }));
-        //     let params = {
-        //         ...newPostFormValue,
-        //         accommodationPictures: newAccommodationPictures,
-        //     };
-        //     if (role && role.toLowerCase() === Role.OWNER) {
-        //         console.log(true);
-        //         delete params.ownerId;
-        //     } else {
-        //         console.log(false);
-        //         params.ownerId = '11111';
-        //     }
-        //     const response = await rentalPost.postNewPost(params);
-        //     console.log(response);
-        //     // history.push('/');
-        // } catch (error) {
-        //     console.log(error);
-        // } finally {
-        //     setIsLoading(false);
-        // }
+        const { roomImageArr } = values;
+        try {
+            setIsLoading(true);
+            const accommodationPictures = await uploadMultipleFile(
+                roomImageArr
+            );
+            const newAccommodationPictures = accommodationPictures.map((e) => ({
+                PictureLink: e,
+            }));
+            let params = {
+                ...values,
+                accommodationPictures: newAccommodationPictures,
+            };
+            const response = await rentalPost.postNewPost(params);
+            console.log(response);
+            history.push('/');
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setIsLoading(false);
+        }
     };
     return (
         <div className="newPostPage">

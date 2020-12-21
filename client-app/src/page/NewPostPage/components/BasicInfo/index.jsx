@@ -27,7 +27,6 @@ function BasicInfo(props) {
         setFieldTouched,
         setFieldValue,
     } = props;
-
     const [waterElectricity, setWaterElectricity] = React.useState('rent');
     const [roomTypeData, setRoomTypeData] = React.useState([]);
     const [provinceData, setProvinceData] = React.useState([]);
@@ -146,7 +145,11 @@ function BasicInfo(props) {
                         name="title"
                         className="form-control"
                         onChange={handleChange}
-                        value={values.title}
+                        value={
+                            defaultValue
+                                ? (values.title = defaultValue.title)
+                                : values.title
+                        }
                     />
                     {errors.title && touched.title && (
                         <span>{errors.title}</span>
@@ -160,7 +163,12 @@ function BasicInfo(props) {
                             name="roomQuantity"
                             className="form-control"
                             onChange={handleChange}
-                            value={values.roomQuantity}
+                            value={
+                                defaultValue
+                                    ? (values.roomQuantity =
+                                          defaultValue.accommodation.roomQuantity)
+                                    : values.roomQuantity
+                            }
                         />
                         {errors.roomQuantity && touched.roomQuantity && (
                             <span>{errors.roomQuantity}</span>
@@ -174,6 +182,7 @@ function BasicInfo(props) {
                             onChange={setFieldValue}
                             onBlur={setFieldTouched}
                             values={values.roomType}
+                            defaultValue={roomTypeData[0]}
                         />
                         {errors.roomType && touched.roomType && (
                             <span>{errors.roomType}</span>
@@ -186,7 +195,12 @@ function BasicInfo(props) {
                             name="street"
                             className="form-control"
                             onChange={handleChange}
-                            value={values.street}
+                            value={
+                                defaultValue
+                                    ? (values.street =
+                                          defaultValue.accommodation.address.street)
+                                    : values.street
+                            }
                         />
                         {errors.street && touched.street && (
                             <span>{errors.street}</span>
@@ -200,7 +214,12 @@ function BasicInfo(props) {
                         className="form-control"
                         name="publicLocationNearby"
                         onChange={handleChange}
-                        value={values.publicLocationNearby}
+                        value={
+                            defaultValue
+                                ? (values.publicLocationNearby =
+                                      defaultValue.accommodation.address.publicLocationNearby)
+                                : values.publicLocationNearby
+                        }
                     />
                     {errors.publicLocationNearby &&
                         touched.publicLocationNearby && (
@@ -257,7 +276,11 @@ function BasicInfo(props) {
                             className="form-control"
                             name="roomPrice"
                             onChange={handleChange}
-                            value={values.roomPrice}
+                            value={
+                                defaultValue
+                                    ? defaultValue.accommodation.price
+                                    : values.roomPrice
+                            }
                         />
                         {errors.roomPrice && touched.roomPrice && (
                             <span>{errors.roomPrice}</span>
@@ -345,7 +368,12 @@ function BasicInfo(props) {
                                 className="form-control"
                                 defaultValue={0}
                                 onChange={handleChange}
-                                values={values.electricityPrice}
+                                values={
+                                    defaultValue
+                                        ? defaultValue.accommodation
+                                              .electricityPrice
+                                        : values.electricityPrice
+                                }
                             />
                             {errors.electricityPrice &&
                                 touched.electricityPrice && (
@@ -360,7 +388,11 @@ function BasicInfo(props) {
                                 className="form-control"
                                 defaultValue={0}
                                 onChange={handleChange}
-                                values={values.waterPrice}
+                                values={
+                                    defaultValue
+                                        ? defaultValue.accommodation.waterPrice
+                                        : values.waterPrice
+                                }
                             />
                             {errors.waterPrice && touched.waterPrice && (
                                 <span>{errors.waterPrice}</span>
@@ -416,7 +448,11 @@ function BasicInfo(props) {
                         className="form-control"
                         name="roomOption"
                         onChange={handleChange}
-                        values={values.roomOption}
+                        value={
+                            defaultValue
+                                ? defaultValue.accommodation.roomOption
+                                : values.roomOption
+                        }
                     />
                     {errors.roomOption && touched.roomOption && (
                         <span>{errors.roomOption}</span>
