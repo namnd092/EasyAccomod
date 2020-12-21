@@ -37,18 +37,18 @@ namespace EasyAccomod.Controllers
             if (_page < 1)
                 return BadRequest();
 
-            var listOwnersInDb = _context.Owners.AsQueryable();
+            var listOwnersInDb = _context.Owners.ToList();
 
             switch (confirmationStatus)
             {
                 case 1:
                     listOwnersInDb = listOwnersInDb
-                        .Where(o => _userManager.IsInRole(o.AccountId, RoleName.Owner));
+                        .Where(o => _userManager.IsInRole(o.AccountId, RoleName.Owner)).ToList();
                     break;
 
                 case -1:
                     listOwnersInDb = listOwnersInDb
-                        .Where(o => _userManager.IsInRole(o.AccountId, RoleName.WaitForConfirmation));
+                        .Where(o => _userManager.IsInRole(o.AccountId, RoleName.WaitForConfirmation)).ToList();
                     break;
 
                 default:
@@ -66,7 +66,7 @@ namespace EasyAccomod.Controllers
             var listOwnersDto = new ListOwnersDto()
             {
                 Owners = listOwners.ConvertAll(Mapper.Map<Owner, OwnerDto>),
-                MaxPage = (int)Math.Ceiling(1.0 * listOwnersInDb.Count() / _limit)
+                MaxPage = (int)Math.Ceiling(1.0 * listOwnersInDb.Count / _limit)
             };
 
             return Ok(listOwnersDto);
