@@ -21,6 +21,9 @@ import PostingTutorial from '../NewPostPage/components/PostingTutorial';
 import DescriptionInfo from '../NewPostPage/components/DescriptionInfo';
 import DurationInfo from '../NewPostPage/components/DurationInfo';
 import { Button } from '@material-ui/core';
+import uploadMultipleFile from '../../utils/cloudinaryUpload';
+import { useParams } from 'react-router-dom';
+import rentalPost from '../../api/rentalPost';
 
 // Register the plugins
 registerPlugin(FilePondPluginImageExifOrientation, FilePondPluginImagePreview);
@@ -34,27 +37,74 @@ const ButtonDrag = () => {
 };
 
 const EditPostPage = () => {
+    const { id } = useParams();
     const [files, setFiles] = React.useState([
-        'https://res.cloudinary.com/dsysolkex/image/upload/v1607093118/screenshot-localhost-3000-1604988485249_spu3eq.png',
+        'https://res.cloudinary.com/dsysolkex/image/upload/v1604846728/vth1yoqreqgzzeww0dby.jpg',
     ]);
     const handleChangeFile = (fileArr) => {
-        console.log(fileArr);
         setFiles(fileArr);
         setNewPostFormValue({ ...newPostFormValue, roomImageArr: fileArr });
     };
-    const [newPostFormValue, setNewPostFormValue] = React.useState(
-        newPostInitialValue
-    );
-    const handleBasicInfoChange = (basicInfo) => {
-        setNewPostFormValue({ ...newPostFormValue, ...basicInfo });
+    const [newPostFormValue, setNewPostFormValue] = React.useState({
+        title: null,
+        roomType: {},
+        province: null,
+        district: null,
+        ward: null,
+        street: null,
+        roomPrice: null,
+        roomArea: null,
+        roomQuantity: null,
+        liveWithOwner: false,
+        closeBathroom: false,
+        haveWaterHeader: false,
+        haveAirCondition: false,
+        haveBalcony: false,
+        waterElectricity: 'rent',
+        electricityPrice: null,
+        waterPrice: null,
+        description: null,
+        numberOfDay: null,
+        totalPrice: null,
+        roomImageArr: [],
+        kitchenType: null,
+        publicLocationNearby: null,
+        package: {
+            value: 1,
+            label: 'Đăng theo tuần',
+            price: 1000,
+            type: 'tuần',
+        },
+        numberOfTime: 1,
+        owner: {},
+    });
+    const handleSubmit = async (value) => {
+        console.log(value);
+        const newFiles = files.map((file) => file.file);
+        console.log(newFiles);
+        // try {
+        //     const response = await uploadMultipleFile(newFiles);
+        //     console.log(response);
+        // } catch (error) {
+        //     console.log(error);
+        // }
     };
-    const handleDescriptionInfoChange = (descriptionInfo) => {
-        setNewPostFormValue({ ...newPostFormValue, ...descriptionInfo });
-    };
-    const handleDurationInfoChange = () => {};
-    const handleSubmit = () => {
-        console.log(newPostFormValue);
-    };
+    React.useEffect(() => {
+        async function getDefaultValue() {
+            try {
+                const response = await rentalPost.getRentalPostInfo(id);
+                console.log(response);
+                setNewPostFormValue({
+                    ...newPostFormValue,
+                    street: 'xd',
+                });
+                console.log({ ...newPostFormValue });
+            } catch (error) {
+                console.log(error);
+            }
+        }
+        getDefaultValue();
+    }, []);
     return (
         <div className="editPostPage">
             <div className="row">
@@ -63,24 +113,35 @@ const EditPostPage = () => {
                 </div>
                 <div className="col-12 col-lg-8">
                     <Formik
+                        enableReinitialize
                         initialValues={newPostInitialValue}
-                        onSubmit={handleSubmit}
+                        onSubmit={(value) => handleSubmit(value)}
                     >
-                        {({ errors, touched, isValid }) => (
+                        {({
+                            errors,
+                            touched,
+                            isValid,
+                            handleChange,
+                            values,
+                            handleBlur,
+                            setFieldTouched,
+                            setFieldValue,
+                        }) => (
                             <Form>
                                 <BasicInfo
-                                    handleBasicInfoChange={
-                                        handleBasicInfoChange
-                                    }
+                                    handleChange={handleChange}
                                     errors={errors}
                                     touched={touched}
+                                    values={values}
+                                    setFieldTouched={setFieldTouched}
+                                    setFieldValue={setFieldValue}
                                 />
                                 <DescriptionInfo
-                                    handleDescriptionInfoChange={
-                                        handleDescriptionInfoChange
-                                    }
+                                    name="description"
                                     errors={errors}
                                     touched={touched}
+                                    values={values}
+                                    setFieldValue={setFieldValue}
                                 />
                                 <Card title="Hình ảnh">
                                     <FilePond
@@ -91,13 +152,6 @@ const EditPostPage = () => {
                                         labelIdle={'Thêm ảnh'}
                                     />
                                 </Card>
-                                <DurationInfo
-                                    handleDurationInfoChange={
-                                        handleDurationInfoChange
-                                    }
-                                    errors={errors}
-                                    touched={touched}
-                                />
                                 <div
                                     style={{
                                         display: 'flex',

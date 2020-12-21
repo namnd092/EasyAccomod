@@ -83,6 +83,14 @@ const rentalPost = {
         const url = ApiUrl.GET_ALL_RENTAL_POST_COMMENT(postId, _limit, _page);
         return axiosClient.get(url);
     },
+    getViews(postId) {
+        const url = ApiUrl.GET_VIEW(postId);
+        return axiosClient.get(url);
+    },
+    getLikes(postId) {
+        const url = ApiUrl.GET_LIKE(postId);
+        return axiosClient.get(url);
+    },
     getRenterIsLikeRentalPost(postId) {},
     postRenterLikeRentalPost(postId) {
         const url = ApiUrl.POST_LIKE_RENTAL_POST;
@@ -95,6 +103,18 @@ const rentalPost = {
     postReport(params) {
         const url = ApiUrl.POST_REPORT;
         return axiosClient.post(url, params);
+    },
+    isLiked(postId) {
+        const url = ApiUrl.IS_LIKED + '?postId=' + postId;
+        return axiosClient.get(url);
+    },
+    isCommented(postId) {
+        const url = ApiUrl.IS_COMMENTED + '?postId=' + postId;
+        return axiosClient.get(url);
+    },
+    isReported(postId) {
+        const url = ApiUrl.IS_REPORTED + '?postId=' + postId;
+        return axiosClient.get(url);
     },
 };
 

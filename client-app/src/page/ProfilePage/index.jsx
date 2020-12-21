@@ -1,24 +1,49 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Field, Form, Formik } from 'formik';
+import { Form, Formik } from 'formik';
 import { Button, FormGroup, FormLabel } from '@material-ui/core';
 import Card from '../../share/components/card';
+import { useSelector } from 'react-redux';
+import Role from '../../models/data/role';
+import Axios from 'axios';
+import ApiUrl from '../../constants/ApiUrl';
 
 ProfilePage.propTypes = {};
 
 function ProfilePage(props) {
-    const initialValues = {
-        name: '',
-        email: '',
-        phone: '',
-        address: '',
-        identification: '',
-    };
+    const token = localStorage.getItem('token');
     const [haveEditing, setHaveEditing] = React.useState(false);
+    const [defaultValue, setDefaultValue] = React.useState({});
+    React.useEffect(() => {
+        async function effectGetInfo() {
+            Axios.get('https://localhost:44360/' + ApiUrl.GET_ACCOUNT_INFO, {
+                headers: {
+                    'content-type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+            })
+                .then(async (response) => {
+                    const infoResponse = await response.data;
+                    console.log(infoResponse);
+                    setDefaultValue({
+                        name: (infoResponse && infoResponse.name) || '',
+                        email: (infoResponse && infoResponse.email) || '',
+                        phone: (infoResponse && infoResponse.phone) || '',
+                        address: (infoResponse && infoResponse.address) || '',
+                        identification:
+                            (infoResponse && infoResponse.identification) || '',
+                    });
+                    console.log(defaultValue);
+                })
+                .catch((error) => console.log(error));
+        }
+
+        effectGetInfo();
+    }, []);
     return (
         <div>
             <Card title="Thông tin cá nhân">
-                <Formik initialValues={initialValues}>
+                <Formik initialValues={defaultValue}>
                     {({ errors, values, handleChange }) => (
                         <Form>
                             <FormGroup>
@@ -27,6 +52,7 @@ function ProfilePage(props) {
                                     className="form-control"
                                     readOnly={!haveEditing}
                                     onChange={handleChange}
+                                    defaultValue={defaultValue.name}
                                 />
                             </FormGroup>
                             <FormGroup>
@@ -35,6 +61,7 @@ function ProfilePage(props) {
                                     className="form-control"
                                     readOnly={!haveEditing}
                                     onChange={handleChange}
+                                    defaultValue={defaultValue.email}
                                 />
                             </FormGroup>
                             <FormGroup>
@@ -44,6 +71,7 @@ function ProfilePage(props) {
                                     type="number"
                                     readOnly={!haveEditing}
                                     onChange={handleChange}
+                                    defaultValue={defaultValue.phone}
                                 />
                             </FormGroup>
                             <FormGroup>
@@ -52,6 +80,7 @@ function ProfilePage(props) {
                                     className="form-control"
                                     readOnly={!haveEditing}
                                     onChange={handleChange}
+                                    defaultValue={defaultValue.address}
                                 />
                             </FormGroup>
                             <FormGroup>
@@ -61,6 +90,7 @@ function ProfilePage(props) {
                                     type="number"
                                     readOnly={!haveEditing}
                                     onChange={handleChange}
+                                    defaultValue={defaultValue.identification}
                                 />
                             </FormGroup>
                             <FormGroup>
@@ -78,7 +108,7 @@ function ProfilePage(props) {
                                     color="primary"
                                     disabled={haveEditing}
                                 >
-                                    Xin chỉnh sửa tài khoản
+                                    Yêu cầu chỉnh sửa tài khoản
                                 </Button>
                             </FormGroup>
                         </Form>

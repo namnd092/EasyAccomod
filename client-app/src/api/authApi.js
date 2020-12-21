@@ -1,5 +1,6 @@
 import axiosClient from './axiosClient';
 import ApiUrl from '../constants/ApiUrl';
+import queryString from 'query-string';
 const authApi = {
     postLogin: (username, password) => {
         const url = ApiUrl.GET_TOKEN;
@@ -21,6 +22,12 @@ const authApi = {
     logout: () => {
         const url = ApiUrl.LOG_OUT;
         return axiosClient.post(url);
+    },
+    getOwnerSuccess(_page, _limit) {
+        const url =
+            ApiUrl.GET_OWNERS +
+            `?_page=${_page}&_limit=${_limit}&confirmationStatus=${'+1'}`;
+        return axiosClient.get(url);
     },
 };
 

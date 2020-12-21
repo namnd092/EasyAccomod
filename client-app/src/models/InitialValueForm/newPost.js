@@ -1,6 +1,6 @@
 const newPostInitialValue = {
-    title: '',
-    roomType: null,
+    title: null,
+    roomType: {},
     province: null,
     district: null,
     ward: null,
@@ -13,7 +13,7 @@ const newPostInitialValue = {
     haveWaterHeader: false,
     haveAirCondition: false,
     haveBalcony: false,
-    waterElectricity: null,
+    waterElectricity: 'rent',
     electricityPrice: null,
     waterPrice: null,
     description: null,
@@ -22,6 +22,9 @@ const newPostInitialValue = {
     roomImageArr: [],
     kitchenType: null,
     publicLocationNearby: null,
+    package: { value: 1, label: 'Đăng theo tuần', price: 1000, type: 'tuần' },
+    numberOfTime: 1,
+    owner: {},
 };
 
 export default newPostInitialValue;
