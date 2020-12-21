@@ -16,7 +16,7 @@ namespace EasyAccomod.Dtos
         public string RenterName { get; set; }
 
         [Required]
-        public int AccommodationRentalPostId { get; set; }
+        public int? AccommodationRentalPostId { get; set; }
 
         [Required] public string Content { get; set; }
 
