@@ -8,11 +8,14 @@ DescriptionInfo.propTypes = {
 };
 
 function DescriptionInfo(props) {
-    const { handleDescriptionInfoChange, defaultValue } = props;
-    const handleDescriptionChange = (value) => {
-        const description = value.target.innerHTML;
-        handleDescriptionInfoChange({ description });
-    };
+    const {
+        defaultValue,
+        setFieldValue,
+        name,
+        values,
+        errors,
+        touched,
+    } = props;
     return (
         <div class="card mt-4">
             <h5 class="card-header">Thông tin mô tả</h5>
@@ -20,9 +23,17 @@ function DescriptionInfo(props) {
                 <FormGroup>
                     <FormLabel required>Nội dung</FormLabel>
                     <JoditEditor
-                        onBlur={handleDescriptionChange}
-                        value={defaultValue}
+                        name={name}
+                        // onBlur={(value) => setFieldValue(name, value)}
+                        onBlur={(value) =>
+                            setFieldValue(name, value.target.innerHTML)
+                        }
+                        // onBlur={setFieldTouched(name, true)}
+                        value={values.description}
                     />
+                    {errors.description && touched.description && (
+                        <span>{errors.description}</span>
+                    )}
                 </FormGroup>
             </div>
         </div>

@@ -8,17 +8,25 @@ import {
     Radio,
     RadioGroup,
 } from '@material-ui/core';
-import Select from 'react-select';
 import addressApi from '../../../../api/addressApi';
 import roomApi from '../../../../api/roomApi';
 import { DebounceInput } from 'react-debounce-input';
+import MySelect from '../../../../share/components/select';
 
 BasicInfo.propTypes = {
     handleBasicInfoChange: PropTypes.func,
 };
 
 function BasicInfo(props) {
-    const { handleBasicInfoChange, errors, touched, defaultValue } = props;
+    const {
+        errors,
+        touched,
+        defaultValue,
+        values,
+        handleChange,
+        setFieldTouched,
+        setFieldValue,
+    } = props;
 
     const [waterElectricity, setWaterElectricity] = React.useState('rent');
     const [roomTypeData, setRoomTypeData] = React.useState([]);
@@ -28,155 +36,6 @@ function BasicInfo(props) {
     const [roomAreaRangeData, setRoomAreaRangeData] = React.useState([]);
     const [kitchenTypeData, setKitchenTypeData] = React.useState([]);
     const [roomPaymentTypeData, setRoomPaymentTypeData] = React.useState([]);
-    const [formValues, setFormValues] = React.useState({
-        title: null,
-        roomType: null,
-        province: null,
-        district: null,
-        ward: null,
-        street: null,
-        roomPrice: null,
-        roomPaymentType: null,
-        roomArea: null,
-        roomQuantity: null,
-        liveWithOwner: false,
-        closeBathroom: false,
-        haveWaterHeader: false,
-        haveAirCondition: false,
-        haveBalcony: false,
-        kitchenType: 0,
-        waterElectricity: 'rent',
-        electricityPrice: null,
-        waterPrice: null,
-    });
-
-    const handleTitleChange = (value) => {
-        setFormValues({ ...formValues, title: value.target.value });
-        handleBasicInfoChange(formValues);
-    };
-    const handleRoomTypeChange = (value) => {
-        setFormValues({ ...formValues, roomType: value.value });
-        handleBasicInfoChange(formValues);
-    };
-    const handleProvinceChange = async (value) => {
-        const provinceId = value.value;
-        setFormValues({
-            ...formValues,
-            province: provinceId,
-            district: null,
-            ward: null,
-        });
-        handleBasicInfoChange(formValues);
-        try {
-            const response = await addressApi.getDistrictByProvinceId(
-                provinceId
-            );
-            setDistrictData(
-                [...response].map((e) => ({ value: e.id, label: e.name }))
-            );
-        } catch (error) {
-            console.log(error);
-        }
-    };
-    const handleDistrictChange = async (value) => {
-        const districtId = value.value;
-        setFormValues({ ...formValues, district: districtId, ward: null });
-        handleBasicInfoChange(formValues);
-        try {
-            const response = await addressApi.getWardByDistrictID(districtId);
-            setWardData(
-                [...response].map((e) => ({ value: e.id, label: e.name }))
-            );
-        } catch (error) {
-            console.log(error);
-        }
-    };
-    const handleWardChange = (value) => {
-        const ward = value.value;
-        setFormValues({ ...formValues, ward });
-        handleBasicInfoChange(formValues);
-    };
-    const handleStreetChange = (value) => {
-        const street = value.target.value;
-        setFormValues({ ...formValues, street });
-        handleBasicInfoChange(formValues);
-    };
-    const handleRoomPriceChange = (value) => {
-        const roomPrice = value.target.value;
-        setFormValues({ ...formValues, roomPrice });
-        handleBasicInfoChange(formValues);
-    };
-    const handleRoomPaymentTypeChange = (value) => {
-        const roomPaymentType = value.value;
-        setFormValues({ ...formValues, roomPaymentType });
-        handleBasicInfoChange(formValues);
-    };
-    const handleRoomAreaChange = (value) => {
-        const roomArea = value.value;
-        setFormValues({ ...formValues, roomArea });
-        handleBasicInfoChange(formValues);
-    };
-    const handleRoomQuantityChange = (value) => {
-        const roomQuantity = value.target.value;
-        setFormValues({ ...formValues, roomQuantity });
-        handleBasicInfoChange(formValues);
-    };
-    const handleLiveWithOwnerChange = (value) => {
-        const liveWithOwner = value.target.checked;
-        setFormValues({ ...formValues, liveWithOwner });
-        handleBasicInfoChange(formValues);
-    };
-    const handleCloseBathroomChange = (value) => {
-        const closeBathroom = value.target.checked;
-        setFormValues({ ...formValues, closeBathroom });
-        handleBasicInfoChange(formValues);
-    };
-    const handleHaveWaterHeaderChange = (value) => {
-        const haveWaterHeader = value.target.checked;
-        setFormValues({ ...formValues, haveWaterHeader });
-        handleBasicInfoChange(formValues);
-    };
-    const handleHaveAirConditionChange = (value) => {
-        const haveAirCondition = value.target.checked;
-        setFormValues({ ...formValues, haveAirCondition });
-        handleBasicInfoChange(formValues);
-    };
-    const handleHaveBalconyChange = (value) => {
-        const haveBalcony = value.target.checked;
-        setFormValues({ ...formValues, haveBalcony });
-        handleBasicInfoChange(formValues);
-    };
-    const handleKitchenTypeChange = (value) => {
-        const kitchenType = value.value;
-        setFormValues({ ...formValues, kitchenType });
-        handleBasicInfoChange(formValues);
-    };
-    const handleWaterElectricityChange = (value) => {
-        const waterElectricity = value.target.value;
-        if (waterElectricity === 'rent') {
-            setFormValues({ ...formValues, waterElectricity });
-        } else {
-            setFormValues({
-                ...formValues,
-                waterElectricity,
-                electricityPrice: null,
-                waterPrice: null,
-            });
-        }
-        setWaterElectricity(waterElectricity);
-        handleBasicInfoChange(formValues);
-    };
-    const handleElectricityPriceChange = (value) => {
-        const electricityPrice = value.target.value;
-        setFormValues({ ...formValues, electricityPrice });
-        handleBasicInfoChange(formValues);
-    };
-    const handleWaterPriceChange = (value) => {
-        const waterPrice = value.target.value;
-        setFormValues({ ...formValues, waterPrice });
-        handleBasicInfoChange(formValues);
-    };
-
     React.useEffect(() => {
         async function effectGetAllProvince() {
             try {
@@ -239,6 +98,43 @@ function BasicInfo(props) {
         effectGetRoomPaymentType();
     }, []);
 
+    React.useEffect(() => {
+        async function handleProvinceChange() {
+            if (!values.province) return;
+            values.district = null;
+            values.ward = null;
+            try {
+                const response = await addressApi.getDistrictByProvinceId(
+                    values.province.value
+                );
+                setDistrictData(
+                    [...response].map((e) => ({ value: e.id, label: e.name }))
+                );
+            } catch (error) {
+                console.log(error);
+            }
+        }
+        handleProvinceChange();
+    }, [values.province]);
+
+    React.useEffect(() => {
+        async function handleDistrictChange() {
+            if (!values.district) return;
+            values.ward = null;
+            try {
+                const response = await addressApi.getWardByDistrictID(
+                    values.district.value
+                );
+                setWardData(
+                    [...response].map((e) => ({ value: e.id, label: e.name }))
+                );
+            } catch (error) {
+                console.log(error);
+            }
+        }
+        handleDistrictChange();
+    }, [values.district]);
+
     return (
         <div class="card mt-4">
             <h5 class="card-header">Thông tin cơ bản</h5>
@@ -249,9 +145,12 @@ function BasicInfo(props) {
                         type="text"
                         name="title"
                         className="form-control"
-                        onChange={handleTitleChange}
+                        onChange={handleChange}
+                        value={values.title}
                     />
-                    {errors && touched && <span>{errors.title}</span>}
+                    {errors.title && touched.title && (
+                        <span>{errors.title}</span>
+                    )}
                 </FormGroup>
                 <div className="row">
                     <FormGroup className="col-3">
@@ -260,18 +159,25 @@ function BasicInfo(props) {
                             type="number"
                             name="roomQuantity"
                             className="form-control"
-                            onChange={handleRoomQuantityChange}
+                            onChange={handleChange}
+                            value={values.roomQuantity}
                         />
+                        {errors.roomQuantity && touched.roomQuantity && (
+                            <span>{errors.roomQuantity}</span>
+                        )}
                     </FormGroup>
                     <FormGroup className="col-4">
                         <FormLabel>Loại Phòng</FormLabel>
-                        <Select
+                        <MySelect
                             name="roomType"
-                            defaultValue={roomTypeData[0]}
                             options={roomTypeData}
-                            onChange={handleRoomTypeChange}
+                            onChange={setFieldValue}
+                            onBlur={setFieldTouched}
+                            values={values.roomType}
                         />
-                        {errors && touched && <span>{errors.title}</span>}
+                        {errors.roomType && touched.roomType && (
+                            <span>{errors.roomType}</span>
+                        )}
                     </FormGroup>
                     <FormGroup className="col-5">
                         <FormLabel>Số nhà, Đường</FormLabel>
@@ -279,9 +185,12 @@ function BasicInfo(props) {
                             type="text"
                             name="street"
                             className="form-control"
-                            onChange={handleStreetChange}
+                            onChange={handleChange}
+                            value={values.street}
                         />
-                        {errors && touched && <span>{errors.title}</span>}
+                        {errors.street && touched.street && (
+                            <span>{errors.street}</span>
+                        )}
                     </FormGroup>
                 </div>
                 <FormGroup>
@@ -290,98 +199,110 @@ function BasicInfo(props) {
                         type="text"
                         className="form-control"
                         name="publicLocationNearby"
+                        onChange={handleChange}
+                        value={values.publicLocationNearby}
                     />
+                    {errors.publicLocationNearby &&
+                        touched.publicLocationNearby && (
+                            <span>{errors.publicLocationNearby}</span>
+                        )}
                 </FormGroup>
+
                 <div className="row">
                     <FormGroup className="col-4">
                         <FormLabel>Tỉnh/Thành phố</FormLabel>
-                        <Select
-                            name="province"
-                            defaultValue={provinceData[0]}
+                        <MySelect
                             options={provinceData}
-                            value={
-                                formValues.province
-                                    ? provinceData.find(
-                                          (e) => e.value === formValues.province
-                                      )
-                                    : null
-                            }
-                            onChange={handleProvinceChange}
+                            name="province"
+                            onChange={setFieldValue}
+                            onBlur={setFieldTouched}
+                            values={values.province}
                         />
-                        {errors && touched && <span>{errors.title}</span>}
+                        {errors.province && touched.province && (
+                            <span>{errors.province}</span>
+                        )}
                     </FormGroup>
                     <FormGroup className="col-4">
                         <FormLabel>Quận/Huyện</FormLabel>
-                        <Select
-                            name="district"
-                            defaultValue={districtData[0]}
+                        <MySelect
                             options={districtData}
-                            value={
-                                formValues.district
-                                    ? districtData.find(
-                                          (e) => e.value === formValues.district
-                                      )
-                                    : null
-                            }
-                            onChange={handleDistrictChange}
+                            name="district"
+                            onChange={setFieldValue}
+                            onBlur={setFieldTouched}
+                            values={values.district}
                         />
-                        {errors && touched && <span>{errors.title}</span>}
+                        {errors.district && touched.district && (
+                            <span>{errors.district}</span>
+                        )}
                     </FormGroup>
                     <FormGroup className="col-4">
                         <FormLabel>Xã/Phường</FormLabel>
-                        <Select
-                            name="ward"
-                            defaultValue={wardData[0]}
+                        <MySelect
                             options={wardData}
-                            value={
-                                formValues.ward
-                                    ? wardData.find(
-                                          (e) => e.value === formValues.ward
-                                      )
-                                    : null
-                            }
-                            onChange={handleWardChange}
+                            name="ward"
+                            onChange={setFieldValue}
+                            onBlur={setFieldTouched}
+                            values={values.ward}
                         />
-                        {errors && touched && <span>{errors.title}</span>}
+                        {errors.ward && touched.ward && (
+                            <span>{errors.ward}</span>
+                        )}
                     </FormGroup>
                 </div>
-                <FormGroup>
-                    <FormLabel>Giá tiền(vnd)</FormLabel>
-                    <div style={{ display: 'flex' }}>
+                <div className="row">
+                    <FormGroup className="col-8">
+                        <FormLabel>Giá tiền(vnd)</FormLabel>
                         <DebounceInput
                             type={'number'}
-                            className="form-control col-8"
+                            className="form-control"
                             name="roomPrice"
-                            onChange={handleRoomPriceChange}
+                            onChange={handleChange}
+                            value={values.roomPrice}
                         />
-                        <Select
+                        {errors.roomPrice && touched.roomPrice && (
+                            <span>{errors.roomPrice}</span>
+                        )}
+                    </FormGroup>
+                    <FormGroup className="col-4">
+                        <FormLabel>Tháng/Quý/Năm</FormLabel>
+                        <MySelect
                             name="roomPaymentType"
-                            defaultValue={roomPaymentTypeData[0]}
                             options={roomPaymentTypeData}
-                            className="col-4"
-                            onChange={handleRoomPaymentTypeChange}
+                            values={values.roomPaymentType}
+                            onChange={setFieldValue}
+                            onBlur={setFieldTouched}
                         />
-                    </div>
-                    {errors && touched && <span>{errors.title}</span>}
-                </FormGroup>
+                        {errors.roomPaymentType && touched.roomPaymentType && (
+                            <span>{errors.roomPaymentType}</span>
+                        )}
+                    </FormGroup>
+                </div>
                 <div className="row">
                     <FormGroup className="col-6">
                         <FormLabel>Diện tích</FormLabel>
-                        <Select
+                        <MySelect
                             name="roomArea"
-                            defaultValue={roomAreaRangeData[0]}
                             options={roomAreaRangeData}
-                            onChange={handleRoomAreaChange}
+                            values={values.roomArea}
+                            onChange={setFieldValue}
+                            onBlur={setFieldTouched}
                         />
+                        {errors.roomArea && touched.roomArea && (
+                            <span>{errors.roomArea}</span>
+                        )}
                     </FormGroup>
                     <FormGroup className="col-6">
                         <FormLabel>Bếp(Nấu ăn)</FormLabel>
-                        <Select
+                        <MySelect
                             name="kitchenType"
-                            defaultValue={kitchenTypeData[0]}
                             options={kitchenTypeData}
-                            onChange={handleKitchenTypeChange}
+                            values={values.kitchenType}
+                            onChange={setFieldValue}
+                            onBlur={setFieldTouched}
                         />
+                        {errors.kitchenType && touched.kitchenType && (
+                            <span>{errors.kitchenType}</span>
+                        )}
                     </FormGroup>
                 </div>
                 <FormGroup>
@@ -389,8 +310,8 @@ function BasicInfo(props) {
                     <RadioGroup
                         aria-label="gender"
                         name="waterElectricity"
-                        value={waterElectricity}
-                        onChange={handleWaterElectricityChange}
+                        value={values.waterElectricity}
+                        onChange={handleChange}
                     >
                         <div className="row">
                             <FormControlLabel
@@ -408,9 +329,11 @@ function BasicInfo(props) {
                         </div>
                     </RadioGroup>
                 </FormGroup>
+
                 <div
                     style={{
-                        display: waterElectricity === 'normal' ? 'none' : '',
+                        display:
+                            values.waterElectricity === 'normal' ? 'none' : '',
                     }}
                 >
                     <div className="row">
@@ -420,8 +343,14 @@ function BasicInfo(props) {
                                 type="number"
                                 name="electricityPrice"
                                 className="form-control"
-                                onChange={handleElectricityPriceChange}
+                                defaultValue={0}
+                                onChange={handleChange}
+                                values={values.electricityPrice}
                             />
+                            {errors.electricityPrice &&
+                                touched.electricityPrice && (
+                                    <span>{errors.electricityPrice}</span>
+                                )}
                         </FormGroup>
                         <FormGroup className="col-6">
                             <FormLabel>Giá nước</FormLabel>
@@ -429,8 +358,13 @@ function BasicInfo(props) {
                                 type="number"
                                 name="waterPrice"
                                 className="form-control"
-                                onChange={handleWaterPriceChange}
+                                defaultValue={0}
+                                onChange={handleChange}
+                                values={values.waterPrice}
                             />
+                            {errors.waterPrice && touched.waterPrice && (
+                                <span>{errors.waterPrice}</span>
+                            )}
                         </FormGroup>
                     </div>
                 </div>
@@ -438,36 +372,55 @@ function BasicInfo(props) {
                     <FormLabel>Chung chủ (Có/Không)</FormLabel>
                     <Checkbox
                         name="liveWithOwner"
-                        onChange={handleLiveWithOwnerChange}
+                        onChange={handleChange}
+                        values={values.liveWithOwner}
                     />
                 </FormGroup>
                 <FormGroup>
                     <FormLabel>Phòng tắm khép kín (Có/Không)</FormLabel>
                     <Checkbox
                         name="closeBathroom"
-                        onChange={handleCloseBathroomChange}
+                        onChange={handleChange}
+                        values={values.closeBathroom}
                     />
                 </FormGroup>
                 <FormGroup>
                     <FormLabel>Nóng lạnh (Có/Không)</FormLabel>
                     <Checkbox
                         name="haveWaterHeader"
-                        onChange={handleHaveWaterHeaderChange}
+                        onChange={handleChange}
+                        values={values.haveWaterHeader}
                     />
                 </FormGroup>
                 <FormGroup>
                     <FormLabel>Điều hòa (Có/Không)</FormLabel>
                     <Checkbox
                         name="haveAirCondition"
-                        onChange={handleHaveAirConditionChange}
+                        onChange={handleChange}
+                        values={values.haveAirCondition}
                     />
                 </FormGroup>
                 <FormGroup>
                     <FormLabel>Ban Công(Có/Không)</FormLabel>
                     <Checkbox
                         name="haveBalcony"
-                        onChange={handleHaveBalconyChange}
+                        onChange={handleChange}
+                        values={values.haveBalcony}
                     />
+                </FormGroup>
+
+                <FormGroup>
+                    <FormLabel>Tiện ích khác</FormLabel>
+                    <DebounceInput
+                        type="text"
+                        className="form-control"
+                        name="roomOption"
+                        onChange={handleChange}
+                        values={values.roomOption}
+                    />
+                    {errors.roomOption && touched.roomOption && (
+                        <span>{errors.roomOption}</span>
+                    )}
                 </FormGroup>
             </div>
         </div>

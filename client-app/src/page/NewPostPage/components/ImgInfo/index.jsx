@@ -4,9 +4,9 @@ import ImageUploader from 'react-images-upload';
 ImgInfo.propTypes = {};
 
 function ImgInfo(props) {
-    const { handleImgInfoChange } = props;
+    const { errors, touched, defaultValue, setFieldValue, name } = props;
     const handleImageChange = async (imgArr) => {
-        handleImgInfoChange({ roomImageArr: imgArr });
+        setFieldValue(name, imgArr);
     };
     return (
         <div class="card mt-4">
@@ -19,8 +19,11 @@ function ImgInfo(props) {
                     withPreview={true}
                     label={'Chọn tối thiểu 3 ảnh, mỗi ảnh không quá 6MB'}
                     buttonText={'Chọn ảnh'}
-                    name={'roomImageArr'}
+                    name={name}
                 />
+                {errors.roomImageArr && touched.roomImageArr && (
+                    <span>{errors.roomImageArr}</span>
+                )}
             </div>
         </div>
     );

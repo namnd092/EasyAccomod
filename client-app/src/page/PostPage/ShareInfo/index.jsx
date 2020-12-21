@@ -5,7 +5,11 @@ import FavoriteIcon from '@material-ui/icons/Favorite';
 import ReportProblemIcon from '@material-ui/icons/ReportProblem';
 import { Button, makeStyles, TextareaAutosize } from '@material-ui/core';
 import rentalPost from '../../../api/rentalPost';
-
+import { useSelector } from 'react-redux';
+import { isDisplayByRole } from '../../../helper/auth';
+import Role from '../../../models/data/role';
+import VisibilityIcon from '@material-ui/icons/Visibility';
+import ThumbUpAltIcon from '@material-ui/icons/ThumbUpAlt';
 const useStyles = makeStyles((theme) => ({
     modal: {
         display: 'flex',
@@ -23,12 +27,18 @@ const useStyles = makeStyles((theme) => ({
 function ShareInfo(props) {
     const { shareInfo, postId } = props;
     const { rate } = props;
+    const role = useSelector((state) => state.user.role);
     const classes = useStyles();
     const [isFavorite, setIsFavorite] = React.useState(false);
+    const [isReported, setIsReported] = React.useState(false);
+    const [numberOfLike, setNumberOfLike] = React.useState(0);
+    const [numberOfView, setNumberOfView] = React.useState(0);
     const [openModal, setOpenModal] = React.useState(false);
     const [reportContent, setReportContent] = React.useState('');
-    const handleChangeFavorite = () => {
+    const handleChangeFavorite = async () => {
         try {
+            const response = await rentalPost.postRenterLikeRentalPost(postId);
+            console.log(response);
         } catch (error) {}
         setIsFavorite(!isFavorite);
     };
@@ -48,34 +58,80 @@ function ShareInfo(props) {
             console.log(error);
         }
     };
-    React.useEffect(() => {}, []);
+    React.useEffect(() => {
+        async function isLiked() {
+            try {
+                const response = await rentalPost.isLiked(postId);
+                setIsFavorite(response.data);
+            } catch (error) {}
+        }
+        isLiked();
+        async function isReported() {
+            try {
+                const response = await rentalPost.isReported(postId);
+                setIsReported(response.data);
+            } catch (error) {}
+        }
+        isReported();
+        async function getNumberOfLike() {
+            try {
+                const response = await rentalPost.getLikes(postId);
+                setNumberOfLike(response.data);
+            } catch (error) {
+                console.log(error);
+            }
+        }
+        getNumberOfLike();
+        async function getNumberOfView() {
+            try {
+                const response = await rentalPost.getViews(postId);
+                setNumberOfView(response);
+            } catch (error) {
+                console.log(error);
+            }
+        }
+        getNumberOfView();
+    }, []);
     return (
         <div class="card mt-2">
             <h5 class="card-header">Chia sẻ</h5>
             <div class="card-body">
-                <h5>Lượt xem: 1.1k</h5>
-                <h5>Lượt yêu tích: 200</h5>
+                <h5>
+                    <VisibilityIcon />
+                    Lượt xem: {numberOfView}
+                </h5>
+                <h5>
+                    <ThumbUpAltIcon />
+                    Lượt thích: {numberOfLike}
+                </h5>
                 <h5>Xếp hạng</h5>
+
                 <Rating
                     name="half-rating-read"
                     defaultValue={Math.round(rate * 2) / 2}
                     precision={0.5}
                     readOnly={true}
                 />
-                <Button onClick={handleChangeFavorite}>
-                    {isFavorite ? <FavoriteIcon /> : <FavoriteBorderIcon />}
-                </Button>
-                <Button
-                    className="btn btn-danger"
-                    variant="contained"
-                    color="secondary"
-                    data-toggle="modal"
-                    data-target="#exampleModalCenter"
-                    onClick={() => setOpenModal(true)}
+                <div
+                    style={{
+                        display: isDisplayByRole([Role.RENTER], role),
+                    }}
                 >
-                    <ReportProblemIcon /> <span>Báo cáo</span>
-                </Button>
-                <h5>Chia sẻ:</h5>
+                    <Button onClick={handleChangeFavorite}>
+                        {isFavorite ? <FavoriteIcon /> : <FavoriteBorderIcon />}
+                    </Button>
+                    <Button
+                        className="btn btn-danger"
+                        variant="contained"
+                        color="secondary"
+                        data-toggle="modal"
+                        data-target="#exampleModalCenter"
+                        onClick={() => setOpenModal(true)}
+                        disabled={isReported}
+                    >
+                        <ReportProblemIcon /> <span>Báo cáo</span>
+                    </Button>
+                </div>
             </div>
 
             <div

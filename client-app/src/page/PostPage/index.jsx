@@ -26,7 +26,7 @@ function PostPage(props) {
             rentalPost
                 .getRentalPostInfo(id)
                 .then((response) => {
-                    console.log(response.status);
+                    console.log(response);
                     setRentalPostInfo({ ...response });
                 })
                 .catch((error) => {
@@ -42,10 +42,20 @@ function PostPage(props) {
         dateExpired,
         content,
         rate,
+        title,
+        owner,
     } = rentalPostInfo;
     return (
         <div>
-            <BasicInfo basicInfo={{ accommodation, dateAdded, dateExpired }} />
+            <BasicInfo
+                basicInfo={{
+                    accommodation,
+                    dateAdded,
+                    dateExpired,
+                    title,
+                    owner,
+                }}
+            />
             <DescriptionInfo descriptionInfo={content} />
             <ImgInfo imgInfo={rentalPostInfo.accommodationPictures} />
             <ShareInfo shareInfo={{ rate }} postId={id} />

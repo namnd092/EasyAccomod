@@ -4,6 +4,7 @@ const ApiUrl = {
     OWNER_REGISTER: 'api/Account/OwnerRegister',
     RENTER_REGISTER: 'api/Account/RenterRegister',
     LOG_OUT: 'api/Account/Logout',
+    GET_OWNERS: 'api/Admin/Owners',
 
     GET_ALL_PROVINCE: 'api/Provinces',
     GET_DISTRICT_BY_PROVINCE_ID: (provinceId) =>
@@ -25,6 +26,11 @@ const ApiUrl = {
     POST_REPORT: 'api/Renter/RenterPost/Report',
     GET_ALL_RENTAL_POST_COMMENT: (postId, _limit, _page) =>
         `api/RentalPosts/${postId}/Comments?_limit=${_limit}&_page=${_page}`,
+    IS_LIKED: 'api/Renter/RenterPost/IsLiked',
+    IS_COMMENTED: 'api/Renter/RenterPost/isCommented',
+    IS_REPORTED: 'api/Renter/RenterPost/isReported',
+    GET_VIEW: (postId) => `api/RentalPosts/${postId}/Views`,
+    GET_LIKE: (postId) => `api/RentalPosts/${postId}/Likes`,
 
     CLOUDINARY_UPLOAD_URL:
         'https://api.cloudinary.com/v1_1/dsysolkex/image/upload',
