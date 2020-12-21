@@ -1,0 +1,10 @@
+.slider_block{
+    display: flex;
+    justify-content: space-between;
+    min-height: 500px;
+}
+.slider{
+    width: 60%;
+    display: flex;
+    justify-content: space-between;
+}

@@ -1,0 +1,7 @@
+.approvedPage__appBar{
+    width: 96% !important;
+    margin: auto;
+}
+button:focus{
+    outline: none;
+}

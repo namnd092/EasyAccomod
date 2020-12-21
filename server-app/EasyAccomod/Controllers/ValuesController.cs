@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using EasyAccomod.Models;
 
 namespace EasyAccomod.Controllers
 {
@@ -11,6 +12,7 @@ namespace EasyAccomod.Controllers
     public class ValuesController : ApiController
     {
         // GET api/values
+        [AllowAnonymous]
         public IEnumerable<string> Get()
         {
             return new string[] { "value1", "value2" };
@@ -23,8 +25,10 @@ namespace EasyAccomod.Controllers
         }
 
         // POST api/values
-        public void Post([FromBody]string value)
+        [AllowAnonymous]
+        public IHttpActionResult Post(Renter renter)
         {
+            return Ok();
         }
 
         // PUT api/values/5
