@@ -37,10 +37,11 @@ namespace EasyAccomod.Controllers
             if (_page > Math.Ceiling(1.0 * _context.AccommodationRentalPosts.Count() / _limit))
                 return NotFound();
 
+            var accountId = User.Identity.GetUserId();
             var rentalPostsInDb = _context.AccommodationRentalPosts
                 .Include(p => p.AccommodationPictures)
                 .Include(p => p.Accommodation.Address)
-                .Where(p => p.Accommodation.Owner.AccountId == User.Identity.GetUserId());
+                .Where(p => p.Accommodation.Owner.AccountId == accountId);
 
             if (statusId != 0)
                 rentalPostsInDb = rentalPostsInDb.Where(p => p.StatusId == statusId);
