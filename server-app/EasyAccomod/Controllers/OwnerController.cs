@@ -118,6 +118,13 @@ namespace EasyAccomod.Controllers
         [Route("RentalPosts/ExtendPeriod")]
         public IHttpActionResult ExtendRentalPostPeriod(ExtendRentalPostPeriodDto extendRentalPostPeriodDto)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            if (_context.ExtendRentalPostPeriods.Any(e =>
+                e.AccommodationRentalPostId == extendRentalPostPeriodDto.AccommodationRentalPostId))
+                return BadRequest("Please wait until the previous request has been resolved.");
+
             var rentalPostInDb =
                 _context.AccommodationRentalPosts
                     .Include(p => p.Accommodation.Owner)
