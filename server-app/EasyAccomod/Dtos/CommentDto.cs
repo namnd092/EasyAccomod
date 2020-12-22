@@ -35,4 +35,10 @@ namespace EasyAccomod.Dtos
 
         public int MaxPage { get; set; }
     }
+
+    public class CommentId
+    {
+        [Required]
+        public int? Id { get; set; }
+    }
 }

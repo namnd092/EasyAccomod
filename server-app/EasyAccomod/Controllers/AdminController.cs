@@ -270,5 +270,63 @@ namespace EasyAccomod.Controllers
 
             return Ok("Rejected");
         }
+
+        // GET	api/Admin/PendingComment
+        [HttpGet]
+        [Route("PendingComment")]
+        public IHttpActionResult GetPendingComment()
+        {
+            var listComments = _context.Comments
+                .Include(c => c.Renter)
+                .Where(c => !c.IsApproved)
+                .ToList()
+                .ConvertAll(Mapper.Map<Comment, CommentDto>);
+
+            return Ok(listComments);
+        }
+
+        // POST	api/Admin/ApproveComment
+        [HttpPost]
+        [Route("ApproveComment")]
+        public IHttpActionResult ApproveComment(CommentId commentId)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var comment = _context.Comments.SingleOrDefault(c => c.Id == commentId.Id);
+
+            if (comment == null)
+                return BadRequest("Comment does not exist.");
+
+            if (comment.IsApproved)
+                return BadRequest("Comment has been approved yet.");
+
+            comment.IsApproved = true;
+            _context.SaveChanges();
+
+            return Ok("Approved");
+        }
+
+        // POST	api/Admin/RejectComment
+        [HttpPost]
+        [Route("RejectComment")]
+        public IHttpActionResult RejectComment(CommentId commentId)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var comment = _context.Comments.SingleOrDefault(c => c.Id == commentId.Id);
+
+            if (comment == null)
+                return BadRequest("Comment does not exist.");
+
+            if (comment.IsApproved)
+                return BadRequest("Comment has been approved yet.");
+
+            _context.Comments.Remove(comment);
+            _context.SaveChanges();
+
+            return Ok("Rejected");
+        }
     }
 }
