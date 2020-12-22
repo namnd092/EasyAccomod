@@ -222,21 +222,20 @@ namespace EasyAccomod.Controllers
                 .Include(p => p.Accommodation.RoomAreaRange)
                 .Include(p => p.Accommodation.Status)
                 .SingleOrDefault(r => r.Id == id);
+
             if (rentalPost == null)
                 return NotFound();
 
-            if (!User.IsInRole(RoleName.Admin) || !User.IsInRole(RoleName.Owner))
+            if (rentalPost.DateExpired < DateTime.Now || rentalPost.Status.Name != RentalPostStatusName.Approved)
             {
-                if (rentalPost.DateExpired < DateTime.Now || rentalPost.Status.Name != RentalPostStatusName.Approved)
-                    return NotFound();
-            }
-            else if (User.IsInRole(RoleName.Owner))
-            {
-                if (rentalPost.DateExpired < DateTime.Now || rentalPost.Status.Name != RentalPostStatusName.Approved)
+                if (User.IsInRole(RoleName.Owner))
                 {
                     if (rentalPost.Accommodation.Owner.AccountId != User.Identity.GetUserId())
                         return NotFound();
                 }
+
+                if (!User.IsInRole(RoleName.Admin))
+                    return NotFound();
             }
 
             var rentalPostDto = Mapper.Map<AccommodationRentalPost, AccommodationRentalPostDto>(rentalPost);
