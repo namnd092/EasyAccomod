@@ -124,5 +124,39 @@ namespace EasyAccomod.Controllers
 
             return Ok();
         }
+
+        // GET	api/Admin/RentalPosts
+        [HttpGet]
+        [Route("RentalPosts")]
+        public IHttpActionResult SearchPostByStatus(int _page = 1, int _limit = 10, byte statusId = 0)
+        {
+            if (_page < 1)
+                return BadRequest("Page must be at least 1.");
+
+            var postInDb = _context.AccommodationRentalPosts
+                .Include(p => p.Accommodation.Owner)
+                .Include(p => p.Status);
+
+            if (statusId != 0)
+            {
+                if (!_context.RentalPostStatuses.Any(s => s.Id == statusId))
+                    return BadRequest("Status does not exist.");
+
+                postInDb = postInDb.Where(p => p.StatusId == statusId);
+            }
+
+            var listSimplePost = new ListAdminSimplePost()
+            {
+                MaxPage = (int)Math.Ceiling(1.0 * postInDb.Count() / _limit)
+            };
+
+            listSimplePost.SimplePostDtos = postInDb.OrderBy(p => p.Id)
+                .Skip(_limit * (_page - 1))
+                .Take(_limit)
+                .ToList()
+                .ConvertAll(Mapper.Map<AccommodationRentalPost, AdminSimplePostDto>);
+
+            return Ok(listSimplePost);
+        }
     }
 }
