@@ -42,16 +42,19 @@ namespace EasyAccomod.Controllers
             switch (confirmationStatus)
             {
                 case 1:
+                    // Owner has been approved
                     listOwnersInDb = listOwnersInDb
                         .Where(o => _userManager.IsInRole(o.AccountId, RoleName.Owner)).ToList();
                     break;
 
                 case -1:
+                    // Owner are waiting for confirmation
                     listOwnersInDb = listOwnersInDb
                         .Where(o => _userManager.IsInRole(o.AccountId, RoleName.WaitForConfirmation)).ToList();
                     break;
 
                 default:
+                    // All Owner
                     if (confirmationStatus != 0)
                         return BadRequest("Invalid input: confirmationStatus.");
                     break;
@@ -74,6 +77,7 @@ namespace EasyAccomod.Controllers
 
         // POST api/Admin/SetOwner
         [HttpPost]
+        [Route("SetOwner")]
         public IHttpActionResult SetOwner(SetRoleBindingModel model)
         {
             if (!ModelState.IsValid)
@@ -97,7 +101,34 @@ namespace EasyAccomod.Controllers
             }
             _userManager.AddToRole(user.Id, RoleName.Owner);
 
-            return Ok();
+            return Ok("Approved");
+        }
+
+        // POST	api/Admin/RejectOwner
+        [HttpPost]
+        [Route("RejectOwner")]
+        public IHttpActionResult RejectOwner(SetRoleBindingModel model)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var user = _context.Users.SingleOrDefault(u => u.Id == model.AccountId);
+            if (user == null)
+                return BadRequest("The user have account id " + model.AccountId + " does not exist.");
+
+            var owner = _context.Owners.SingleOrDefault(o => o.AccountId == user.Id);
+            if (owner == null)
+                return BadRequest("The user have account id " + model.AccountId + " is not an Owner.");
+
+            if (!_userManager.IsInRole(model.AccountId, RoleName.WaitForConfirmation))
+                return BadRequest("User has been approved.");
+
+            _context.Owners.Remove(owner);
+            _context.SaveChanges();
+            _userManager.Delete(user);
+            _context.SaveChanges();
+
+            return Ok("Rejected");
         }
 
         // PUT	api/Admin/RentalPosts/1/SetStatus
