@@ -46,7 +46,7 @@ function SearchFrom(props) {
         paymentTypeId: 0,
         minPrice: 0,
         maxPrice: 0,
-        roomAreaRanged: 0,
+        roomAreaRangeId: 0,
         kitchenTypeId: 0,
         haveAirConditioner: 0,
         haveBalcony: 0,
@@ -352,12 +352,12 @@ function SearchFrom(props) {
                                                         roomAreaData[0]
                                                     }
                                                     options={roomAreaData}
-                                                    name="roomAreaRanged"
+                                                    name="roomAreaRangeId"
                                                     isSearchable={false}
                                                     onChange={(value) =>
                                                         setFilterValues({
                                                             ...filterValues,
-                                                            roomAreaRanged:
+                                                            roomAreaRangeId:
                                                                 value.value,
                                                         })
                                                     }

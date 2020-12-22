@@ -23,7 +23,7 @@ export const HomePage = () => {
         paymentTypeId: 0,
         minPrice: 0,
         maxPrice: 0,
-        roomAreaRanged: 0,
+        roomAreaRangeId: 0,
         kitchenTypeId: 0,
         haveAirConditioner: 0,
         haveBalcony: 0,

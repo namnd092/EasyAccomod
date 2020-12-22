@@ -4,15 +4,15 @@ import { useHistory } from 'react-router-dom';
 import rentalPost from '../../api/rentalPost';
 import Card from '../../share/components/card';
 import PostItem from '../HomePage/components/PostList/PostItem';
+import FavoriteItem from './FavoriteItem';
 
 export default function FavoritePage() {
     const history = useHistory();
-    const [isLike, setIsLike] = React.useState(false);
     const [postList, setPostList] = React.useState([]);
     const gotoPost = (postId) => {
         history.push(`/post/${postId}`);
     };
-    const handleLike = (postId) => {
+    const handleDislike = (postId) => {
         //xoa khoi danh sach
     };
     React.useEffect(() => {
@@ -21,6 +21,7 @@ export default function FavoritePage() {
                 const response = await rentalPost.getAllFavoriteRentalPost();
                 console.log(response);
             } catch (error) {
+                setPostList([]);
                 console.log(error);
             }
         }
@@ -41,50 +42,13 @@ export default function FavoritePage() {
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <th scope="row" onClick={() => gotoPost(1)}>
-                                1
-                            </th>
-                            <td onClick={() => gotoPost(1)}>
-                                Simple title Simple title Simple title Simple
-                                title Simple title Simple title
-                            </td>
-                            <td onClick={() => gotoPost(1)}>Chưa cho thuê</td>
-                            <td>
-                                <button
-                                    className="btn btn-danger"
-                                    onClick={() => console.log('like')}
-                                >
-                                    <i class="fas fa-heart"></i> Bỏ thích
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th scope="row">2</th>
-                            <td>
-                                Simple title Simple title Simple title Simple
-                                title Simple title Simple title
-                            </td>
-                            <td>Chưa cho thuê</td>
-                            <td>
-                                <button className="btn btn-danger">
-                                    <i class="fas fa-heart"></i> Bỏ thích
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th scope="row">3</th>
-                            <td>
-                                Simple title Simple title Simple title Simple
-                                title Simple title Simple title
-                            </td>
-                            <td>Chưa cho thuê</td>
-                            <td>
-                                <button className="btn btn-danger">
-                                    <i class="fas fa-heart"></i> Bỏ thích
-                                </button>
-                            </td>
-                        </tr>
+                        {postList.length === 0 ? (
+                            <p>Không tìm thấy bài viết nào</p>
+                        ) : (
+                            postList.map((item, index) => (
+                                <FavoriteItem key={index} />
+                            ))
+                        )}
                     </tbody>
                 </table>
             </Card>

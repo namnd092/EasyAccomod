@@ -30,12 +30,13 @@ const rentalPost = {
             waterPrice,
             kitchenType,
             publicLocationNearby,
-            ownerId,
+            owner,
             roomPaymentType,
             roomOption,
             packageType,
             numberOfTime,
         } = data;
+        const ownerId = owner ? owner.id : 0;
         const body = {
             Title: title,
             Content: description,
@@ -64,7 +65,7 @@ const rentalPost = {
                 IsStateWaterPrice: waterElectricity === 'normal',
                 WaterPrice: waterPrice,
                 RoomOptions: roomOption,
-                OwnerId: ownerId ? ownerId.value : 0,
+                OwnerId: ownerId,
             },
             TimeDisplayed: Number(packageType.day) * Number(numberOfTime),
         };

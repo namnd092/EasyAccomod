@@ -69,7 +69,7 @@ function NewPostPage(props) {
                     <Formik
                         initialValues={newPostInitialValue}
                         onSubmit={(value) => handleSubmit(value)}
-                        // validationSchema={newPostValidationSchema}
+                        validationSchema={newPostValidationSchema}
                     >
                         {({
                             errors,
@@ -96,6 +96,7 @@ function NewPostPage(props) {
                                     touched={touched}
                                     values={values}
                                     setFieldValue={setFieldValue}
+                                    handleChange={handleChange}
                                 />
                                 <ImgInfo
                                     errors={errors}
@@ -123,8 +124,6 @@ function NewPostPage(props) {
                                         size="large"
                                         variant="contained"
                                         style={{ margin: '20px' }}
-
-                                        // disabled={!isValid}
                                     >
                                         Đăng Tin
                                     </Button>

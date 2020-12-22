@@ -7,3 +7,6 @@
 .newPostPage .MuiFormLabel-root{
     color: black;
 }
+.newPostPage .error{
+    color: red;
+}

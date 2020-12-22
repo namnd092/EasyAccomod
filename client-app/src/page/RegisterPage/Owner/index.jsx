@@ -24,7 +24,7 @@ export default function OwnerRegister(props) {
                 onSubmit={handleSubmit}
                 validationSchema={ownerRegisterValidationSchema}
             >
-                {({ errors, values, isValid, handleChange }) => (
+                {({ errors, touched, values, isValid, handleChange }) => (
                     <Form>
                         <FormGroup>
                             <FormLabel>Tên đăng nhập</FormLabel>
@@ -35,6 +35,9 @@ export default function OwnerRegister(props) {
                                 value={values.username}
                                 onChange={handleChange}
                             />
+                            {errors && errors.username && touched.username ? (
+                                <span className="error">{errors.username}</span>
+                            ) : null}
                         </FormGroup>
                         <FormGroup>
                             <FormLabel>Mật khẩu</FormLabel>
@@ -45,6 +48,9 @@ export default function OwnerRegister(props) {
                                 value={values.password}
                                 onChange={handleChange}
                             />
+                            {errors && errors.password && touched.password ? (
+                                <span className="error">{errors.password}</span>
+                            ) : null}
                         </FormGroup>
                         <FormGroup>
                             <FormLabel>Nhập lại mật khẩu</FormLabel>
@@ -55,6 +61,13 @@ export default function OwnerRegister(props) {
                                 value={values.confirmPassword}
                                 onChange={handleChange}
                             />
+                            {errors &&
+                            errors.confirmPassword &&
+                            touched.confirmPassword ? (
+                                <span className="error">
+                                    {errors.confirmPassword}
+                                </span>
+                            ) : null}
                         </FormGroup>
                         <FormGroup>
                             <FormLabel>Tên</FormLabel>
@@ -65,6 +78,9 @@ export default function OwnerRegister(props) {
                                 value={values.name}
                                 onChange={handleChange}
                             />
+                            {errors && errors.name && touched.name ? (
+                                <span className="error">{errors.name}</span>
+                            ) : null}
                         </FormGroup>
                         <FormGroup>
                             <FormLabel>Địa chỉ</FormLabel>
@@ -75,6 +91,9 @@ export default function OwnerRegister(props) {
                                 value={values.address}
                                 onChange={handleChange}
                             />
+                            {errors && errors.address && touched.address ? (
+                                <span className="error">{errors.address}</span>
+                            ) : null}
                         </FormGroup>
                         <FormGroup>
                             <FormLabel>Email</FormLabel>
@@ -85,28 +104,45 @@ export default function OwnerRegister(props) {
                                 value={values.email}
                                 onChange={handleChange}
                             />
+                            {errors && errors.email && touched.email ? (
+                                <span className="error">{errors.email}</span>
+                            ) : null}
                         </FormGroup>
-                        <FormGroup>
-                            <FormLabel>Số điện thoại</FormLabel>
-                            <Field
-                                type="number"
-                                name="phone"
-                                className="form-control"
-                                value={values.phone}
-                                onChange={handleChange}
-                            />
-                        </FormGroup>
-                        <FormGroup>
-                            <FormLabel>CMTND/CCCD</FormLabel>
-                            <Field
-                                type="number"
-                                name="identification"
-                                className="form-control"
-                                value={values.identification}
-                                onChange={handleChange}
-                            />
-                        </FormGroup>
-                        <FormGroup>
+                        <div className="row">
+                            <FormGroup className="col-6">
+                                <FormLabel>Số điện thoại</FormLabel>
+                                <Field
+                                    type="number"
+                                    name="phone"
+                                    className="form-control"
+                                    value={values.phone}
+                                    onChange={handleChange}
+                                />
+                                {errors && errors.phone && touched.phone ? (
+                                    <span className="error">
+                                        {errors.phone}
+                                    </span>
+                                ) : null}
+                            </FormGroup>
+                            <FormGroup className="col-6">
+                                <FormLabel>CMTND/CCCD</FormLabel>
+                                <Field
+                                    type="number"
+                                    name="identification"
+                                    className="form-control"
+                                    value={values.identification}
+                                    onChange={handleChange}
+                                />
+                                {errors &&
+                                errors.identification &&
+                                touched.identification ? (
+                                    <span className="error">
+                                        {errors.identification}
+                                    </span>
+                                ) : null}
+                            </FormGroup>
+                        </div>
+                        {/* <FormGroup>
                             <Button
                                 type="submit"
                                 color="primary"
@@ -117,7 +153,31 @@ export default function OwnerRegister(props) {
                             >
                                 Đăng ký
                             </Button>
-                        </FormGroup>
+                        </FormGroup> */}
+                        <div className="group-btn">
+                            <div className="btn-group">
+                                <Button
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        history.push('/login');
+                                    }}
+                                    variant="contained"
+                                    color="secondary"
+                                >
+                                    Đăng nhập
+                                </Button>
+                            </div>
+                            <div className="btn-group">
+                                <Button
+                                    type="submit"
+                                    disabled={!isValid}
+                                    variant="contained"
+                                    color="primary"
+                                >
+                                    Đăng ký
+                                </Button>
+                            </div>
+                        </div>
                     </Form>
                 )}
             </Formik>

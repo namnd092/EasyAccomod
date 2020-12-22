@@ -8,9 +8,7 @@ function DescriptionInfo(props) {
     const { descriptionInfo } = props;
     return (
         <div>
-            <Card title="Mô tả">
-                <p>{descriptionInfo}</p>
-            </Card>
+            <Card title="Mô tả">{descriptionInfo}</Card>
         </div>
     );
 }

@@ -152,7 +152,7 @@ function BasicInfo(props) {
                         }
                     />
                     {errors.title && touched.title && (
-                        <span>{errors.title}</span>
+                        <span className="error">{errors.title}</span>
                     )}
                 </FormGroup>
                 <div className="row">
@@ -171,7 +171,7 @@ function BasicInfo(props) {
                             }
                         />
                         {errors.roomQuantity && touched.roomQuantity && (
-                            <span>{errors.roomQuantity}</span>
+                            <span className="error">{errors.roomQuantity}</span>
                         )}
                     </FormGroup>
                     <FormGroup className="col-4">
@@ -185,7 +185,7 @@ function BasicInfo(props) {
                             defaultValue={roomTypeData[0]}
                         />
                         {errors.roomType && touched.roomType && (
-                            <span>{errors.roomType}</span>
+                            <span className="error">{errors.roomType}</span>
                         )}
                     </FormGroup>
                     <FormGroup className="col-5">
@@ -203,7 +203,7 @@ function BasicInfo(props) {
                             }
                         />
                         {errors.street && touched.street && (
-                            <span>{errors.street}</span>
+                            <span className="error">{errors.street}</span>
                         )}
                     </FormGroup>
                 </div>
@@ -223,7 +223,9 @@ function BasicInfo(props) {
                     />
                     {errors.publicLocationNearby &&
                         touched.publicLocationNearby && (
-                            <span>{errors.publicLocationNearby}</span>
+                            <span className="error">
+                                {errors.publicLocationNearby}
+                            </span>
                         )}
                 </FormGroup>
 
@@ -238,7 +240,7 @@ function BasicInfo(props) {
                             values={values.province}
                         />
                         {errors.province && touched.province && (
-                            <span>{errors.province}</span>
+                            <span className="error">{errors.province}</span>
                         )}
                     </FormGroup>
                     <FormGroup className="col-4">
@@ -251,7 +253,7 @@ function BasicInfo(props) {
                             values={values.district}
                         />
                         {errors.district && touched.district && (
-                            <span>{errors.district}</span>
+                            <span className="error">{errors.district}</span>
                         )}
                     </FormGroup>
                     <FormGroup className="col-4">
@@ -264,7 +266,7 @@ function BasicInfo(props) {
                             values={values.ward}
                         />
                         {errors.ward && touched.ward && (
-                            <span>{errors.ward}</span>
+                            <span className="error">{errors.ward}</span>
                         )}
                     </FormGroup>
                 </div>
@@ -283,7 +285,7 @@ function BasicInfo(props) {
                             }
                         />
                         {errors.roomPrice && touched.roomPrice && (
-                            <span>{errors.roomPrice}</span>
+                            <span className="error">{errors.roomPrice}</span>
                         )}
                     </FormGroup>
                     <FormGroup className="col-4">
@@ -296,7 +298,9 @@ function BasicInfo(props) {
                             onBlur={setFieldTouched}
                         />
                         {errors.roomPaymentType && touched.roomPaymentType && (
-                            <span>{errors.roomPaymentType}</span>
+                            <span className="error">
+                                {errors.roomPaymentType}
+                            </span>
                         )}
                     </FormGroup>
                 </div>
@@ -311,7 +315,7 @@ function BasicInfo(props) {
                             onBlur={setFieldTouched}
                         />
                         {errors.roomArea && touched.roomArea && (
-                            <span>{errors.roomArea}</span>
+                            <span className="error">{errors.roomArea}</span>
                         )}
                     </FormGroup>
                     <FormGroup className="col-6">
@@ -324,7 +328,7 @@ function BasicInfo(props) {
                             onBlur={setFieldTouched}
                         />
                         {errors.kitchenType && touched.kitchenType && (
-                            <span>{errors.kitchenType}</span>
+                            <span className="error">{errors.kitchenType}</span>
                         )}
                     </FormGroup>
                 </div>
@@ -377,7 +381,9 @@ function BasicInfo(props) {
                             />
                             {errors.electricityPrice &&
                                 touched.electricityPrice && (
-                                    <span>{errors.electricityPrice}</span>
+                                    <span className="error">
+                                        {errors.electricityPrice}
+                                    </span>
                                 )}
                         </FormGroup>
                         <FormGroup className="col-6">
@@ -395,7 +401,9 @@ function BasicInfo(props) {
                                 }
                             />
                             {errors.waterPrice && touched.waterPrice && (
-                                <span>{errors.waterPrice}</span>
+                                <span className="error">
+                                    {errors.waterPrice}
+                                </span>
                             )}
                         </FormGroup>
                     </div>
@@ -455,7 +463,7 @@ function BasicInfo(props) {
                         }
                     />
                     {errors.roomOption && touched.roomOption && (
-                        <span>{errors.roomOption}</span>
+                        <span className="error">{errors.roomOption}</span>
                     )}
                 </FormGroup>
             </div>

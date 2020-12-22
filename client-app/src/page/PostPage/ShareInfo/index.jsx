@@ -85,7 +85,7 @@ function ShareInfo(props) {
         async function getNumberOfView() {
             try {
                 const response = await rentalPost.getViews(postId);
-                setNumberOfView(response);
+                setNumberOfView(response.data);
             } catch (error) {
                 console.log(error);
             }

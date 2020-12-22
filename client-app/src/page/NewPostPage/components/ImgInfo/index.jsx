@@ -22,7 +22,7 @@ function ImgInfo(props) {
                     name={name}
                 />
                 {errors.roomImageArr && touched.roomImageArr && (
-                    <span>{errors.roomImageArr}</span>
+                    <span className="error">{errors.roomImageArr}</span>
                 )}
             </div>
         </div>

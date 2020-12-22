@@ -1,4 +1,5 @@
 import React, { Fragment, useEffect, useState } from 'react';
+import './style.css';
 import PropTypes from 'prop-types';
 import { Formik, Field, Form } from 'formik';
 import * as Yup from 'yup';
@@ -87,58 +88,92 @@ function LoginPage(props) {
         }
     };
     return (
-        <Fragment>
-            <h1>Login</h1>
-            <Formik
-                validationSchema={validationSchema}
-                onSubmit={(value) => handleSubmit(value)}
-                initialValues={initialValues}
-            >
-                {({ errors, values, touched, isValid, handleChange }) => (
-                    <Form className={'from'}>
-                        {message && <span>{message}</span>}
-                        <FormGroup className={'form__group'}>
-                            <InputLabel>Tên đăng nhập</InputLabel>
-                            <input
-                                id="username"
-                                label="Tên Đăng Nhập"
-                                name="username"
-                                className="form-control"
-                                value={values.username}
-                                onChange={handleChange}
-                            />
-                            {errors && errors.username && touched.username ? (
-                                <span>{errors.username}</span>
-                            ) : null}
-                        </FormGroup>
-                        <FormGroup className={'form__group'}>
-                            <InputLabel>Mật khẩu</InputLabel>
-                            <input
-                                id="password"
-                                label="Mật khẩu"
-                                name="password"
-                                type="password"
-                                className="form-control"
-                                value={values.password}
-                                onChange={handleChange}
-                            />
-                            {errors && errors.password && touched.password ? (
-                                <span>{errors.password}</span>
-                            ) : null}
-                        </FormGroup>
-                        <FormControl>
-                            <Button
-                                type="submit"
-                                disabled={!isValid}
-                                variant="contained"
-                                color="primary"
-                            >
-                                Submit
-                            </Button>
-                        </FormControl>
-                    </Form>
-                )}
-            </Formik>
+        <div className="loginPage">
+            <div className="main">
+                <div className="top">
+                    <h4 className="title">ĐĂNG NHẬP</h4>
+                </div>
+                <div className="bot">
+                    <Formik
+                        validationSchema={validationSchema}
+                        onSubmit={(value) => handleSubmit(value)}
+                        initialValues={initialValues}
+                    >
+                        {({
+                            errors,
+                            values,
+                            touched,
+                            isValid,
+                            handleChange,
+                        }) => (
+                            <Form className={'from'}>
+                                {message && <span>{message}</span>}
+                                <FormGroup className={'form__group'}>
+                                    <InputLabel>Tên đăng nhập</InputLabel>
+                                    <input
+                                        id="username"
+                                        label="Tên Đăng Nhập"
+                                        name="username"
+                                        className="form-control"
+                                        value={values.username}
+                                        onChange={handleChange}
+                                    />
+                                    {errors &&
+                                    errors.username &&
+                                    touched.username ? (
+                                        <span className="error">
+                                            {errors.username}
+                                        </span>
+                                    ) : null}
+                                </FormGroup>
+                                <FormGroup className={'form__group'}>
+                                    <InputLabel>Mật khẩu</InputLabel>
+                                    <input
+                                        id="password"
+                                        label="Mật khẩu"
+                                        name="password"
+                                        type="password"
+                                        className="form-control"
+                                        value={values.password}
+                                        onChange={handleChange}
+                                    />
+                                    {errors &&
+                                    errors.password &&
+                                    touched.password ? (
+                                        <span className="error">
+                                            {errors.password}
+                                        </span>
+                                    ) : null}
+                                </FormGroup>
+                                <div className="group-btn">
+                                    <div className="btn-group">
+                                        <Button
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                history.push('/register');
+                                            }}
+                                            variant="contained"
+                                            color="secondary"
+                                        >
+                                            Đăng ký
+                                        </Button>
+                                    </div>
+                                    <div className="btn-group">
+                                        <Button
+                                            type="submit"
+                                            disabled={!isValid}
+                                            variant="contained"
+                                            color="primary"
+                                        >
+                                            Đăng nhập
+                                        </Button>
+                                    </div>
+                                </div>
+                            </Form>
+                        )}
+                    </Formik>
+                </div>
+            </div>
             {isLoading && (
                 <Backdrop
                     className={classes.backdrop}
@@ -148,7 +183,7 @@ function LoginPage(props) {
                     <CircularProgress color="inherit" />
                 </Backdrop>
             )}
-        </Fragment>
+        </div>
     );
 }
 
