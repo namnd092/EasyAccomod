@@ -33,4 +33,26 @@ namespace EasyAccomod.Dtos
         public IEnumerable<SimplePostDto> SimplePostDtos { get; set; }
         public int MaxPage { get; set; }
     }
+
+    public class AdminSimplePostDto
+    {
+        public int Id { get; set; }
+
+        public string Title { get; set; }
+
+        public string DateAdded { get; set; }
+
+        public string OwnerName { get; set; }
+
+        public string OwnerEmail { get; set; }
+
+        public string Status { get; set; }
+    }
+
+    public class ListAdminSimplePost
+    {
+        public IEnumerable<AdminSimplePostDto> SimplePostDtos { get; set; }
+
+        public int MaxPage { get; set; }
+    }
 }

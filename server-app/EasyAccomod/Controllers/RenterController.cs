@@ -145,7 +145,9 @@ namespace EasyAccomod.Controllers
 
             var accountId = User.Identity.GetUserId();
             reportDto.RenterId = _context.Renters.Single(r => r.AccountId == accountId).Id;
-            if (_context.Reports.SingleOrDefault(c => c.RenterId == reportDto.RenterId) != null)
+            if (_context.Reports
+                    .SingleOrDefault(r => r.RenterId == reportDto.RenterId
+                                          && r.AccommodationRentalPostId == reportDto.AccommodationRentalPostId) != null)
                 return BadRequest("Each Renter should be report only 1 time.");
 
             var report = Mapper.Map<ReportDto, Report>(reportDto);

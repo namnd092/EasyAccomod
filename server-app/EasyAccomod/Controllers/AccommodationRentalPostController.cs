@@ -222,21 +222,20 @@ namespace EasyAccomod.Controllers
                 .Include(p => p.Accommodation.RoomAreaRange)
                 .Include(p => p.Accommodation.Status)
                 .SingleOrDefault(r => r.Id == id);
+
             if (rentalPost == null)
                 return NotFound();
 
-            if (!User.IsInRole(RoleName.Admin) || !User.IsInRole(RoleName.Owner))
+            if (rentalPost.DateExpired < DateTime.Now || rentalPost.Status.Name != RentalPostStatusName.Approved)
             {
-                if (rentalPost.DateExpired < DateTime.Now || rentalPost.Status.Name != RentalPostStatusName.Approved)
-                    return NotFound();
-            }
-            else if (User.IsInRole(RoleName.Owner))
-            {
-                if (rentalPost.DateExpired < DateTime.Now || rentalPost.Status.Name != RentalPostStatusName.Approved)
+                if (User.IsInRole(RoleName.Owner))
                 {
                     if (rentalPost.Accommodation.Owner.AccountId != User.Identity.GetUserId())
                         return NotFound();
                 }
+
+                if (!User.IsInRole(RoleName.Admin))
+                    return NotFound();
             }
 
             var rentalPostDto = Mapper.Map<AccommodationRentalPost, AccommodationRentalPostDto>(rentalPost);
@@ -431,6 +430,15 @@ namespace EasyAccomod.Controllers
                 .ToList().ConvertAll(Mapper.Map<Comment, CommentDto>);
 
             return Ok(listComments);
+        }
+
+        // GET	api/RentalPosts/Statuses
+        [HttpGet]
+        [Route("Statuses")]
+        public IHttpActionResult GetPostStatuses()
+        {
+            var statuses = _context.RentalPostStatuses.ToList();
+            return Ok(statuses);
         }
     }
 }

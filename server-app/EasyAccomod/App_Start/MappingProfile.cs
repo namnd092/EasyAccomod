@@ -31,6 +31,11 @@ namespace Vidly.App_Start
                 .ForMember(p => p.AccommodationProvince, act => act.MapFrom(p => p.Accommodation.Address.Province.Name))
                 .ForMember(p => p.Pictures, act => act.MapFrom(p => p.AccommodationPictures))
                 .ForMember(p => p.RoomArea, act => act.MapFrom(p => p.Accommodation.RoomAreaRange.Range));
+            Mapper.CreateMap<AccommodationRentalPost, AdminSimplePostDto>()
+                .ForMember(p => p.OwnerName, act => act.MapFrom(p => p.Accommodation.Owner.Name))
+                .ForMember(p => p.OwnerEmail, act => act.MapFrom(p => p.Accommodation.Owner.Email))
+                .ForMember(p => p.Status, act => act.MapFrom(p => p.Status.Name))
+                .ForMember(p => p.DateAdded, act => act.MapFrom(p => p.DateAdded.ToShortDateString()));
 
             Mapper.CreateMap<ExtendRentalPostPeriod, ExtendRentalPostPeriodDto>();
 

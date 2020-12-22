@@ -42,16 +42,19 @@ namespace EasyAccomod.Controllers
             switch (confirmationStatus)
             {
                 case 1:
+                    // Owner has been approved
                     listOwnersInDb = listOwnersInDb
                         .Where(o => _userManager.IsInRole(o.AccountId, RoleName.Owner)).ToList();
                     break;
 
                 case -1:
+                    // Owner are waiting for confirmation
                     listOwnersInDb = listOwnersInDb
                         .Where(o => _userManager.IsInRole(o.AccountId, RoleName.WaitForConfirmation)).ToList();
                     break;
 
                 default:
+                    // All Owner
                     if (confirmationStatus != 0)
                         return BadRequest("Invalid input: confirmationStatus.");
                     break;
@@ -74,6 +77,7 @@ namespace EasyAccomod.Controllers
 
         // POST api/Admin/SetOwner
         [HttpPost]
+        [Route("SetOwner")]
         public IHttpActionResult SetOwner(SetRoleBindingModel model)
         {
             if (!ModelState.IsValid)
@@ -97,7 +101,34 @@ namespace EasyAccomod.Controllers
             }
             _userManager.AddToRole(user.Id, RoleName.Owner);
 
-            return Ok();
+            return Ok("Approved");
+        }
+
+        // POST	api/Admin/RejectOwner
+        [HttpPost]
+        [Route("RejectOwner")]
+        public IHttpActionResult RejectOwner(SetRoleBindingModel model)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var user = _context.Users.SingleOrDefault(u => u.Id == model.AccountId);
+            if (user == null)
+                return BadRequest("The user have account id " + model.AccountId + " does not exist.");
+
+            var owner = _context.Owners.SingleOrDefault(o => o.AccountId == user.Id);
+            if (owner == null)
+                return BadRequest("The user have account id " + model.AccountId + " is not an Owner.");
+
+            if (!_userManager.IsInRole(model.AccountId, RoleName.WaitForConfirmation))
+                return BadRequest("User has been approved.");
+
+            _context.Owners.Remove(owner);
+            _context.SaveChanges();
+            _userManager.Delete(user);
+            _context.SaveChanges();
+
+            return Ok("Rejected");
         }
 
         // PUT	api/Admin/RentalPosts/1/SetStatus
@@ -123,6 +154,40 @@ namespace EasyAccomod.Controllers
             _context.SaveChanges();
 
             return Ok();
+        }
+
+        // GET	api/Admin/RentalPosts
+        [HttpGet]
+        [Route("RentalPosts")]
+        public IHttpActionResult SearchPostByStatus(int _page = 1, int _limit = 10, byte statusId = 0)
+        {
+            if (_page < 1)
+                return BadRequest("Page must be at least 1.");
+
+            var postInDb = _context.AccommodationRentalPosts
+                .Include(p => p.Accommodation.Owner)
+                .Include(p => p.Status);
+
+            if (statusId != 0)
+            {
+                if (!_context.RentalPostStatuses.Any(s => s.Id == statusId))
+                    return BadRequest("Status does not exist.");
+
+                postInDb = postInDb.Where(p => p.StatusId == statusId);
+            }
+
+            var listSimplePost = new ListAdminSimplePost()
+            {
+                MaxPage = (int)Math.Ceiling(1.0 * postInDb.Count() / _limit)
+            };
+
+            listSimplePost.SimplePostDtos = postInDb.OrderBy(p => p.Id)
+                .Skip(_limit * (_page - 1))
+                .Take(_limit)
+                .ToList()
+                .ConvertAll(Mapper.Map<AccommodationRentalPost, AdminSimplePostDto>);
+
+            return Ok(listSimplePost);
         }
     }
 }
