@@ -1,7 +1,8 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
@@ -188,6 +189,86 @@ namespace EasyAccomod.Controllers
                 .ConvertAll(Mapper.Map<AccommodationRentalPost, AdminSimplePostDto>);
 
             return Ok(listSimplePost);
+        }
+
+        // GET	api/Admin/RentalPosts/ExtendPeriod
+        [HttpGet]
+        [Route("RentalPosts/ExtendPeriod")]
+        public IHttpActionResult GetExtendPeriodPost(int _page = 1, int _limit = 10)
+        {
+            if (_page < 1)
+                return BadRequest("Page >= 1");
+
+            var listPost = _context.AccommodationRentalPosts
+                .Include(p => p.Accommodation.Owner)
+                .Include(p => p.Status)
+                .Join(_context.ExtendRentalPostPeriods, p => p.Id, e => e.AccommodationRentalPostId
+                    , (p, e) => new
+                    {
+                        p.Id,
+                        p.Title,
+                        p.DateAdded,
+                        OwnerName = p.Accommodation.Owner.Name,
+                        OwnerEmail = p.Accommodation.Owner.Email,
+                        Status = p.Status.Name,
+                        e.ExtendPeriod,
+                        ExtendId = e.Id
+                    });
+
+            var result = new
+            {
+                MaxPage = (int)Math.Ceiling(1.0 * listPost.Count() / _limit),
+                ListPost = listPost.OrderBy(p => p.Id)
+                    .Skip(_limit * (_page - 1))
+                    .Take(_limit)
+                    .ToList()
+            };
+
+            return Ok(result);
+        }
+
+        // POST api/Admin/RentalPost/ExtendPeriod/Approve
+        [HttpPost]
+        [Route("RentalPost/ExtendPeriod/Approve")]
+        public IHttpActionResult ApproveExtend(ExtendId extendId)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var extend = _context.ExtendRentalPostPeriods.SingleOrDefault(e => e.Id == extendId.Id);
+
+            if (extend == null)
+                return BadRequest("Extend request does not exits.");
+
+            var post = _context.AccommodationRentalPosts.SingleOrDefault(p => p.Id == extend.AccommodationRentalPostId);
+
+            if (post == null)
+                return BadRequest("Post not found.");
+
+            post.DateExpired = post.DateExpired.Add(new TimeSpan(extend.ExtendPeriod, 0, 0, 0));
+            _context.ExtendRentalPostPeriods.Remove(extend);
+            _context.SaveChanges();
+
+            return Ok("Approved");
+        }
+
+        // POST api/Admin/RentalPost/ExtendPeriod/Reject
+        [HttpPost]
+        [Route("RentalPost/ExtendPeriod/Reject")]
+        public IHttpActionResult RejectExtend(ExtendId extendId)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var extend = _context.ExtendRentalPostPeriods.SingleOrDefault(e => e.Id == extendId.Id);
+
+            if (extend == null)
+                return BadRequest("Extend request does not exits.");
+
+            _context.ExtendRentalPostPeriods.Remove(extend);
+            _context.SaveChanges();
+
+            return Ok("Rejected");
         }
     }
 }
