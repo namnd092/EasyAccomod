@@ -5,7 +5,9 @@ const Card = (props) => {
     const { children, title } = props;
     return (
         <div class="card">
-            <h5 class="card-header">{title}</h5>
+            <h5 class="card-header" style={{ background: 'pink' }}>
+                {title}
+            </h5>
             <div class="card-body">{children}</div>
         </div>
     );

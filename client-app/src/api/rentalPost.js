@@ -117,6 +117,16 @@ const rentalPost = {
         const url = ApiUrl.IS_REPORTED + '?postId=' + postId;
         return axiosClient.get(url);
     },
+    getRentalPost(_page, _limit, statusId) {
+        const url =
+            ApiUrl.GET_RENTAL_POSTS_BY_STATUS +
+            `?_page=${_page}&_limit=${_limit}&statusId=${statusId}`;
+        return axiosClient.get(url);
+    },
+    setStatusRentalPost(id, postId) {
+        const url = ApiUrl.SET_STATUS_RENTAL_POST(postId);
+        return axiosClient.put(url, { id });
+    },
 };
 
 export default rentalPost;

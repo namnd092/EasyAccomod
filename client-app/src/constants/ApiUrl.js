@@ -31,6 +31,12 @@ const ApiUrl = {
     IS_REPORTED: 'api/Renter/RenterPost/isReported',
     GET_VIEW: (postId) => `api/RentalPosts/${postId}/Views`,
     GET_LIKE: (postId) => `api/RentalPosts/${postId}/Likes`,
+    GET_RENTAL_POSTS_BY_STATUS: 'api/Admin/RentalPosts',
+    SET_STATUS_RENTAL_POST: (postId) =>
+        `api/Admin/RentalPosts/${postId}/SetStatus`,
+    REQUIRE_EDIT_INFO: 'api/Owner/RequireEditInfo',
+    PUT_EDIT_PROFILE: 'api/Owner/EditInfo',
+    GET_CAN_EDIT_PROFILE: 'api/Owner/Info/CanEdit',
 
     CLOUDINARY_UPLOAD_URL:
         'https://api.cloudinary.com/v1_1/dsysolkex/image/upload',

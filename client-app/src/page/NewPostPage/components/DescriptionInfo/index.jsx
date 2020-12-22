@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { FormGroup, FormLabel, TextareaAutosize } from '@material-ui/core';
-import JoditEditor from 'jodit-react';
+// import JoditEditor from 'jodit-react';
 
 DescriptionInfo.propTypes = {
     handleDescriptionInfoChange: PropTypes.func,
@@ -16,6 +16,7 @@ function DescriptionInfo(props) {
         errors,
         touched,
         handleChange,
+        handleBlur,
     } = props;
     return (
         <div class="card mt-4">

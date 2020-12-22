@@ -93,7 +93,7 @@ export default function MyPostPage() {
                     </tbody>
                 </table>
             </Card>
-            <Card title="Bài đăng đã bị từ chối">
+            {/* <Card title="Bài đăng đã bị từ chối">
                 <table class="table">
                     <thead>
                         <tr>
@@ -107,7 +107,7 @@ export default function MyPostPage() {
                     <tbody>
                         <tr>
                             <th scope="row">1</th>
-                            <td>{/* <PostItem /> */}</td>
+                            <td></td>
                             <td>
                                 <button className="btn btn-danger">
                                     <i class="fas fa-trash-alt"></i> Xóa
@@ -116,17 +116,17 @@ export default function MyPostPage() {
                         </tr>
                         <tr>
                             <th scope="row">2</th>
-                            <td>{/* <PostItem /> */}</td>
+                            <td></td>
                             <td>@fat</td>
                         </tr>
                         <tr>
                             <th scope="row">3</th>
-                            <td>{/* <PostItem /> */}</td>
+                            <td></td>
                             <td>@twitter</td>
                         </tr>
                     </tbody>
                 </table>
-            </Card>
+            </Card> */}
         </div>
     );
 }

@@ -35,6 +35,18 @@ const authApi = {
             `?_page=${_page}&_limit=${_limit}&confirmationStatus=${-1}`;
         return axiosClient.get(url);
     },
+    postRequireEditInfo() {
+        const url = ApiUrl.REQUIRE_EDIT_INFO;
+        return axiosClient.post(url);
+    },
+    putEditProfile(params) {
+        const url = ApiUrl.PUT_EDIT_PROFILE;
+        return axiosClient.put(url, params);
+    },
+    getCanEditProfile() {
+        const url = ApiUrl.GET_CAN_EDIT_PROFILE;
+        return axiosClient.get(url);
+    },
 };
 
 export default authApi;

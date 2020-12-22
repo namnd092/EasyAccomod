@@ -4,6 +4,7 @@ import Card from '../../../../share/components/card';
 import authApi from '../../../../api/authApi';
 import AccountItem from './accountItem';
 import THeadComponent from './thead';
+import AccItemSuccess from './accountItemSuccess';
 
 const Account = () => {
     const [accountRegisterPending, setAccountRegisterPending] = React.useState(
@@ -106,13 +107,22 @@ const Account = () => {
             </Card>
             <Card title={'Tài khoản đã xác nhận'}>
                 <table class="table table-hover">
-                    <THeadComponent />
+                    <thead>
+                        <tr>
+                            <th scope="col">STT</th>
+                            <th scope="col">Tên</th>
+                            <th scope="col">CMTND/CCCD</th>
+                            <th scope="col">Địa chỉ</th>
+                            <th scope="col">SDT</th>
+                            <th scope="col">Email</th>
+                        </tr>
+                    </thead>
                     <tbody>
                         {accountSuccess.length === 0 ? (
                             <p>Không tìm thấy tài khoản nào</p>
                         ) : (
                             accountSuccess.map((item, index) => (
-                                <AccountItem
+                                <AccItemSuccess
                                     key={item.id}
                                     account={item}
                                     index={index}

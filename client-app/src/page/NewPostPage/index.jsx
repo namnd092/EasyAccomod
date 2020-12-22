@@ -97,6 +97,7 @@ function NewPostPage(props) {
                                     values={values}
                                     setFieldValue={setFieldValue}
                                     handleChange={handleChange}
+                                    handleBlur={handleBlur}
                                 />
                                 <ImgInfo
                                     errors={errors}
