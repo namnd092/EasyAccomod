@@ -37,10 +37,11 @@ namespace EasyAccomod.Controllers
             if (_page > Math.Ceiling(1.0 * _context.AccommodationRentalPosts.Count() / _limit))
                 return NotFound();
 
+            var accountId = User.Identity.GetUserId();
             var rentalPostsInDb = _context.AccommodationRentalPosts
                 .Include(p => p.AccommodationPictures)
                 .Include(p => p.Accommodation.Address)
-                .Where(p => p.Accommodation.Owner.AccountId == User.Identity.GetUserId());
+                .Where(p => p.Accommodation.Owner.AccountId == accountId);
 
             if (statusId != 0)
                 rentalPostsInDb = rentalPostsInDb.Where(p => p.StatusId == statusId);
@@ -117,6 +118,13 @@ namespace EasyAccomod.Controllers
         [Route("RentalPosts/ExtendPeriod")]
         public IHttpActionResult ExtendRentalPostPeriod(ExtendRentalPostPeriodDto extendRentalPostPeriodDto)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            if (_context.ExtendRentalPostPeriods.Any(e =>
+                e.AccommodationRentalPostId == extendRentalPostPeriodDto.AccommodationRentalPostId))
+                return BadRequest("Please wait until the previous request has been resolved.");
+
             var rentalPostInDb =
                 _context.AccommodationRentalPosts
                     .Include(p => p.Accommodation.Owner)
