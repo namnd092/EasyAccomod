@@ -431,5 +431,14 @@ namespace EasyAccomod.Controllers
 
             return Ok(listComments);
         }
+
+        // GET	api/RentalPosts/Statuses
+        [HttpGet]
+        [Route("Statuses")]
+        public IHttpActionResult GetPostStatuses()
+        {
+            var statuses = _context.RentalPostStatuses.ToList();
+            return Ok(statuses);
+        }
     }
 }
