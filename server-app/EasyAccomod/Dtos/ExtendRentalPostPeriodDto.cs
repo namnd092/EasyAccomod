@@ -18,4 +18,10 @@ namespace EasyAccomod.Dtos
         [Range(1, 365)]
         public int ExtendPeriod { get; set; }
     }
+
+    public class ExtendId
+    {
+        [Required]
+        public int? Id { get; set; }
+    }
 }
