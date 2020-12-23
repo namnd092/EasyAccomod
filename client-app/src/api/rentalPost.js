@@ -127,6 +127,31 @@ const rentalPost = {
         const url = ApiUrl.SET_STATUS_RENTAL_POST(postId);
         return axiosClient.put(url, { id });
     },
+    getExtendRentalPost(_page, _limit) {
+        const url =
+            ApiUrl.GET_EXTEND_RENTAL_POST + `?_page=${_page}&_limit=${_limit}`;
+        return axiosClient.get(url);
+    },
+    postApproveExtend(extendId) {
+        const url = ApiUrl.APPROVE_EXTEND;
+        return axiosClient.post(url, { extendId });
+    },
+    postRejectExtend(extendId) {
+        const url = ApiUrl.REJECT_EXTEND;
+        return axiosClient.post(url, { extendId });
+    },
+    getCommendPending() {
+        const url = ApiUrl.GET_COMMENT_PENDING;
+        return axiosClient.get(url);
+    },
+    postApproveComment(id) {
+        const url = ApiUrl.APPROVE_COMMENT;
+        return axiosClient.post(url, { id });
+    },
+    postRejectComment(id) {
+        const url = ApiUrl.REJECT_COMMENT;
+        return axiosClient.post(url, { id });
+    },
 };
 
 export default rentalPost;

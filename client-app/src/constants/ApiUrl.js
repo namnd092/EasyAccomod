@@ -37,6 +37,12 @@ const ApiUrl = {
     REQUIRE_EDIT_INFO: 'api/Owner/RequireEditInfo',
     PUT_EDIT_PROFILE: 'api/Owner/EditInfo',
     GET_CAN_EDIT_PROFILE: 'api/Owner/Info/CanEdit',
+    GET_EXTEND_RENTAL_POST: 'api/Admin/RentalPosts/ExtendPeriod',
+    APPROVE_EXTEND: 'api/Admin/RentalPost/ExtendPeriod/Approve',
+    REJECT_EXTEND: 'api/Admin/RentalPost/ExtendPeriod/Reject',
+    GET_COMMENT_PENDING: 'api/Admin/PendingComment',
+    APPROVE_COMMENT: 'api/Admin/ApproveComment',
+    REJECT_COMMENT: 'api/Admin/RejectComment',
 
     CLOUDINARY_UPLOAD_URL:
         'https://api.cloudinary.com/v1_1/dsysolkex/image/upload',

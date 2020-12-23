@@ -69,8 +69,10 @@ function CommentInfo(props) {
         async function isCommented() {
             try {
                 const response = await rentalPost.isCommented(postId);
-                setIsCommented(response);
-            } catch (error) {}
+                setIsCommented(response.data);
+            } catch (error) {
+                console.log(error);
+            }
         }
         isCommented();
     }, []);

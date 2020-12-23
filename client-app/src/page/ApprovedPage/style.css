@@ -5,3 +5,6 @@
 button:focus{
     outline: none;
 }
+.approvedPage .card{
+    margin-bottom: 30px;
+}
