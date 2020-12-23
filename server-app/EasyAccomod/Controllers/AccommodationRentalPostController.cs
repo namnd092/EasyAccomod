@@ -233,8 +233,7 @@ namespace EasyAccomod.Controllers
                     if (rentalPost.Accommodation.Owner.AccountId != User.Identity.GetUserId())
                         return NotFound();
                 }
-
-                if (!User.IsInRole(RoleName.Admin))
+                else if (!User.IsInRole(RoleName.Admin))
                     return NotFound();
             }
 
