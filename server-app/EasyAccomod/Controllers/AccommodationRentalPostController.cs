@@ -270,7 +270,7 @@ namespace EasyAccomod.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            if (accommodationRentalPostDto.AccommodationPictures.Count() < 3)
+            if (accommodationRentalPostDto.AccommodationPictures.Count < 3)
                 return BadRequest("Please upload at least 3 pictures.");
 
             if (User.IsInRole(RoleName.Admin))
@@ -326,22 +326,56 @@ namespace EasyAccomod.Controllers
         [Authorize(Roles = RoleName.Owner + ", " + RoleName.Admin)]
         [HttpPut]
         [Route("Edit/{id}")]
-        public IHttpActionResult EditRentalPost(int id, AccommodationRentalPostDto accommodationRentalPostDto)
+        public IHttpActionResult EditRentalPost(int id, EditPostDto editPostDto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
+            if (editPostDto.AccommodationPictures.Count < 3)
+                return BadRequest("Please upload at least 3 picture.");
+
+            var address = editPostDto.Accommodation.Address;
+            var ward = _context.Wards
+                .Include(w => w.District.Province)
+                .SingleOrDefault(w => w.Id == address.WardId);
+            if (ward == null
+                || ward.DistrictId != address.DistrictId
+                || ward.District.ProvinceId != address.ProvinceId)
+                return BadRequest("Address does not exist.");
+
             var rentalPostInDb = _context.AccommodationRentalPosts
                 .Include(p => p.Status)
+                .Include(p => p.Accommodation.Address)
+                .Include(p => p.AccommodationPictures)
                 .SingleOrDefault(p => p.Id == id);
 
             if (rentalPostInDb == null)
-                return NotFound();
+                return BadRequest("Post not found.");
 
             if (rentalPostInDb.Status.Name != RentalPostStatusName.PendingApproval)
                 return BadRequest("Can not edit post. Post status: " + rentalPostInDb.Status.Name);
 
-            Mapper.Map(accommodationRentalPostDto, rentalPostInDb);
+            rentalPostInDb.Title = editPostDto.Title;
+            rentalPostInDb.Content = editPostDto.Content;
+
+            rentalPostInDb.AccommodationPictures
+                .ToList()
+                .ForEach(p => _context.AccommodationPictures.Remove(p));
+
+            foreach (var accommodationPictureDto in editPostDto.AccommodationPictures)
+            {
+                _context.AccommodationPictures
+                    .Add(new AccommodationPicture()
+                    {
+                        PictureLink = accommodationPictureDto.PictureLink,
+                        AccommodationRentalPostId = id
+                    });
+            }
+
+            editPostDto.Accommodation.StatusId = rentalPostInDb.Accommodation.StatusId;
+            editPostDto.Accommodation.AddressId = rentalPostInDb.Accommodation.AddressId;
+            editPostDto.Accommodation.OwnerId = rentalPostInDb.Accommodation.OwnerId;
+            rentalPostInDb.Accommodation = Mapper.Map<AccommodationDto, Accommodation>(editPostDto.Accommodation);
 
             if (User.IsInRole(RoleName.Admin))
                 rentalPostInDb.StatusId = _context.RentalPostStatuses.Single(s => s.Name == RentalPostStatusName.Approved).Id;
