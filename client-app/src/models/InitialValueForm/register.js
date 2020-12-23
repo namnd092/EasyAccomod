@@ -5,8 +5,8 @@ const ownerRegisterInitialValue = {
     name: '',
     email: '',
     address: '',
-    identification: 0,
-    phone: 0,
+    identification: '',
+    phone: '',
 };
 const renterRegisterInitialValue = {
     username: '',

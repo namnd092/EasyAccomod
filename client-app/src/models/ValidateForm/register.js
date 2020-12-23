@@ -21,12 +21,14 @@ const ownerRegisterValidationSchema = Yup.object().shape({
     address: Yup.string()
         .required(errorMessage.require)
         .min(3, errorMessage.min(3)),
-    identification: Yup.number()
+    identification: Yup.string()
         .required(errorMessage.require)
-        .min(8, errorMessage.min(8)),
-    phone: Yup.number()
+        .min(1, errorMessage.min(1))
+        .max(12, errorMessage.max(12)),
+    phone: Yup.string()
         .required(errorMessage.require)
-        .min(7, errorMessage.min(7)),
+        .min(10, errorMessage.min(10))
+        .matches(/^0[1-9]{1}[0-9]{8}$/, 'Số điện thoại chưa chính xác'),
 });
 const renterRegisterValidationSchema = Yup.object().shape({
     username: Yup.string()

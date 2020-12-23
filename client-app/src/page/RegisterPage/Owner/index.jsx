@@ -112,7 +112,7 @@ export default function OwnerRegister(props) {
                             <FormGroup className="col-6">
                                 <FormLabel>Số điện thoại</FormLabel>
                                 <Field
-                                    type="number"
+                                    type="text"
                                     name="phone"
                                     className="form-control"
                                     value={values.phone}
@@ -127,7 +127,7 @@ export default function OwnerRegister(props) {
                             <FormGroup className="col-6">
                                 <FormLabel>CMTND/CCCD</FormLabel>
                                 <Field
-                                    type="number"
+                                    type="text"
                                     name="identification"
                                     className="form-control"
                                     value={values.identification}

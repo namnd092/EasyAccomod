@@ -10,19 +10,19 @@ function ImgInfo(props) {
     const image1 = [
         {
             url:
-                'https://res.cloudinary.com/dsysolkex/image/upload/v1604751491/jcnqq8zdrtsxc4fkm9bt.jpg',
+                'https://news.mogi.vn//wp-content/uploads/2018/11/mo-hinh-cho-thue-phong-tro-nao-thu-duoc-nhieu-tien-nhat-2018-3.png',
         },
         {
             url:
-                'https://res.cloudinary.com/dsysolkex/image/upload/v1604751431/xexkcc7lnjepsoabqr92.jpg',
+                'https://news.mogi.vn/wp-content/uploads/2019/06/cho-thue-phong-tro-cao-cap-anh-1.jpg',
         },
         {
             url:
-                'https://res.cloudinary.com/dsysolkex/image/upload/v1604751429/jmryxivgrjrsxgwyhmqr.jpg',
+                'https://d34zoy7mey8f6f.cloudfront.net/article_avatar/1568688779.jpg',
         },
         {
             url:
-                'https://res.cloudinary.com/dsysolkex/image/upload/v1607705664/pexels-simon-matzinger-1183099_zxzit1.jpg',
+                'https://file4.batdongsan.com.vn/2018/08/07/20180807181855-d70c_wm.jpg',
         },
     ];
     const [imgArr, setImgArr] = React.useState(image1);

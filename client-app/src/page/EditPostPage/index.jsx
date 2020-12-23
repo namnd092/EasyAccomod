@@ -16,7 +16,7 @@ import newPostInitialValue from '../../models/InitialValueForm/newPost';
 import newPostValidationSchema from '../../models/ValidateForm/newPost';
 
 import uploadMultipleFile from '../../utils/cloudinaryUpload';
-import { useParams } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import rentalPost from '../../api/rentalPost';
 import EditPostForm from './Form';
 
@@ -25,6 +25,7 @@ registerPlugin(FilePondPluginImageExifOrientation, FilePondPluginImagePreview);
 
 const EditPostPage = () => {
     const { id } = useParams();
+    const history = useHistory();
     const [files, setFiles] = React.useState([
         'https://res.cloudinary.com/dsysolkex/image/upload/v1604846728/vth1yoqreqgzzeww0dby.jpg',
     ]);
@@ -76,14 +77,11 @@ const EditPostPage = () => {
             }
         });
         console.log(newFiles);
-        let fileUploaded = [];
+
         try {
-            if (typeof newFiles[0] !== 'string') {
-                const fileUploaded = await uploadMultipleFile(newFiles);
-                console.log(fileUploaded);
-            } else {
-                fileUploaded = [...newFiles];
-            }
+            const fileUploaded = await uploadMultipleFile(newFiles);
+            console.log(fileUploaded);
+
             const newAccommodationPictures = fileUploaded.map((e) => ({
                 PictureLink: e,
             }));
@@ -95,6 +93,8 @@ const EditPostPage = () => {
             console.log(response);
         } catch (error) {
             console.log(error);
+        } finally {
+            history.push('/my-post');
         }
     };
 
