@@ -339,21 +339,17 @@ namespace EasyAccomod.Controllers
             if (rentalPostInDb == null)
                 return NotFound();
 
-            if (User.IsInRole(RoleName.Owner))
-            {
-                if (rentalPostInDb.Status.Name != RentalPostStatusName.Editing)
-                    return BadRequest("Can not edit post. Post status: " + rentalPostInDb.Status.Name);
-            }
+            if (rentalPostInDb.Status.Name != RentalPostStatusName.PendingApproval)
+                return BadRequest("Can not edit post. Post status: " + rentalPostInDb.Status.Name);
 
             Mapper.Map(accommodationRentalPostDto, rentalPostInDb);
 
-            rentalPostInDb.StatusId = User.IsInRole(RoleName.Owner)
-                ? _context.RentalPostStatuses.Single(s => s.Name == RentalPostStatusName.PendingApproval).Id
-                : _context.RentalPostStatuses.Single(s => s.Name == RentalPostStatusName.Approved).Id;
+            if (User.IsInRole(RoleName.Admin))
+                rentalPostInDb.StatusId = _context.RentalPostStatuses.Single(s => s.Name == RentalPostStatusName.Approved).Id;
 
             _context.SaveChanges();
 
-            return Ok();
+            return Ok("Post has been edited.");
         }
 
         // GET api/RentalPosts/Fee
