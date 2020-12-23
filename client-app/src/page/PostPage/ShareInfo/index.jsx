@@ -62,13 +62,17 @@ function ShareInfo(props) {
         async function isLiked() {
             try {
                 const response = await rentalPost.isLiked(postId);
-                setIsFavorite(response.data);
-            } catch (error) {}
+                // console.log(!response.data ? response : response.data);
+                // setIsFavorite(!response.data ? response : response.data);
+            } catch (error) {
+                console.log(error);
+            }
         }
         isLiked();
         async function isReported() {
             try {
                 const response = await rentalPost.isReported(postId);
+                console.log(response.data);
                 setIsReported(response.data);
             } catch (error) {}
         }
@@ -76,6 +80,7 @@ function ShareInfo(props) {
         async function getNumberOfLike() {
             try {
                 const response = await rentalPost.getLikes(postId);
+                console.log(response.data);
                 setNumberOfLike(response.data);
             } catch (error) {
                 console.log(error);
@@ -85,6 +90,7 @@ function ShareInfo(props) {
         async function getNumberOfView() {
             try {
                 const response = await rentalPost.getViews(postId);
+                console.log(response.data);
                 setNumberOfView(response.data);
             } catch (error) {
                 console.log(error);

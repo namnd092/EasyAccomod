@@ -1,8 +1,20 @@
 import React from 'react';
+import rentalPost from '../../api/rentalPost';
 import Card from '../../share/components/card';
 import PostItem from '../HomePage/components/PostList/PostItem';
 
 export default function MyPostPage() {
+    React.useEffect(() => {
+        async function getList() {
+            try {
+                const response = await rentalPost.getOwnerRentalPost();
+                console.log(response);
+            } catch (error) {
+                console.log(error);
+            }
+        }
+        getList();
+    }, []);
     return (
         <div>
             <Card title="Bài đăng đã xác nhận">
@@ -22,24 +34,15 @@ export default function MyPostPage() {
                             <td>{/* <PostItem /> */}</td>
                             <td>
                                 <button className="btn btn-primary">
-                                    <i class="fas fa-edit"></i> Cập nhật trạng
-                                    thái
+                                    <i class="fas fa-edit"></i> Đã cho thuê /
+                                    Chưa cho thuê
                                 </button>
                                 <button className="btn btn-primary">
                                     <i class="fas fa-edit"></i> Gia hạn
                                 </button>
                                 <button className="btn btn-primary">
-                                    <i class="fas fa-edit"></i> Xin chỉnh sửa
-                                </button>
-                                <button className="btn btn-primary">
                                     <i class="fas fa-edit"></i> Chờ xác nhận
                                     chỉnh sửa
-                                </button>
-                                <button className="btn btn-primary">
-                                    <i class="fas fa-edit"></i> Chỉnh sửa
-                                </button>
-                                <button className="btn btn-danger">
-                                    <i class="fas fa-trash-alt"></i> Xóa
                                 </button>
                             </td>
                         </tr>
@@ -74,9 +77,6 @@ export default function MyPostPage() {
                             <td>
                                 <button className="btn btn-primary">
                                     <i class="fas fa-edit"></i> Chỉnh sửa
-                                </button>
-                                <button className="btn btn-danger">
-                                    <i class="fas fa-trash-alt"></i> Hủy
                                 </button>
                             </td>
                         </tr>

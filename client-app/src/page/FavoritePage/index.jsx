@@ -12,21 +12,36 @@ export default function FavoritePage() {
     const gotoPost = (postId) => {
         history.push(`/post/${postId}`);
     };
-    const handleDislike = (postId) => {
-        //xoa khoi danh sach
+    const handleDislike = async (postId) => {
+        try {
+            const response = await rentalPost.postRenterLikeRentalPost(postId);
+            console.log(response);
+        } catch (error) {
+            console.log(error);
+        } finally {
+            if (postList.length === 1) {
+                setPostList([]);
+            } else {
+                const index = postList.findIndex((e) => e.id === postId);
+                postList.splice(index, 1);
+                console.log(postList);
+                setPostList([...postList]);
+            }
+        }
     };
     React.useEffect(() => {
         async function getPostListEffect() {
             try {
                 const response = await rentalPost.getAllFavoriteRentalPost();
                 console.log(response);
+                setPostList([...response.simplePostDtos]);
             } catch (error) {
                 setPostList([]);
                 console.log(error);
             }
         }
         getPostListEffect();
-    });
+    }, []);
     return (
         <div className="favorite">
             <Card title="Bài đăng yêu thích">
@@ -36,8 +51,7 @@ export default function FavoritePage() {
                             <th scope="col" style={{ minWidth: '10%' }}>
                                 Số thứ tự
                             </th>
-                            <th scope="col">Tiêu đề</th>
-                            <th scope="col">Trạng thái</th>
+                            <th scope="col">Bài đăng</th>
                             <th scope="col">Hành động</th>
                         </tr>
                     </thead>
@@ -46,7 +60,29 @@ export default function FavoritePage() {
                             <p>Không tìm thấy bài viết nào</p>
                         ) : (
                             postList.map((item, index) => (
-                                <FavoriteItem key={index} />
+                                // <FavoriteItem key={index} item={item}/>
+                                <tr>
+                                    <th onClick={() => gotoPost(item.id)}>
+                                        {index + 1}
+                                    </th>
+                                    <td onClick={() => gotoPost(item.id)}>
+                                        <PostItem
+                                            rentalPost={item}
+                                            key={index}
+                                        />
+                                    </td>
+                                    <td>
+                                        <button
+                                            className="btn btn-danger"
+                                            onClick={() =>
+                                                handleDislike(item.id, index)
+                                            }
+                                        >
+                                            <i class="fas fa-heart-broken"></i>{' '}
+                                            Bỏ thích
+                                        </button>
+                                    </td>
+                                </tr>
                             ))
                         )}
                     </tbody>

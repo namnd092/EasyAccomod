@@ -152,6 +152,14 @@ const rentalPost = {
         const url = ApiUrl.REJECT_COMMENT;
         return axiosClient.post(url, { id });
     },
+    getReportPost() {
+        const url = ApiUrl.GET_REPORT_POST;
+        return axiosClient.get(url);
+    },
+    getOwnerRentalPost(_page, _limit, statusId, isExpired) {
+        const url = ApiUrl.GET_OWNER_RENTAL_POST;
+        return axiosClient.get(url);
+    },
 };
 
 export default rentalPost;
