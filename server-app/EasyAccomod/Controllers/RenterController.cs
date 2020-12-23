@@ -174,7 +174,9 @@ namespace EasyAccomod.Controllers
             var accountId = User.Identity.GetUserId();
             var renterId = _context.Renters.Single(r => r.AccountId == accountId).Id;
 
-            return Ok(_context.Likes.Any(l => l.RenterId == renterId && l.AccommodationRentalPostId == postId));
+            var result = _context.Likes.Any(l => l.RenterId == renterId && l.AccommodationRentalPostId == postId);
+
+            return Ok(new { result });
         }
 
         // GET	api/Renter/RentalPost/IsCommented
@@ -191,7 +193,9 @@ namespace EasyAccomod.Controllers
             var accountId = User.Identity.GetUserId();
             var renterId = _context.Renters.Single(r => r.AccountId == accountId).Id;
 
-            return Ok(_context.Comments.Any(l => l.RenterId == renterId && l.AccommodationRentalPostId == postId));
+            var result = _context.Comments.Any(l => l.RenterId == renterId && l.AccommodationRentalPostId == postId);
+
+            return Ok(new { result });
         }
 
         // GET	api/Renter/RentalPost/IsReported
@@ -208,7 +212,9 @@ namespace EasyAccomod.Controllers
             var accountId = User.Identity.GetUserId();
             var renterId = _context.Renters.Single(r => r.AccountId == accountId).Id;
 
-            return Ok(_context.Reports.Any(l => l.RenterId == renterId && l.AccommodationRentalPostId == postId));
+            var result = _context.Reports.Any(l => l.RenterId == renterId && l.AccommodationRentalPostId == postId);
+
+            return Ok(new { result });
         }
     }
 }
