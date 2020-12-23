@@ -19,6 +19,7 @@ import rentalPost from '../../api/rentalPost';
 import { useHistory } from 'react-router-dom';
 import Role from '../../models/data/role';
 import { useSelector } from 'react-redux';
+import TelegramIcon from '@material-ui/icons/Telegram';
 
 NewPostPage.propTypes = {};
 
@@ -126,6 +127,9 @@ function NewPostPage(props) {
                                         variant="contained"
                                         style={{ margin: '20px' }}
                                     >
+                                        <TelegramIcon
+                                            style={{ marginRight: '10px' }}
+                                        />
                                         Đăng Tin
                                     </Button>
                                 </div>

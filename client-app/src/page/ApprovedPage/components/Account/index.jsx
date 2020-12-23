@@ -11,6 +11,8 @@ const Account = () => {
         []
     );
     const [accountSuccess, setAccountSuccess] = React.useState([]);
+    const [accountEditPending, setAccountEditPending] = React.useState([]);
+    const [accountEditRequire, setAccountEditRequire] = React.useState([]);
     React.useEffect(() => {
         async function getAccountRegisterPending() {
             try {
@@ -42,6 +44,28 @@ const Account = () => {
             }
         }
         getAccountSuccess();
+        async function getAccountEditPending() {
+            try {
+                const response = await authApi.getAccountEditPending(1, 15);
+                console.log(response);
+                setAccountEditPending([...response.owners]);
+            } catch (error) {
+                console.log(error);
+                setAccountEditPending([]);
+            }
+        }
+        getAccountEditPending();
+        async function getAccountEditRequire() {
+            try {
+                const response = await authApi.getAccountEditRequire(1, 15);
+                console.log(response);
+                setAccountEditRequire([...response.owners]);
+            } catch (error) {
+                console.log(error);
+                setAccountEditRequire([]);
+            }
+        }
+        getAccountEditRequire();
     }, []);
     return (
         <div className="approved__account">

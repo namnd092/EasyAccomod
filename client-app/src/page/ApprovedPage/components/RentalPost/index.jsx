@@ -27,7 +27,7 @@ const RenterPost = (props) => {
                 const postListSuccessResponse = await rentalPost.getRentalPost(
                     1,
                     100,
-                    0
+                    options[0].value
                 );
                 setAllPost([...postListSuccessResponse.simplePostDtos]);
             } catch (error) {
@@ -41,6 +41,7 @@ const RenterPost = (props) => {
                 const postListSuccessResponse = await rentalPost.getRentalPost(
                     1,
                     100,
+                    // options[2].value || 2
                     2
                 );
                 setPostListSuccess([...postListSuccessResponse.simplePostDtos]);
@@ -55,6 +56,7 @@ const RenterPost = (props) => {
                 const postListRejectResponse = await rentalPost.getRentalPost(
                     1,
                     100,
+                    // options[3].value || 3
                     3
                 );
                 setPostListReject([...postListRejectResponse.simplePostDtos]);
@@ -69,6 +71,7 @@ const RenterPost = (props) => {
                 const postListPendingResponse = await rentalPost.getRentalPost(
                     1,
                     100,
+                    // options[1].value || 1
                     1
                 );
                 setPostListPending([...postListPendingResponse.simplePostDtos]);
@@ -104,7 +107,10 @@ const RenterPost = (props) => {
     };
     const handleResolve = async (postId, index) => {
         try {
-            const response = await rentalPost.setStatusRentalPost(1, postId);
+            const response = await rentalPost.setStatusRentalPost(
+                options[2].value,
+                postId
+            );
             console.log(response);
         } catch (error) {
             console.log(error);
@@ -117,7 +123,10 @@ const RenterPost = (props) => {
     };
     const handleConfirm = async (postId, index) => {
         try {
-            const response = await rentalPost.setStatusRentalPost(1, postId);
+            const response = await rentalPost.setStatusRentalPost(
+                options[2].value,
+                postId
+            );
             console.log(response);
         } catch (error) {
             console.log(error);

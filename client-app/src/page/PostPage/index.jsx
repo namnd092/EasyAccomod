@@ -1,4 +1,5 @@
 import React from 'react';
+import './style.css';
 import PropTypes from 'prop-types';
 import { useHistory, useParams } from 'react-router-dom';
 import {} from '@material-ui/core';
@@ -46,7 +47,7 @@ function PostPage(props) {
         owner,
     } = rentalPostInfo;
     return (
-        <div>
+        <div className="postPage">
             <BasicInfo
                 basicInfo={{
                     accommodation,
@@ -58,7 +59,7 @@ function PostPage(props) {
             />
             <DescriptionInfo descriptionInfo={content} />
             <ImgInfo imgInfo={rentalPostInfo.accommodationPictures} />
-            <ShareInfo shareInfo={{ rate }} postId={id} />
+            <ShareInfo shareInfo={{ rate }} postId={id} rate={rate} />
             <CommentInfo postId={id} />
         </div>
     );

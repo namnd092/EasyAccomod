@@ -7,7 +7,7 @@ DescriptionInfo.propTypes = {};
 function DescriptionInfo(props) {
     const { descriptionInfo } = props;
     return (
-        <div>
+        <div style={{ marginTop: '30px' }}>
             <Card title="Mô tả">{descriptionInfo}</Card>
         </div>
     );

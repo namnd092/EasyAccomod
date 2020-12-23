@@ -19,15 +19,10 @@ function PostList(props) {
                     <PostItem/>
                 </div>
             ))} */}
-            <div className="row">
-                <div className="main_list col-12 col-lg-9">
-                    {postList.map((item) => (
-                        <PostItem key={item.id} rentalPost={item} />
-                    ))}
-                </div>
-                <div className="recommend_list col-12 col-lg-2">
-                    <h2>Recommend List</h2>
-                </div>
+            <div className="main_list col-12">
+                {postList.map((item) => (
+                    <PostItem key={item.id} rentalPost={item} />
+                ))}
             </div>
         </div>
     );

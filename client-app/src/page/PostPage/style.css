@@ -1,0 +1,9 @@
+.postPage{
+    padding-bottom: 50px;
+}
+.postPage .card-header{
+    background-color: pink;
+}
+.postPage .shareInfo .btn-share-info .MuiSvgIcon-root{
+    margin-right: 5px;
+}

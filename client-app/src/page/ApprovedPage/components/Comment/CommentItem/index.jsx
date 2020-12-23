@@ -12,13 +12,13 @@ export default function CommentItem(props) {
             <td>
                 <button
                     className="btn btn-primary"
-                    onClick={() => handleApprove(item.id)}
+                    onClick={() => handleApprove(item.id, index)}
                 >
                     Xác nhận
                 </button>
                 <button
                     className="btn btn-danger"
-                    onClick={() => handleReject(item.id)}
+                    onClick={() => handleReject(item.id, index)}
                 >
                     Từ chối
                 </button>

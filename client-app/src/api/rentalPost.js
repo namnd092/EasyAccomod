@@ -1,5 +1,6 @@
 import axiosClient from './axiosClient';
 import ApiUrl from '../constants/ApiUrl';
+import queryString from 'query-string';
 const rentalPost = {
     getPostBySearch(query) {
         const url = ApiUrl.GET_RENTAL_POST + '?' + query;
@@ -124,8 +125,8 @@ const rentalPost = {
         return axiosClient.get(url);
     },
     setStatusRentalPost(id, postId) {
-        const url = ApiUrl.SET_STATUS_RENTAL_POST(postId);
-        return axiosClient.put(url, { id });
+        const url = ApiUrl.SET_STATUS_RENTAL_POST;
+        return axiosClient.put(url, { id, postId });
     },
     getExtendRentalPost(_page, _limit) {
         const url =
@@ -156,8 +157,11 @@ const rentalPost = {
         const url = ApiUrl.GET_REPORT_POST;
         return axiosClient.get(url);
     },
-    getOwnerRentalPost(_page, _limit, statusId, isExpired) {
-        const url = ApiUrl.GET_OWNER_RENTAL_POST;
+    getOwnerRentalPost(_page, _limit, statusId, isExpired, wasRented) {
+        const url =
+            ApiUrl.GET_OWNER_RENTAL_POST +
+            '?' +
+            queryString.stringify({ _page, _limit, statusId });
         return axiosClient.get(url);
     },
     postResolveReport(id) {
@@ -167,6 +171,17 @@ const rentalPost = {
     getStatusOptions() {
         const url = ApiUrl.GET_STATUS_OPTION;
         return axiosClient.get(url);
+    },
+    putOwnerSetRentalStatus() {
+        const url = ApiUrl.PUT_OWNER_RENTAL_STATUS;
+        return axiosClient.put(url);
+    },
+    postExtendPeriod(accommodationRentalPostId, extendPeriod) {
+        const url = ApiUrl.POST_EXTEND_PERIOD;
+        return axiosClient.post(url, {
+            accommodationRentalPostId,
+            extendPeriod,
+        });
     },
 };
 

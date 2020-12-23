@@ -25,7 +25,7 @@ function HomePagination(props) {
     };
 
     return (
-        <div>
+        <div style={{ display: 'flex', marginTop: '20px' }}>
             <Pagination
                 page={activePage}
                 showFirstButton={true}
@@ -33,6 +33,7 @@ function HomePagination(props) {
                 count={maxPage}
                 size={'large'}
                 onChange={(event, page) => handlePageChange(page)}
+                style={{ margin: 'auto' }}
             />
         </div>
     );

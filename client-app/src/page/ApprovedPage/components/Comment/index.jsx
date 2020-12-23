@@ -18,19 +18,21 @@ const Comment = () => {
         }
         getCommentList();
     }, []);
-    const handleApprove = (id) => {
+    const handleApprove = (id, index) => {
         try {
             const response = rentalPost.postApproveComment(id);
             console.log(response);
+            commentList.splice(index, 1);
             setCommentList([...commentList]);
         } catch (error) {
             console.log(error);
         }
     };
-    const handleReject = (id) => {
+    const handleReject = (id, index) => {
         try {
             const response = rentalPost.postRejectComment(id);
             console.log(response);
+            commentList.splice(index, 1);
             setCommentList([...commentList]);
         } catch (error) {
             console.log(error);

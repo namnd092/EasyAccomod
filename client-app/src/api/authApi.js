@@ -47,6 +47,18 @@ const authApi = {
         const url = ApiUrl.GET_CAN_EDIT_PROFILE;
         return axiosClient.get(url);
     },
+    getAccountEditPending(_page, _limit) {
+        const url =
+            ApiUrl.GET_OWNERS +
+            `?_page=${_page}&_limit=${_limit}&confirmationStatus=${2}`;
+        return axiosClient.get(url);
+    },
+    getAccountEditRequire(_page, _limit) {
+        const url =
+            ApiUrl.GET_OWNERS +
+            `?_page=${_page}&_limit=${_limit}&confirmationStatus=${-2}`;
+        return axiosClient.get(url);
+    },
 };
 
 export default authApi;

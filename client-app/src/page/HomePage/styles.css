@@ -1,4 +1,5 @@
 .homePage{
+    padding-bottom: 20px;
 }
 .homepage__searchFrom{
     background-color: white;
@@ -9,9 +10,7 @@
 }
 
 .homePage__pagination{
-    max-width: 510px;
-    width: 50%;
-    margin: auto;
+   
 }
 .homePage__pagination button {
     outline: none;

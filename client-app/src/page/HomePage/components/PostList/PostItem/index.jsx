@@ -48,9 +48,9 @@ function PostItem(props) {
                 />
             </div>
             <div className="right">
-                <h3 className="post__title" onClick={handleClickTitle}>
+                <h4 className="post__title" onClick={handleClickTitle}>
                     {title}
-                </h3>
+                </h4>
                 <p className="post__description">{content}</p>
                 <div className="price-rating">
                     <div className="price">
@@ -68,7 +68,7 @@ function PostItem(props) {
                 <div className="bottom">
                     <div className="bottom-left">
                         <div className="bottom-area">
-                            <p style={{ color: 'rgb(151,136,136)' }}>
+                            <p style={{ color: 'black' }}>
                                 Diện tích:{' '}
                                 <span style={{ fontWeight: 'bolder' }}>
                                     {roomArea}
@@ -76,7 +76,7 @@ function PostItem(props) {
                             </p>
                         </div>
                         <div className="bottom-position">
-                            <p style={{ color: 'rgb(151,136,136)' }}>
+                            <p style={{ color: 'black' }}>
                                 Khu vực:{' '}
                                 <span style={{ fontWeight: 'bolder' }}>
                                     {accommodationProvince}

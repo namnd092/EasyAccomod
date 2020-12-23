@@ -5,6 +5,8 @@ import rentalPost from '../../api/rentalPost';
 import Card from '../../share/components/card';
 import PostItem from '../HomePage/components/PostList/PostItem';
 import FavoriteItem from './FavoriteItem';
+import { Button } from '@material-ui/core';
+import ThumbDownAltIcon from '@material-ui/icons/ThumbDownAlt';
 
 export default function FavoritePage() {
     const history = useHistory();
@@ -72,7 +74,7 @@ export default function FavoritePage() {
                                         />
                                     </td>
                                     <td>
-                                        <button
+                                        {/* <button
                                             className="btn btn-danger"
                                             onClick={() =>
                                                 handleDislike(item.id, index)
@@ -80,7 +82,20 @@ export default function FavoritePage() {
                                         >
                                             <i class="fas fa-heart-broken"></i>{' '}
                                             Bỏ thích
-                                        </button>
+                                        </button> */}
+                                        <Button
+                                            onClick={() =>
+                                                handleDislike(item.id, index)
+                                            }
+                                            className="btn btn-primary"
+                                            variant="contained"
+                                            color="primary"
+                                        >
+                                            <ThumbDownAltIcon
+                                                style={{ marginRight: '10px' }}
+                                            />
+                                            Bỏ thích
+                                        </Button>
                                     </td>
                                 </tr>
                             ))

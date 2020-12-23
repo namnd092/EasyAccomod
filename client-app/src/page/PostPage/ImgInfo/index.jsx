@@ -37,7 +37,7 @@ function ImgInfo(props) {
     }, imgInfo);
 
     return (
-        <div>
+        <div style={{ marginTop: '30px' }}>
             <Card title="Hình ảnh">
                 <div className="slider_block">
                     <div className="slider">

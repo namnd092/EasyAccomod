@@ -15,7 +15,7 @@ ProfilePage.propTypes = {};
 
 function ProfilePage(props) {
     const token = localStorage.getItem('token');
-    const [haveEditing, setHaveEditing] = React.useState(false);
+    const [haveEditing, setHaveEditing] = React.useState(-1);
     const [isPending, setIsPending] = React.useState(true);
     const [defaultValue, setDefaultValue] = React.useState({
         name: '',
@@ -52,10 +52,10 @@ function ProfilePage(props) {
         async function getHaveEditing() {
             try {
                 const response = await authApi.getCanEditProfile();
-                setHaveEditing(response.data);
+                console.log(response);
+                setHaveEditing(response.result);
             } catch (error) {
                 console.log(error);
-                setHaveEditing(false);
             }
         }
         getHaveEditing();
@@ -70,7 +70,7 @@ function ProfilePage(props) {
         }
     };
     const handleRequireEditInfo = async () => {
-        setIsPending(false);
+        setHaveEditing(0);
         try {
             const response = await authApi.postRequireEditInfo();
             console.log(response);
@@ -94,9 +94,9 @@ function ProfilePage(props) {
                                     <input
                                         className="form-control"
                                         name="name"
-                                        readOnly={!haveEditing}
                                         onChange={handleChange}
                                         value={values.name}
+                                        readOnly={haveEditing !== 1}
                                         //defaultValue={defaultValue.name}
                                     />
                                 </FormGroup>
@@ -105,8 +105,8 @@ function ProfilePage(props) {
                                     <input
                                         className="form-control"
                                         name="email"
-                                        readOnly={!haveEditing}
                                         onChange={handleChange}
+                                        readOnly={haveEditing !== 1}
                                         //defaultValue={defaultValue.email}
                                         value={values.email}
                                     />
@@ -116,9 +116,9 @@ function ProfilePage(props) {
                                 <FormLabel>Address</FormLabel>
                                 <input
                                     className="form-control"
-                                    readOnly={!haveEditing}
                                     name="address"
                                     onChange={handleChange}
+                                    readOnly={haveEditing !== 1}
                                     //defaultValue={defaultValue.address}
                                     value={values.address}
                                 />
@@ -130,8 +130,8 @@ function ProfilePage(props) {
                                         className="form-control"
                                         type="number"
                                         name="phone"
-                                        readOnly={!haveEditing}
                                         onChange={handleChange}
+                                        readOnly={haveEditing !== 1}
                                         //defaultValue={defaultValue.phone}
                                         value={values.phone}
                                     />
@@ -143,37 +143,34 @@ function ProfilePage(props) {
                                         className="form-control"
                                         name="identification"
                                         type="number"
-                                        readOnly={!haveEditing}
                                         onChange={handleChange}
+                                        readOnly={haveEditing !== 1}
                                         value={values.identification}
                                         //defaultValue={defaultValue.identification}
                                     />
                                 </FormGroup>
                             </div>
                             <div className="btn-group">
-                                <Button
-                                    variant="contained"
-                                    className="btn btn-primary"
-                                    color="primary"
-                                    disabled={!haveEditing}
-                                    type="submit"
-                                    style={{
-                                        display: !isPending ? '' : 'none',
-                                    }}
-                                >
-                                    Xác nhận
-                                </Button>
-                                <Button
-                                    variant="contained"
-                                    className="btn btn-primary"
-                                    color="primary"
-                                    onClick={handleRequireEditInfo}
-                                    style={{
-                                        display: isPending ? '' : 'none',
-                                    }}
-                                >
-                                    Yêu cầu chỉnh sửa tài khoản
-                                </Button>
+                                {haveEditing === -1 ? (
+                                    <Button
+                                        variant="contained"
+                                        className="btn btn-primary"
+                                        color="primary"
+                                        onClick={handleRequireEditInfo}
+                                    >
+                                        Yêu cầu chỉnh sửa tài khoản
+                                    </Button>
+                                ) : (
+                                    <Button
+                                        variant="contained"
+                                        className="btn btn-primary"
+                                        color="primary"
+                                        type="submit"
+                                        disabled={haveEditing === 0}
+                                    >
+                                        Xác nhận
+                                    </Button>
+                                )}
                             </div>
                         </Form>
                     )}

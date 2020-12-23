@@ -32,11 +32,10 @@ const ApiUrl = {
     GET_VIEW: (postId) => `api/RentalPosts/${postId}/Views`,
     GET_LIKE: (postId) => `api/RentalPosts/${postId}/Likes`,
     GET_RENTAL_POSTS_BY_STATUS: 'api/Admin/RentalPosts',
-    SET_STATUS_RENTAL_POST: (postId) =>
-        `api/Admin/RentalPosts/${postId}/SetStatus`,
+    SET_STATUS_RENTAL_POST: `api/Admin/RentalPost/SetStatus`,
     REQUIRE_EDIT_INFO: 'api/Owner/RequireEditInfo',
     PUT_EDIT_PROFILE: 'api/Owner/EditInfo',
-    GET_CAN_EDIT_PROFILE: 'api/Owner/Info/CanEdit',
+    GET_CAN_EDIT_PROFILE: 'api/Owner/EditInfoStatus',
     GET_EXTEND_RENTAL_POST: 'api/Admin/RentalPosts/ExtendPeriod',
     APPROVE_EXTEND: 'api/Admin/RentalPost/ExtendPeriod/Approve',
     REJECT_EXTEND: 'api/Admin/RentalPost/ExtendPeriod/Reject',
@@ -47,6 +46,8 @@ const ApiUrl = {
     GET_OWNER_RENTAL_POST: 'api/Owner/RentalPosts',
     POST_RESOLVE_REPORT: 'api/Admin/RentalPost/ResolveReport',
     GET_STATUS_OPTION: 'api/RentalPosts/Statuses',
+    PUT_OWNER_RENTAL_STATUS: 'api/Owner/Accommodation/SetStatus',
+    POST_EXTEND_PERIOD: 'api/Owner/RentalPosts/ExtendPeriod',
 
     CLOUDINARY_UPLOAD_URL:
         'https://api.cloudinary.com/v1_1/dsysolkex/image/upload',
