@@ -1,0 +1,16 @@
+.editPostPage{
+
+}
+.editPostPage .MuiFormLabel-root{
+    color: black;
+}
+.editPostPage .MuiFormGroup-root{
+    margin-top: 16px;
+}
+.editPostPage .filepond--root .filepond--drop-label{
+    cursor: pointer;
+}
+.editPostPage .filepond--root .filepond--drop-label label:hover{
+    cursor: pointer;
+    color: black;
+}

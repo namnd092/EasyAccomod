@@ -1,0 +1,57 @@
+header{
+    background-color: var(--bg-color);
+    padding: 5px 0;
+}
+.navbar{
+    padding: 0.5rem 0;
+}
+.header{
+    display: flex;
+    justify-content: space-between;
+}
+header nav{
+    display: flex;
+    justify-content: space-between;
+    background-color: var(--bg-color);
+}
+.logo{
+    cursor: pointer;
+}
+.logo > img{
+    width: 70px;
+}
+header a {
+    color: darkgrey;
+    font-size: 24;
+}
+header .nav-item{
+    font-size: 1.2rem;
+    margin-left: 10px;
+}
+header .nav-item:hover{
+    border-bottom: 2px solid white;
+}
+header a:hover{
+    text-decoration: none;
+    color: white;
+}
+header .dropdown-menu{
+    left: -100px;
+}
+.header__account__dropdown{
+    background-color: var(--bg-color);
+}
+.header__account__dropdown > a{
+    color: darkgrey;
+    font-size: 1.1rem;
+    padding: 5px 20px;
+    margin: 5px 0;
+}
+.header__account__dropdown > a > i{
+    margin-right: 5px;
+}
+.header__account__dropdown > a:hover{
+    background-color: var(--bg-color);
+    color: white;
+    font-weight: bold;
+}

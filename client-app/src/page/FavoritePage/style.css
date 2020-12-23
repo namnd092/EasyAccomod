@@ -1,0 +1,6 @@
+.favorite{
+
+}
+.favorite tr:hover{
+    cursor: pointer;
+}
