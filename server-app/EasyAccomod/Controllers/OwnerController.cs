@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -144,11 +144,25 @@ namespace EasyAccomod.Controllers
             if (accommodationInDb.Owner.AccountId != User.Identity.GetUserId())
                 return BadRequest("You do not have permission to edit this accommodation.");
 
+            var notification = new Notification()
+            {
+                AccountId = _context.Admins.First().AccountId,
+                HasBeenChecked = false,
+                RentalPostId = _context.AccommodationRentalPosts
+                    .First(p => p.Accommodation.Id == accommodationInDb.Id).Id,
+                Time = DateTime.Now
+            };
+
+            var ownerName = accommodationInDb.Owner.Name;
+
             if ((bool)setAccommodationStatusDto.WasRented)
             {
                 accommodationInDb.StatusId = _context.AccommodationStatuses
                     .Single(s => s.Name == AccommodationStatusName.Rented).Id;
 
+                notification.Content = ownerName + " đã cập nhật trạng thái phòng trọ thành đã cho thuê.";
+
+                _context.Notifications.Add(notification);
                 _context.SaveChanges();
 
                 return Ok("Accommodation status: " + accommodationInDb.Status.Name);
@@ -157,6 +171,9 @@ namespace EasyAccomod.Controllers
             accommodationInDb.StatusId = _context.AccommodationStatuses
                     .Single(s => s.Name == AccommodationStatusName.NotRented).Id;
 
+            notification.Content = ownerName + " đã cập nhật trạng thái phòng trọ thành chưa cho thuê.";
+
+            _context.Notifications.Add(notification);
             _context.SaveChanges();
 
             return Ok("Accommodation status: " + accommodationInDb.Status.Name);
@@ -258,6 +275,12 @@ namespace EasyAccomod.Controllers
                 return BadRequest("Wait until Admin approved your edit request.");
 
             ownerInDb = Mapper.Map(ownerDto, ownerInDb);
+
+            using (var userManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(_context)))
+            {
+                userManager.RemoveFromRole(accountId, RoleName.Owner);
+                userManager.AddToRole(accountId, RoleName.WaitForConfirmation);
+            }
 
             _context.EditInfoRequests.Remove(request);
             _context.SaveChanges();

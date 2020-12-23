@@ -156,6 +156,7 @@ namespace EasyAccomod.Controllers
 
             var rentalPostInDb = _context.AccommodationRentalPosts
                 .Include(p => p.Status)
+                .Include(p => p.Accommodation.Owner)
                 .SingleOrDefault(p => p.Id == rentalPostStatusDto.PostId);
 
             if (rentalPostInDb == null)
@@ -166,6 +167,36 @@ namespace EasyAccomod.Controllers
                 return BadRequest("Status does not exist.");
 
             rentalPostInDb.StatusId = status.Id;
+            _context.SaveChanges();
+
+            if (status.Name == RentalPostStatusName.Approved)
+            {
+                var notification = new Notification()
+                {
+                    AccountId = rentalPostInDb.Accommodation.Owner.AccountId,
+                    Content = "Bài viết \"" + rentalPostInDb.Title + "\" đã được Admin phê duyệt.",
+                    HasBeenChecked = false,
+                    Time = DateTime.Now,
+                    RentalPostId = rentalPostInDb.Id
+                };
+
+                _context.Notifications.Add(notification);
+            }
+
+            if (status.Name == RentalPostStatusName.Rejected)
+            {
+                var notification = new Notification()
+                {
+                    AccountId = rentalPostInDb.Accommodation.Owner.AccountId,
+                    Content = "Bài viết \"" + rentalPostInDb.Title + "\" đã bị Admin từ chối phê duyệt.",
+                    HasBeenChecked = false,
+                    Time = DateTime.Now,
+                    RentalPostId = rentalPostInDb.Id
+                };
+
+                _context.Notifications.Add(notification);
+            }
+
             _context.SaveChanges();
 
             return Ok("Status: " + status.Name);
