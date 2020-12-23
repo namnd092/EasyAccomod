@@ -718,6 +718,7 @@ node_modules
 bower_components
 
 *.sublime*
+/EasyAccomod/Web.config
 psd
 thumb
 sketch
