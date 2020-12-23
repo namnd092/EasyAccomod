@@ -57,7 +57,8 @@ namespace Vidly.App_Start
             Mapper.CreateMap<AddressDto, Address>()
                 .ForMember(a => a.Id, opt => opt.Ignore());
             Mapper.CreateMap<OwnerDto, Owner>()
-                .ForMember(o => o.Id, opt => opt.Ignore());
+                .ForMember(o => o.Id, opt => opt.Ignore())
+                .ForMember(o => o.AccountId, opt => opt.Ignore());
             Mapper.CreateMap<AccommodationRentalPostDto, AccommodationRentalPost>()
                 .ForMember(p => p.Id, opt => opt.Ignore());
             Mapper.CreateMap<AccommodationPictureDto, AccommodationPicture>()

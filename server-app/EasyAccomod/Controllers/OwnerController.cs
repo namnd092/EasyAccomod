@@ -6,9 +6,11 @@ using System.Net.Http;
 using System.Web.Http;
 using EasyAccomod.Models;
 using System.Data.Entity;
+using System.Web.Management;
 using AutoMapper;
 using EasyAccomod.Dtos;
 using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
 
 namespace EasyAccomod.Controllers
 {
@@ -143,6 +145,77 @@ namespace EasyAccomod.Controllers
             _context.SaveChanges();
 
             return Ok();
+        }
+
+        // GET	api/Owner/EditInfoStatus
+        [HttpGet]
+        [Route("EditInfoStatus")]
+        public IHttpActionResult EditInfoStatus()
+        {
+            int result = -1;
+
+            var accountId = User.Identity.GetUserId();
+            var ownerId = _context.Owners.Single(o => o.AccountId == accountId).Id;
+
+            var request = _context.EditInfoRequests.SingleOrDefault(r => r.OwnerId == ownerId);
+            if (request != null)
+            {
+                result = request.CanEditInfo ? 1 : 0;
+            }
+
+            return Ok(new { result });
+        }
+
+        // POST	api/Owner/RequireEditInfo
+        [HttpPost]
+        [Route("RequireEditInfo")]
+        public IHttpActionResult RequireEditInfo()
+        {
+            var accountId = User.Identity.GetUserId();
+            var ownerId = _context.Owners.Single(o => o.AccountId == accountId).Id;
+
+            var requestInDb = _context.EditInfoRequests.SingleOrDefault(r => r.OwnerId == ownerId);
+            if (requestInDb != null)
+                return BadRequest("You has been required edit info yet.");
+
+            var request = new EditInfoRequest()
+            {
+                OwnerId = ownerId,
+                CanEditInfo = false
+            };
+
+            _context.EditInfoRequests.Add(request);
+            _context.SaveChanges();
+
+            return Ok("Required");
+        }
+
+        // PUT	api/Owner/EditInfo
+        [HttpPut]
+        [Route("EditInfo")]
+        public IHttpActionResult EditInfo(OwnerDto ownerDto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var accountId = User.Identity.GetUserId();
+
+            var ownerInDb = _context.Owners.Single(o => o.AccountId == accountId);
+
+            var request = _context.EditInfoRequests.SingleOrDefault(r => r.OwnerId == ownerInDb.Id);
+
+            if (request == null)
+                return BadRequest("You need require edit info permission from Admin first.");
+
+            if (!request.CanEditInfo)
+                return BadRequest("Wait until Admin approved your edit request.");
+
+            ownerInDb = Mapper.Map(ownerDto, ownerInDb);
+
+            _context.EditInfoRequests.Remove(request);
+            _context.SaveChanges();
+
+            return Ok("Edited info");
         }
     }
 }
