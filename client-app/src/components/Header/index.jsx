@@ -8,6 +8,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import authApi from '../../api/authApi';
 import { isDisplayByRole } from '../../helper/auth';
 import Role from '../../models/data/role';
+import { Badge } from '@material-ui/core';
+import NotificationsIcon from '@material-ui/icons/Notifications';
 
 const Header = (props) => {
     const { role } = props;
@@ -105,6 +107,7 @@ const Header = (props) => {
                                     Đăng nhập
                                 </NavLink>
                             </li>
+
                             <li
                                 className="nav-item"
                                 style={{
@@ -117,6 +120,25 @@ const Header = (props) => {
                                 <NavLink className="nav-link" to="/register">
                                     Đăng ký
                                 </NavLink>
+                            </li>
+                            <li
+                                style={{
+                                    display: isDisplayByRole(
+                                        [Role.ADMIN, Role.OWNER],
+                                        authRole
+                                    ),
+                                    cursor: 'pointer',
+                                }}
+                            >
+                                <Badge
+                                    badgeContent={10}
+                                    color="secondary"
+                                    style={{ top: '10px' }}
+                                >
+                                    <NotificationsIcon
+                                        style={{ color: 'white' }}
+                                    />
+                                </Badge>
                             </li>
                             <li
                                 className="nav-item dropdown"

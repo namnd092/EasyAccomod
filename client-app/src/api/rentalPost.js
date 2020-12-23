@@ -73,6 +73,67 @@ const rentalPost = {
         console.log(body);
         return axiosClient.post(url, body);
     },
+    putEditRentalPost(postId, data) {
+        const url = ApiUrl.PUT_EDIT_RENTAL_POST + postId;
+        const {
+            title,
+            description,
+            roomType,
+            accommodationPictures,
+            province,
+            district,
+            ward,
+            street,
+            roomPrice,
+            roomArea,
+            roomQuantity,
+            liveWithOwner,
+            closeBathroom,
+            haveWaterHeader,
+            haveAirCondition,
+            haveBalcony,
+            waterElectricity,
+            electricityPrice,
+            waterPrice,
+            kitchenType,
+            publicLocationNearby,
+            roomPaymentType,
+            roomOption,
+        } = data;
+        const body = {
+            Title: title,
+            Content: description,
+            AccommodationPictures: accommodationPictures,
+            Accommodation: {
+                Address: {
+                    ProvinceId: province.value,
+                    DistrictId: district.value,
+                    WardId: ward.value,
+                    Street: street,
+                    PublicLocationNearby: publicLocationNearby,
+                },
+                AccommodationTypeId: roomType.value,
+                RoomQuantity: roomQuantity,
+                PaymentTypeId: roomPaymentType.value,
+                Price: roomPrice,
+                RoomAreaRangeId: roomArea.value,
+                LiveWithOwner: liveWithOwner,
+                HaveClosedBathroom: closeBathroom,
+                HaveWaterHeater: haveWaterHeader,
+                KitchenTypeId: kitchenType.value,
+                HaveAirConditioner: haveAirCondition,
+                HaveBalcony: haveBalcony,
+                IsStateElectricityPrice: waterElectricity === 'normal',
+                ElectricityPrice: electricityPrice,
+                IsStateWaterPrice: waterElectricity === 'normal',
+                WaterPrice: waterPrice,
+                RoomOptions: roomOption,
+            },
+            TimeDisplayed: 7,
+        };
+        console.log(body);
+        return axiosClient.put(url, body);
+    },
     getRentalPostInfo(id) {
         const url = ApiUrl.GET_RENTAL_POST_INFO + id;
         return axiosClient.get(url);

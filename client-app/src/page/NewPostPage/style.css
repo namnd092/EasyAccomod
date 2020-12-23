@@ -9,4 +9,5 @@
 }
 .newPostPage .error{
     color: red;
+    font-size: smaller;
 }

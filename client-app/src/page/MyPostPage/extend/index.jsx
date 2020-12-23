@@ -111,7 +111,9 @@ export default function ExtendDuration(props) {
                                             />
                                         </FormGroup>
                                         <FormGroup>
-                                            <FormLabel>Số ngày</FormLabel>
+                                            <FormLabel>
+                                                Số {packageType.type}
+                                            </FormLabel>
                                             <input
                                                 type="number"
                                                 values={numberOfTime}
@@ -157,7 +159,7 @@ export default function ExtendDuration(props) {
                             class="btn btn-secondary"
                             data-dismiss="modal"
                         >
-                            Hủy
+                            <i class="fas fa-ban"></i> Hủy
                         </button>
                         <button
                             type="button"
@@ -165,7 +167,7 @@ export default function ExtendDuration(props) {
                             onClick={handleSubmit}
                             data-dismiss="modal"
                         >
-                            Xác nhận
+                            <i class="fas fa-check-circle"></i> Xác nhận
                         </button>
                     </div>
                 </div>

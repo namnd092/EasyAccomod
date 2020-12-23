@@ -17,6 +17,7 @@ import BasicInfo from '../../NewPostPage/components/BasicInfo';
 import DescriptionInfo from '../../NewPostPage/components/DescriptionInfo';
 import { Button } from '@material-ui/core';
 import Card from '../../../share/components/card';
+import newPostValidationSchema from '../../../models/ValidateForm/newPost';
 
 registerPlugin(FilePondPluginImageExifOrientation, FilePondPluginImagePreview);
 export default function EditPostForm(props) {
@@ -100,6 +101,7 @@ export default function EditPostForm(props) {
                                 errors={errors}
                                 touched={touched}
                                 values={values}
+                                defaultValue={defaultValue}
                                 setFieldValue={setFieldValue}
                             />
                             <Card title="Hình ảnh">

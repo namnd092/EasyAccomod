@@ -104,7 +104,16 @@ function LoginPage(props) {
                             handleChange,
                         }) => (
                             <Form className={'from'}>
-                                {message && <span>{message}</span>}
+                                {message && (
+                                    <span
+                                        style={{
+                                            fontSize: 'smaller',
+                                            color: 'red',
+                                        }}
+                                    >
+                                        {message}
+                                    </span>
+                                )}
                                 <FormGroup className={'form__group'}>
                                     <InputLabel>Tên đăng nhập</InputLabel>
                                     <input

@@ -27,7 +27,11 @@ function DescriptionInfo(props) {
                     <TextareaAutosize
                         name={name}
                         onChange={handleChange}
-                        value={values.description}
+                        value={
+                            defaultValue
+                                ? (values.description = defaultValue.content)
+                                : values.description
+                        }
                         className="form-control"
                         rowsMin={10}
                         placeholder="Viết mô tả về phòng trọ (Tối thiểu 30 ký tự)"

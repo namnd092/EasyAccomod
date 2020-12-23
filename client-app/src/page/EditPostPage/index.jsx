@@ -66,16 +66,36 @@ const EditPostPage = () => {
         owner: {},
     });
     const [defaultValue, setDefaultValue] = React.useState(null);
-    const handleSubmit = async (value) => {
-        console.log(value);
-        const newFiles = files.map((file) => file.file);
+    const handleSubmit = async (values) => {
+        console.log(values);
+        const newFiles = files.map((file) => {
+            if (typeof file === 'string') {
+                return file;
+            } else {
+                return file.file;
+            }
+        });
         console.log(newFiles);
-        // try {
-        //     const response = await uploadMultipleFile(newFiles);
-        //     console.log(response);
-        // } catch (error) {
-        //     console.log(error);
-        // }
+        let fileUploaded = [];
+        try {
+            if (typeof newFiles[0] !== 'string') {
+                const fileUploaded = await uploadMultipleFile(newFiles);
+                console.log(fileUploaded);
+            } else {
+                fileUploaded = [...newFiles];
+            }
+            const newAccommodationPictures = fileUploaded.map((e) => ({
+                PictureLink: e,
+            }));
+            let params = {
+                ...values,
+                accommodationPictures: newAccommodationPictures,
+            };
+            const response = await rentalPost.putEditRentalPost(id, params);
+            console.log(response);
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     React.useEffect(() => {
@@ -84,6 +104,11 @@ const EditPostPage = () => {
                 const response = await rentalPost.getRentalPostInfo(id);
                 console.log(response);
                 setDefaultValue(response);
+                setFiles(
+                    [...response.accommodationPictures].map(
+                        (e) => e.pictureLink
+                    )
+                );
             } catch (error) {
                 console.log(error);
             }

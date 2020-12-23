@@ -50,7 +50,7 @@ export default function FavoritePage() {
                     <thead>
                         <tr>
                             <th scope="col" style={{ minWidth: '10%' }}>
-                                Số thứ tự
+                                STT
                             </th>
                             <th scope="col">Bài đăng</th>
                             <th scope="col">Hành động</th>

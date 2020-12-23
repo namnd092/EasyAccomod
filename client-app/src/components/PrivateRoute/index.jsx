@@ -1,6 +1,7 @@
 import NotFound from '../NotFound';
 import React from 'react';
 import { useSelector } from 'react-redux';
+import Authorization from '../Authauthorization';
 const { Route, Redirect } = require('react-router-dom');
 
 //const role = localStorage.getItem('role') || null;
@@ -23,7 +24,7 @@ function PrivateRoute({ component: Component, roles, ...rest }) {
                     );
                 }
                 if (roles && role && roles.indexOf(role.toLowerCase()) === -1) {
-                    return <NotFound />;
+                    return <Authorization />;
                 }
                 return <Component {...props} />;
             }}

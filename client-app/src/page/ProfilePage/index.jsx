@@ -8,10 +8,12 @@ import ApiUrl from '../../constants/ApiUrl';
 import authApi from '../../api/authApi';
 import ownerRegisterValidationSchema from '../../models/ValidateForm/profile';
 import TelegramIcon from '@material-ui/icons/Telegram';
+import { useHistory } from 'react-router-dom';
 
 ProfilePage.propTypes = {};
 
 function ProfilePage(props) {
+    const history = useHistory();
     const token = localStorage.getItem('token');
     const [haveEditing, setHaveEditing] = React.useState(-1);
     const [isPending, setIsPending] = React.useState(true);
@@ -65,6 +67,8 @@ function ProfilePage(props) {
             console.log(response);
         } catch (error) {
             console.log(error);
+        } finally {
+            history.push('/');
         }
     };
     const handleRequireEditInfo = async () => {
@@ -83,7 +87,7 @@ function ProfilePage(props) {
                     initialValues={defaultValue}
                     onSubmit={(value) => handleSubmit(value)}
                     enableReinitialize
-                    validationSchema={ownerRegisterValidationSchema}
+                    //validationSchema={ownerRegisterValidationSchema}
                 >
                     {({ errors, values, handleChange, touched }) => (
                         <Form>
