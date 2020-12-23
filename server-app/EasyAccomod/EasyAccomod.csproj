@@ -321,6 +321,10 @@
     <Compile Include="Migrations\202012171031001_EditReportModel.Designer.cs">
       <DependentUpon>202012171031001_EditReportModel.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202012230819033_AddEditInfoRequestModel.cs" />
+    <Compile Include="Migrations\202012230819033_AddEditInfoRequestModel.Designer.cs">
+      <DependentUpon>202012230819033_AddEditInfoRequestModel.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Accommodation.cs" />
     <Compile Include="Models\AccommodationPaymentType.cs" />
@@ -337,6 +341,7 @@
     <Compile Include="Models\Admin.cs" />
     <Compile Include="Models\AdminBindingModel.cs" />
     <Compile Include="Models\Comment.cs" />
+    <Compile Include="Models\EditInfoRequest.cs" />
     <Compile Include="Models\ExtendRentalPostPeriod.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\KitchenType.cs" />
@@ -505,6 +510,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202012171031001_EditReportModel.resx">
       <DependentUpon>202012171031001_EditReportModel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202012230819033_AddEditInfoRequestModel.resx">
+      <DependentUpon>202012230819033_AddEditInfoRequestModel.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

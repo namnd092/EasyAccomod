@@ -28,6 +28,8 @@ namespace EasyAccomod.Models
 
         public DbSet<Renter> Renters { get; set; }
 
+        public DbSet<EditInfoRequest> EditInfoRequests { get; set; }
+
         public DbSet<Accommodation> Accommodations { get; set; }
 
         public DbSet<AccommodationRentalPost> AccommodationRentalPosts { get; set; }
