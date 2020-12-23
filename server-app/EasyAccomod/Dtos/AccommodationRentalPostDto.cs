@@ -41,4 +41,21 @@ namespace EasyAccomod.Dtos
 
         public double Rate { get; set; }
     }
+
+    public class EditPostDto
+    {
+        [Required]
+        [StringLength(255)]
+        public string Title { get; set; }
+
+        [Required]
+        [StringLength(1000)]
+        public string Content { get; set; }
+
+        [Required]
+        public ICollection<AccommodationPictureDto> AccommodationPictures { get; set; }
+
+        [Required]
+        public AccommodationDto Accommodation { get; set; }
+    }
 }
