@@ -13,4 +13,13 @@ namespace EasyAccomod.Dtos
         [Required]
         public string Name { get; set; }
     }
+
+    public class SetAccommodationStatusDto
+    {
+        [Required]
+        public int? AccommodationId { get; set; }
+
+        [Required]
+        public bool? WasRented { get; set; }
+    }
 }
