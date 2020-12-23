@@ -156,7 +156,7 @@ namespace EasyAccomod.Providers
             context.Response.Headers.Add("Access-Control-Allow-Headers",
                                    new string[] { "Authorization", "Content-Type" });
             context.Response.Headers.Add("Access-Control-Allow-Methods",
-                                   new string[] { "OPTIONS", "POST" });
+                                   new string[] { "*" });
         }
     }
 }
