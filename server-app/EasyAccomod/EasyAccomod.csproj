@@ -345,6 +345,7 @@
     <Compile Include="Models\AddressModel\Ward.cs" />
     <Compile Include="Models\Admin.cs" />
     <Compile Include="Models\AdminBindingModel.cs" />
+    <Compile Include="Models\ApplicationDbContext.cs" />
     <Compile Include="Models\Comment.cs" />
     <Compile Include="Models\EditInfoRequest.cs" />
     <Compile Include="Models\ExtendRentalPostPeriod.cs" />
