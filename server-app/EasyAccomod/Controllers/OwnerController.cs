@@ -259,6 +259,12 @@ namespace EasyAccomod.Controllers
 
             ownerInDb = Mapper.Map(ownerDto, ownerInDb);
 
+            using (var userManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(_context)))
+            {
+                userManager.RemoveFromRole(accountId, RoleName.Owner);
+                userManager.AddToRole(accountId, RoleName.WaitForConfirmation);
+            }
+
             _context.EditInfoRequests.Remove(request);
             _context.SaveChanges();
 
