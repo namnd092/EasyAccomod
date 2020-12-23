@@ -66,6 +66,8 @@ namespace EasyAccomod.Models
 
         public DbSet<Ward> Wards { get; set; }
 
+        public DbSet<Notification> Notifications { get; set; }
+
         public ApplicationDbContext()
             : base("DefaultConnection", throwIfV1Schema: false)
         {
