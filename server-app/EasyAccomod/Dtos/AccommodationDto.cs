@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
+using System.Web.UI.WebControls;
+using System.Xml;
 using EasyAccomod.Models;
 using EasyAccomod.Models.AddressModel;
 
@@ -22,7 +24,9 @@ namespace EasyAccomod.Dtos
         [Required]
         public int? AccommodationTypeId { get; set; }
 
-        [Required] public int? RoomQuantity { get; set; }
+        [Required]
+        [Range(1, 99)]
+        public int? RoomQuantity { get; set; }
 
         public AccommodationPaymentTypeDto PaymentType { get; set; }
 
@@ -30,6 +34,7 @@ namespace EasyAccomod.Dtos
         public byte? PaymentTypeId { get; set; }
 
         [Required]
+        [Range(1, 10000000000)]
         public int? Price { get; set; }
 
         public RoomAreaRangeDto RoomAreaRange { get; set; }

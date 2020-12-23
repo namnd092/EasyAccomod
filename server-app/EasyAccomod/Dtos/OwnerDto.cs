@@ -10,15 +10,25 @@ namespace EasyAccomod.Dtos
     {
         public int Id { get; set; }
 
-        [Required] public string Name { get; set; }
+        [Required]
+        [StringLength(255)]
+        public string Name { get; set; }
 
-        [Required] public string Identification { get; set; }
+        [Required]
+        [StringLength(12)]
+        public string Identification { get; set; }
 
-        [Required] public string Address { get; set; }
+        [Required]
+        [StringLength(255)]
+        public string Address { get; set; }
 
-        [Required] public string Phone { get; set; }
+        [Required]
+        [RegularExpression(@"^0[1-9]{9}$")]
+        public string Phone { get; set; }
 
-        [Required] public string Email { get; set; }
+        [Required]
+        [RegularExpression(@"^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$")]
+        public string Email { get; set; }
 
         public string AccountId { get; set; }
     }
