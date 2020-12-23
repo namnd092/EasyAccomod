@@ -22,7 +22,9 @@ namespace EasyAccomod.Dtos
         [Range(1, 5)]
         public byte? Rate { get; set; }
 
-        [Required] public string Content { get; set; }
+        [Required]
+        [StringLength(1000)]
+        public string Content { get; set; }
 
         public bool IsApproved { get; set; }
 

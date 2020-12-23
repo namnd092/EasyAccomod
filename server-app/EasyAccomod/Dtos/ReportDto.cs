@@ -20,7 +20,9 @@ namespace EasyAccomod.Dtos
 
         public string PostTitle { get; set; }
 
-        [Required] public string Content { get; set; }
+        [Required]
+        [StringLength(1000)]
+        public string Content { get; set; }
 
         public DateTime Time { get; set; }
 
