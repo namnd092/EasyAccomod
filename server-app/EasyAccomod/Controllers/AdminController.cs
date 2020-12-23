@@ -132,20 +132,20 @@ namespace EasyAccomod.Controllers
             return Ok("Rejected");
         }
 
-        // PUT	api/Admin/RentalPosts/1/SetStatus
+        // PUT	api/Admin/RentalPost/SetStatus
         [HttpPut]
-        [Route("RentalPosts/{id}/SetStatus")]
-        public IHttpActionResult SetRentalPostStatus(int id, RentalPostStatusDto rentalPostStatusDto)
+        [Route("RentalPost/SetStatus")]
+        public IHttpActionResult SetRentalPostStatus(RentalPostStatusDto rentalPostStatusDto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
             var rentalPostInDb = _context.AccommodationRentalPosts
                 .Include(p => p.Status)
-                .SingleOrDefault(p => p.Id == id);
+                .SingleOrDefault(p => p.Id == rentalPostStatusDto.PostId);
 
             if (rentalPostInDb == null)
-                return NotFound();
+                return BadRequest("Post not found.");
 
             var status = _context.RentalPostStatuses.SingleOrDefault(s => s.Id == rentalPostStatusDto.Id);
             if (status == null)
