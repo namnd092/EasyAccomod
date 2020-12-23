@@ -44,7 +44,8 @@ namespace Vidly.App_Start
             Mapper.CreateMap<Comment, CommentDto>()
                 .ForMember(c => c.RenterName, act => act.MapFrom(c => c.Renter.Name));
             Mapper.CreateMap<Report, ReportDto>()
-                .ForMember(r => r.RenterName, act => act.MapFrom(r => r.Renter.Name));
+                .ForMember(r => r.RenterName, act => act.MapFrom(r => r.Renter.Name))
+                .ForMember(r => r.PostTitle, act => act.MapFrom(p => p.AccommodationRentalPost.Title));
 
             // Dto to Domain
             Mapper.CreateMap<DistrictDto, District>();
