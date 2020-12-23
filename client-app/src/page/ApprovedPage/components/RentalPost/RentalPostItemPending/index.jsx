@@ -1,7 +1,13 @@
 import React from 'react';
 
-export default function RentalPostItemReject(props) {
-    const { rentalPost, index, handleClick, handleResolve } = props;
+export default function RentalPostItemPending(props) {
+    const {
+        rentalPost,
+        index,
+        handleClick,
+        handleConfirm,
+        handleReject,
+    } = props;
     return (
         <tr style={{ cursor: 'pointer' }}>
             <th scope="row" onClick={handleClick}>
@@ -14,9 +20,15 @@ export default function RentalPostItemReject(props) {
             <td>
                 <button
                     className="btn btn-primary"
-                    onClick={() => handleResolve(rentalPost.id, index)}
+                    onClick={() => handleConfirm(rentalPost.id, index)}
                 >
-                    <i class="fas fa-chevron-circle-up"></i> Khôi phục
+                    <i class="fas fa-check-circle"></i> Xác nhận
+                </button>
+                <button
+                    className="btn btn-danger"
+                    onClick={() => handleReject(rentalPost.id, index)}
+                >
+                    <i class="fas fa-ban"></i> Từ chối
                 </button>
             </td>
         </tr>

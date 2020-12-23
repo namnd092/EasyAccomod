@@ -5,7 +5,6 @@ import TabPanel from '../../share/components/tab-panel';
 import RentalPost from './components/RentalPost';
 import Account from './components/Account';
 import Comment from './components/Comment';
-import EditRenterPost from './components/EditRentalPost';
 import Extend from './components/Extend';
 import Report from './components/Report';
 
@@ -44,9 +43,9 @@ function ApprovedPage(props) {
                         <Tab label="Bài Đăng" {...a11yProps(0)} />
                         <Tab label="Tài Khoản" {...a11yProps(1)} />
                         <Tab label="Comment" {...a11yProps(2)} />
-                        <Tab label="Chỉnh sửa bài đăng" {...a11yProps(3)} />
-                        <Tab label="Gia hạn" {...a11yProps(4)} />
-                        <Tab label="Report" {...a11yProps(5)} />
+
+                        <Tab label="Gia hạn" {...a11yProps(3)} />
+                        <Tab label="Report" {...a11yProps(4)} />
                     </Tabs>
                 </AppBar>
                 <TabPanel value={value} index={0}>
@@ -59,12 +58,9 @@ function ApprovedPage(props) {
                     <Comment />
                 </TabPanel>
                 <TabPanel value={value} index={3}>
-                    <EditRenterPost />
-                </TabPanel>
-                <TabPanel value={value} index={4}>
                     <Extend />
                 </TabPanel>
-                <TabPanel value={value} index={5}>
+                <TabPanel value={value} index={4}>
                     <Report />
                 </TabPanel>
             </div>

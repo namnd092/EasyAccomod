@@ -45,6 +45,8 @@ const ApiUrl = {
     REJECT_COMMENT: 'api/Admin/RejectComment',
     GET_REPORT_POST: 'api/Admin/Report',
     GET_OWNER_RENTAL_POST: 'api/Owner/RentalPosts',
+    POST_RESOLVE_REPORT: 'api/Admin/RentalPost/ResolveReport',
+    GET_STATUS_OPTION: 'api/RentalPosts/Statuses',
 
     CLOUDINARY_UPLOAD_URL:
         'https://api.cloudinary.com/v1_1/dsysolkex/image/upload',

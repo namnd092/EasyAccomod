@@ -11,11 +11,8 @@ export default function AccountItem(props) {
             <td>{account && account.phone}</td>
             <td>{account && account.email}</td>
             <td>
-                <button className="btn btn-danger" onClick={onRefuse}>
-                    Từ chối
-                </button>
                 <button className="btn btn-primary" onClick={onConfirm}>
-                    Xác nhận
+                    <i class="fas fa-check-circle"></i> Xác nhận
                 </button>
             </td>
         </tr>

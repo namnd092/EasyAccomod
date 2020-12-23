@@ -160,6 +160,14 @@ const rentalPost = {
         const url = ApiUrl.GET_OWNER_RENTAL_POST;
         return axiosClient.get(url);
     },
+    postResolveReport(id) {
+        const url = ApiUrl.POST_RESOLVE_REPORT;
+        return axiosClient.post(url, { id });
+    },
+    getStatusOptions() {
+        const url = ApiUrl.GET_STATUS_OPTION;
+        return axiosClient.get(url);
+    },
 };
 
 export default rentalPost;

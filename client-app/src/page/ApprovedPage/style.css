@@ -8,3 +8,6 @@ button:focus{
 .approvedPage .card{
     margin-bottom: 30px;
 }
+.approvedPage button {
+    margin-right: 10px;
+}

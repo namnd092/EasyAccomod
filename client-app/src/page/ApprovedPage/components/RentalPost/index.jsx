@@ -4,19 +4,44 @@ import Card from '../../../../share/components/card';
 import RentalPostItem from './RentalPostItem';
 import { useHistory } from 'react-router-dom';
 import RentalPostItemReject from './RentalPostItemReject';
+import RentalPostItemPending from './RentalPostItemPending';
+import Select from 'react-select';
 
 const RenterPost = (props) => {
     const history = useHistory();
+    const defaultOptions = [
+        {
+            value: 0,
+            label: 'Tất cả',
+        },
+    ];
+    const [options, setOptions] = React.useState(defaultOptions);
+    const [optionValue, setOptionValue] = React.useState(0);
     const [postListSuccess, setPostListSuccess] = React.useState([]);
     const [postListReject, setPostListReject] = React.useState([]);
     const [postListPending, setPostListPending] = React.useState([]);
+    const [allPost, setAllPost] = React.useState([]);
     React.useEffect(() => {
-        async function getPostListSuccess() {
+        async function getAllPost() {
             try {
                 const postListSuccessResponse = await rentalPost.getRentalPost(
                     1,
                     100,
                     0
+                );
+                setAllPost([...postListSuccessResponse.simplePostDtos]);
+            } catch (error) {
+                console.log(error);
+                setAllPost([]);
+            }
+        }
+        getAllPost();
+        async function getPostListSuccess() {
+            try {
+                const postListSuccessResponse = await rentalPost.getRentalPost(
+                    1,
+                    100,
+                    2
                 );
                 setPostListSuccess([...postListSuccessResponse.simplePostDtos]);
             } catch (error) {
@@ -53,26 +78,72 @@ const RenterPost = (props) => {
             }
         }
         getPostListPending();
+        async function getOptions() {
+            try {
+                const response = await rentalPost.getStatusOptions();
+                setOptions(
+                    defaultOptions.concat(
+                        [...response].slice(0, 3).map((e) => ({
+                            value: e.id,
+                            label: e.name,
+                        }))
+                    )
+                );
+            } catch (error) {
+                console.log(error);
+            }
+        }
+        getOptions();
     }, []);
+    const handleOptionChange = (value) => {
+        console.log(value.value);
+        setOptionValue(Number(value.value));
+    };
     const handleClickPost = (postId) => {
         history.push(`/post/${postId}`);
     };
-    const handleConfirm = async (postId, index, type) => {
+    const handleResolve = async (postId, index) => {
         try {
             const response = await rentalPost.setStatusRentalPost(1, postId);
             console.log(response);
-            if (type === 'pending') {
-                setPostListPending([...postListPending].splice(index, 1));
-            } else {
-                setPostListPending([...postListReject].splice(index, 1));
-            }
         } catch (error) {
             console.log(error);
+        } finally {
+            setPostListSuccess(
+                postListSuccess.concat(postListReject.splice(index, 1))
+            );
+            setPostListPending([...postListReject]);
+        }
+    };
+    const handleConfirm = async (postId, index) => {
+        try {
+            const response = await rentalPost.setStatusRentalPost(1, postId);
+            console.log(response);
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setPostListSuccess(
+                postListSuccess.concat(postListPending.splice(index, 1))
+            );
+            setPostListPending([...postListPending]);
+        }
+    };
+    const handleReject = async (postId, index) => {
+        try {
+            const response = await rentalPost.setStatusRentalPost(3, postId);
+            console.log(response);
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setPostListReject(
+                postListReject.concat(postListPending.splice(index, 1))
+            );
+            setPostListPending([...postListPending]);
         }
     };
     return (
         <div>
-            <Card title="Bài đăng đang chờ">
+            <Card title="Bài đăng">
                 <table class="table table-hover">
                     <thead>
                         <tr>
@@ -81,29 +152,82 @@ const RenterPost = (props) => {
                             <th scope="col">Người đăng</th>
                             <th scope="col">Email</th>
                             <th scope="col">Ngày đăng</th>
-                            <th scope="col">Hành động</th>
+                            <th scope="col" style={{ minWidth: '200px' }}>
+                                <Select
+                                    options={options}
+                                    defaultValue={options[0]}
+                                    onChange={(value) =>
+                                        handleOptionChange(value)
+                                    }
+                                />
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
-                        {postListPending.length === 0 ? (
+                        {optionValue === 1 ? (
+                            postListPending.length === 0 ? (
+                                <p>Không có bài viết nào</p>
+                            ) : (
+                                postListPending.map((item, index) => (
+                                    <RentalPostItemPending
+                                        key={item.id}
+                                        index={index}
+                                        rentalPost={item}
+                                        handleClick={() =>
+                                            handleClickPost(item.id)
+                                        }
+                                        handleConfirm={handleConfirm}
+                                        handleReject={handleReject}
+                                    />
+                                ))
+                            )
+                        ) : optionValue === 2 ? (
+                            postListSuccess.length === 0 ? (
+                                <p>Không có bài viết nào</p>
+                            ) : (
+                                postListSuccess.map((item, index) => (
+                                    <RentalPostItem
+                                        key={item.id}
+                                        index={index}
+                                        rentalPost={item}
+                                        handleClick={() =>
+                                            handleClickPost(item.id)
+                                        }
+                                    />
+                                ))
+                            )
+                        ) : optionValue === 3 ? (
+                            postListReject.length === 0 ? (
+                                <p>Không có bài viết nào</p>
+                            ) : (
+                                postListReject.map((item, index) => (
+                                    <RentalPostItemReject
+                                        key={item.id}
+                                        index={index}
+                                        rentalPost={item}
+                                        handleClick={() =>
+                                            handleClickPost(item.id)
+                                        }
+                                        handleResolve={handleResolve}
+                                    />
+                                ))
+                            )
+                        ) : allPost.length === 0 ? (
                             <p>Không có bài viết nào</p>
                         ) : (
-                            postListPending.map((item, index) => (
-                                <RentalPostItemReject
+                            allPost.map((item, index) => (
+                                <RentalPostItem
                                     key={item.id}
-                                    index={index + 1}
+                                    index={index}
                                     rentalPost={item}
                                     handleClick={() => handleClickPost(item.id)}
-                                    handleConfirm={() =>
-                                        handleConfirm(item.id, index, 'pending')
-                                    }
                                 />
                             ))
                         )}
                     </tbody>
                 </table>
             </Card>
-            <Card title="Bài đăng bị từ chối">
+            {/* <Card title="Bài đăng bị từ chối">
                 <table class="table table-hover">
                     <thead>
                         <tr>
@@ -122,12 +246,10 @@ const RenterPost = (props) => {
                             postListReject.map((item, index) => (
                                 <RentalPostItemReject
                                     key={item.id}
-                                    index={index + 1}
+                                    index={index}
                                     rentalPost={item}
                                     handleClick={() => handleClickPost(item.id)}
-                                    handleConfirm={() =>
-                                        handleConfirm(item.id, index, 'reject')
-                                    }
+                                    handleResolve={handleResolve}
                                 />
                             ))
                         )}
@@ -143,7 +265,6 @@ const RenterPost = (props) => {
                             <th scope="col">Người đăng</th>
                             <th scope="col">Email</th>
                             <th scope="col">Ngày đăng</th>
-                            {/* <th scope="col">Hành động</th> */}
                         </tr>
                     </thead>
                     <tbody>
@@ -153,7 +274,7 @@ const RenterPost = (props) => {
                             postListSuccess.map((item, index) => (
                                 <RentalPostItem
                                     key={item.id}
-                                    index={index + 1}
+                                    index={index}
                                     rentalPost={item}
                                     handleClick={() => handleClickPost(item.id)}
                                 />
@@ -161,7 +282,7 @@ const RenterPost = (props) => {
                         )}
                     </tbody>
                 </table>
-            </Card>
+            </Card> */}
         </div>
     );
 };

@@ -4,7 +4,7 @@ const RentalPostItem = (props) => {
     const { rentalPost, index, handleClick } = props;
     return (
         <tr onClick={handleClick} style={{ cursor: 'pointer' }}>
-            <th scope="row">{index}</th>
+            <th scope="row">{index + 1}</th>
             <td>{rentalPost && rentalPost.title}</td>
             <td>{rentalPost && rentalPost.ownerName}</td>
             <td>{rentalPost && rentalPost.ownerEmail}</td>

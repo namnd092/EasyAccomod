@@ -40,10 +40,6 @@ export default function MyPostPage() {
                                 <button className="btn btn-primary">
                                     <i class="fas fa-edit"></i> Gia hạn
                                 </button>
-                                <button className="btn btn-primary">
-                                    <i class="fas fa-edit"></i> Chờ xác nhận
-                                    chỉnh sửa
-                                </button>
                             </td>
                         </tr>
                         <tr>
