@@ -54,6 +54,20 @@ namespace EasyAccomod.Controllers
                         .Where(o => _userManager.IsInRole(o.AccountId, RoleName.WaitForConfirmation)).ToList();
                     break;
 
+                case 2:
+                    // Owner has permission to edit info
+                    listOwnersInDb = listOwnersInDb
+                        .Where(o => _context.EditInfoRequests.Any(r => r.OwnerId == o.Id && r.CanEditInfo))
+                        .ToList();
+                    break;
+
+                case -2:
+                    // Owner are waiting for permission to edit info
+                    listOwnersInDb = listOwnersInDb
+                        .Where(o => _context.EditInfoRequests.Any(r => r.OwnerId == o.Id && !r.CanEditInfo))
+                        .ToList();
+                    break;
+
                 default:
                     // All Owner
                     if (confirmationStatus != 0)
