@@ -151,10 +151,10 @@ namespace EasyAccomod.Controllers
             if (status == null)
                 return BadRequest("Status does not exist.");
 
-            rentalPostInDb.StatusId = (byte)rentalPostStatusDto.Id;
+            rentalPostInDb.StatusId = status.Id;
             _context.SaveChanges();
 
-            return Ok();
+            return Ok("Status: " + status.Name);
         }
 
         // GET	api/Admin/RentalPosts
