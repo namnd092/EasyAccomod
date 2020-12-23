@@ -116,7 +116,8 @@ namespace EasyAccomod.Controllers
 
             var accountId = User.Identity.GetUserId();
             commentDto.RenterId = _context.Renters.Single(r => r.AccountId == accountId).Id;
-            if (_context.Comments.SingleOrDefault(c => c.RenterId == commentDto.RenterId) != null)
+            if (_context.Comments.SingleOrDefault(c => c.RenterId == commentDto.RenterId
+                                                       && c.AccommodationRentalPostId == commentDto.AccommodationRentalPostId) != null)
                 return BadRequest("Each Renter should be comment only 1 time.");
 
             var comment = Mapper.Map<CommentDto, Comment>(commentDto);
