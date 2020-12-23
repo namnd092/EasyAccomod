@@ -215,6 +215,7 @@
     <Compile Include="Controllers\AddressController.cs" />
     <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\NotificationController.cs" />
     <Compile Include="Controllers\OwnerController.cs" />
     <Compile Include="Controllers\RenterController.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
@@ -325,6 +326,10 @@
     <Compile Include="Migrations\202012230819033_AddEditInfoRequestModel.Designer.cs">
       <DependentUpon>202012230819033_AddEditInfoRequestModel.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202012231624304_AddNotificationModel.cs" />
+    <Compile Include="Migrations\202012231624304_AddNotificationModel.Designer.cs">
+      <DependentUpon>202012231624304_AddNotificationModel.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Accommodation.cs" />
     <Compile Include="Models\AccommodationPaymentType.cs" />
@@ -346,6 +351,7 @@
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\KitchenType.cs" />
     <Compile Include="Models\Like.cs" />
+    <Compile Include="Models\Notification.cs" />
     <Compile Include="Models\Owner.cs" />
     <Compile Include="Models\RentalPostStatus.cs" />
     <Compile Include="Models\Renter.cs" />
@@ -513,6 +519,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202012230819033_AddEditInfoRequestModel.resx">
       <DependentUpon>202012230819033_AddEditInfoRequestModel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202012231624304_AddNotificationModel.resx">
+      <DependentUpon>202012231624304_AddNotificationModel.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
