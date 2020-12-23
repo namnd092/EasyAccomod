@@ -23,7 +23,7 @@ namespace EasyAccomod.Controllers
             _context = new ApplicationDbContext();
         }
 
-        // GET	api/Renter/RenterPost/Likes
+        // GET	api/Renter/RentalPost/Likes
         [HttpGet]
         [Route("RentalPost/Likes")]
         public IHttpActionResult GetLikedPost(int _page = 1, int _limit = 15)
@@ -64,7 +64,7 @@ namespace EasyAccomod.Controllers
             return Ok(listSimplePosts);
         }
 
-        // POST	api/Renter/RenterPost/Like
+        // POST	api/Renter/RentalPost/Like
         [HttpPost]
         [Route("RentalPost/Like")]
         public IHttpActionResult Like(LikeDto likeDto)
@@ -129,7 +129,7 @@ namespace EasyAccomod.Controllers
             return Ok();
         }
 
-        // POST	api/Renter/RenterPost/Report
+        // POST	api/Renter/RentalPost/Report
         [HttpPost]
         [Route("RentalPost/Report")]
         public IHttpActionResult Report(ReportDto reportDto)
@@ -160,9 +160,9 @@ namespace EasyAccomod.Controllers
             return Ok("Reported");
         }
 
-        // GET	api/Renter/RenterPost/IsLiked
+        // GET	api/Renter/RentalPost/IsLiked
         [HttpGet]
-        [Route("RenterPost/IsLiked")]
+        [Route("RentalPost/IsLiked")]
         public IHttpActionResult GetLikeStatus(int postId = 0)
         {
             if (_context.AccommodationRentalPosts.SingleOrDefault(p => p.Id == postId)
@@ -177,9 +177,9 @@ namespace EasyAccomod.Controllers
             return Ok(_context.Likes.Any(l => l.RenterId == renterId && l.AccommodationRentalPostId == postId));
         }
 
-        // GET	api/Renter/RenterPost/IsCommented
+        // GET	api/Renter/RentalPost/IsCommented
         [HttpGet]
-        [Route("RenterPost/IsCommented")]
+        [Route("RentalPost/IsCommented")]
         public IHttpActionResult GetCommentStatus(int postId = 0)
         {
             if (_context.AccommodationRentalPosts.SingleOrDefault(p => p.Id == postId)
@@ -194,9 +194,9 @@ namespace EasyAccomod.Controllers
             return Ok(_context.Comments.Any(l => l.RenterId == renterId && l.AccommodationRentalPostId == postId));
         }
 
-        // GET	api/Renter/RenterPost/IsLiked
+        // GET	api/Renter/RentalPost/IsReported
         [HttpGet]
-        [Route("RenterPost/IsReported")]
+        [Route("RentalPost/IsReported")]
         public IHttpActionResult GetReportStatus(int postId = 0)
         {
             if (_context.AccommodationRentalPosts.SingleOrDefault(p => p.Id == postId)
