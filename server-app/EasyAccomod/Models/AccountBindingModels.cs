@@ -63,6 +63,7 @@ namespace EasyAccomod.Models
 
         [Required]
         [RegularExpression(@"^0[1-9]{1}[0-9]{8}$")]
+
         public string Phone { get; set; }
 
         [Required]
