@@ -6,11 +6,12 @@ import { useHistory } from 'react-router-dom';
 
 const Report = () => {
     const history = useHistory();
-    const [reportList, setPostList] = React.useState([]);
+    const [reportList, setReportList] = React.useState([]);
     React.useState(() => {
         async function getReportList() {
             try {
                 const response = await rentalPost.getReportPost();
+                setReportList([...response]);
                 console.log(response);
             } catch (error) {
                 console.log(error);
@@ -29,7 +30,7 @@ const Report = () => {
             console.log(error);
         } finally {
             reportList.splice(index, 1);
-            setPostList([...reportList]);
+            setReportList([...reportList]);
         }
     };
     return (

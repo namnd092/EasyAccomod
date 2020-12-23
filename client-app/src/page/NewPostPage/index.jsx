@@ -17,7 +17,6 @@ import newPostInitialValue from '../../models/InitialValueForm/newPost';
 import newPostValidationSchema from '../../models/ValidateForm/newPost';
 import rentalPost from '../../api/rentalPost';
 import { useHistory } from 'react-router-dom';
-import Role from '../../models/data/role';
 import { useSelector } from 'react-redux';
 import TelegramIcon from '@material-ui/icons/Telegram';
 

@@ -1,7 +1,7 @@
 import React from 'react';
 
-export default function AccountItem(props) {
-    const { account, index, onConfirm, onRefuse } = props;
+export default function AccountItemEditRequire(props) {
+    const { account, index, handleCanEdit } = props;
     return (
         <tr>
             <th scope="row">{index + 1}</th>
@@ -13,13 +13,13 @@ export default function AccountItem(props) {
             <td>
                 <button
                     className="btn btn-primary"
-                    onClick={() => onConfirm(account.accountId, index)}
+                    onClick={() => handleCanEdit(account.id, true, index)}
                 >
                     <i class="fas fa-check-circle"></i> Xác nhận
                 </button>
                 <button
                     className="btn btn-danger"
-                    onClick={() => onRefuse(account.accountId, index)}
+                    onClick={() => handleCanEdit(account.id, false, index)}
                 >
                     <i class="fas fa-ban"></i> Từ chối
                 </button>

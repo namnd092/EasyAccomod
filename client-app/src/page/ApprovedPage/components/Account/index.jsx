@@ -5,13 +5,15 @@ import authApi from '../../../../api/authApi';
 import AccountItem from './accountItem';
 import THeadComponent from './thead';
 import AccItemSuccess from './accountItemSuccess';
+import AccountItemEditPending from './itemEditPending';
+import AccountItemEditRequire from './itemEditRequire';
 
 const Account = () => {
     const [accountRegisterPending, setAccountRegisterPending] = React.useState(
         []
     );
     const [accountSuccess, setAccountSuccess] = React.useState([]);
-    const [accountEditPending, setAccountEditPending] = React.useState([]);
+    // const [accountEditPending, setAccountEditPending] = React.useState([]);
     const [accountEditRequire, setAccountEditRequire] = React.useState([]);
     React.useEffect(() => {
         async function getAccountRegisterPending() {
@@ -44,17 +46,17 @@ const Account = () => {
             }
         }
         getAccountSuccess();
-        async function getAccountEditPending() {
-            try {
-                const response = await authApi.getAccountEditPending(1, 15);
-                console.log(response);
-                setAccountEditPending([...response.owners]);
-            } catch (error) {
-                console.log(error);
-                setAccountEditPending([]);
-            }
-        }
-        getAccountEditPending();
+        // async function getAccountEditPending() {
+        //     try {
+        //         const response = await authApi.getAccountEditPending(1, 15);
+        //         console.log(response);
+        //         setAccountEditPending([...response.owners]);
+        //     } catch (error) {
+        //         console.log(error);
+        //         setAccountEditPending([]);
+        //     }
+        // }
+        // getAccountEditPending();
         async function getAccountEditRequire() {
             try {
                 const response = await authApi.getAccountEditRequire(1, 15);
@@ -67,6 +69,41 @@ const Account = () => {
         }
         getAccountEditRequire();
     }, []);
+    const handleConfirmAccRegisterPending = async (accountId, index) => {
+        try {
+            setAccountSuccess(
+                accountSuccess.concat(accountRegisterPending.splice(index, 1))
+            );
+            setAccountRegisterPending([...accountRegisterPending]);
+            const response = await authApi.postSetOwner(accountId);
+            console.log(response);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+    const handleRefuseAccRegisterPending = async (accountId, index) => {
+        try {
+            accountRegisterPending.splice(index, 1);
+            setAccountRegisterPending([...accountRegisterPending]);
+            const response = await authApi.postRejectOwner(accountId);
+            console.log(response);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+    const handleSetOwnerCanEdit = async (ownerId, canEdit, index) => {
+        try {
+            accountEditRequire.splice(index, 1);
+            setAccountEditRequire([...accountEditRequire]);
+            const response = await authApi.postOwnerCanEditInfo(
+                ownerId,
+                canEdit
+            );
+            console.log(response);
+        } catch (error) {
+            console.log(error);
+        }
+    };
     return (
         <div className="approved__account">
             <Card title={'Tài khoản đăng ký đang chờ'}>
@@ -81,51 +118,48 @@ const Account = () => {
                                     key={item.id}
                                     account={item}
                                     index={index}
+                                    onConfirm={handleConfirmAccRegisterPending}
+                                    onRefuse={handleRefuseAccRegisterPending}
                                 />
                             ))
                         )}
                     </tbody>
                 </table>
             </Card>
-            <Card title={'Tài khoản chỉnh sửa đang chờ'}>
-                <table class="table table-hover"></table>
-            </Card>
+            {/* <Card title={'Tài khoản chỉnh sửa đang chờ'}>
+                <table class="table table-hover">
+                    <THeadComponent />
+                    <tbody>
+                        {accountEditPending.length === 0 ? (
+                            <p>Không tìm thấy tài khoản nào</p>
+                        ) : (
+                            accountEditPending.map((item, index) => (
+                                <AccountItemEditPending
+                                    key={item.id}
+                                    account={item}
+                                    index={index}
+                                />
+                            ))
+                        )}
+                    </tbody>
+                </table>
+            </Card> */}
             <Card title={'Tài khoản yêu cầu quyền chỉnh sửa'}>
                 <table class="table table-hover">
-                    <thead>
-                        <tr>
-                            <th scope="col">STT</th>
-                            <th scope="col">Tên</th>
-                            <th scope="col">Email</th>
-                            <th scope="col">Hành động</th>
-                        </tr>
-                    </thead>
+                    <THeadComponent />
                     <tbody>
-                        <tr>
-                            <th scope="row">1</th>
-                            <td>Mark</td>
-                            <td>Otto</td>
-                            <td>
-                                <button className="btn btn-danger">
-                                    Từ chối
-                                </button>
-                                <button className="btn btn-primary">
-                                    Xác nhận
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th scope="row">2</th>
-                            <td>Jacob</td>
-                            <td>Thornton</td>
-                            <td>@fat</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">3</th>
-                            <td>Larry</td>
-                            <td>Larry</td>
-                            <td>@twitter</td>
-                        </tr>
+                        {accountEditRequire.length === 0 ? (
+                            <p>Không tìm thấy tài khoản nào</p>
+                        ) : (
+                            accountEditRequire.map((item, index) => (
+                                <AccountItemEditRequire
+                                    key={item.id}
+                                    account={item}
+                                    index={index}
+                                    handleCanEdit={handleSetOwnerCanEdit}
+                                />
+                            ))
+                        )}
                     </tbody>
                 </table>
             </Card>

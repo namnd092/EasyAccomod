@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function AccountItem(props) {
+export default function AccountItemEditPending(props) {
     const { account, index, onConfirm, onRefuse } = props;
     return (
         <tr>
@@ -13,13 +13,13 @@ export default function AccountItem(props) {
             <td>
                 <button
                     className="btn btn-primary"
-                    onClick={() => onConfirm(account.accountId, index)}
+                    onClick={() => onConfirm(account.id, index)}
                 >
                     <i class="fas fa-check-circle"></i> Xác nhận
                 </button>
                 <button
                     className="btn btn-danger"
-                    onClick={() => onRefuse(account.accountId, index)}
+                    onClick={() => onRefuse(account.id, index)}
                 >
                     <i class="fas fa-ban"></i> Từ chối
                 </button>

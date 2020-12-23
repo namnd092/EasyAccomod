@@ -42,12 +42,15 @@ const ApiUrl = {
     GET_COMMENT_PENDING: 'api/Admin/PendingComment',
     APPROVE_COMMENT: 'api/Admin/ApproveComment',
     REJECT_COMMENT: 'api/Admin/RejectComment',
-    GET_REPORT_POST: 'api/Admin/Report',
+    GET_REPORT_POST: 'api/Admin/RentalPost/Reports',
     GET_OWNER_RENTAL_POST: 'api/Owner/RentalPosts',
     POST_RESOLVE_REPORT: 'api/Admin/RentalPost/ResolveReport',
     GET_STATUS_OPTION: 'api/RentalPosts/Statuses',
     PUT_OWNER_RENTAL_STATUS: 'api/Owner/Accommodation/SetStatus',
     POST_EXTEND_PERIOD: 'api/Owner/RentalPosts/ExtendPeriod',
+    SET_OWNER: 'api/Admin/SetOwner',
+    REJECT_OWNER: 'api/Admin/RejectOwner',
+    SET_REJECT_OWNER_EDIT_INFO: 'api/Admin/ResolveEditInfo',
 
     CLOUDINARY_UPLOAD_URL:
         'https://api.cloudinary.com/v1_1/dsysolkex/image/upload',

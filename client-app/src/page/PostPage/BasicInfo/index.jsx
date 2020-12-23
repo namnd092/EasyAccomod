@@ -1,6 +1,5 @@
 import React from 'react';
 import './style.css';
-import TrTable from '../../../share/components/tr';
 
 const yesOrNo = (bool) => {
     return bool ? 'Có' : 'Không';

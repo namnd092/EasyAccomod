@@ -1,15 +1,13 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import './style.css';
 import { Form, Formik } from 'formik';
 import { Button, FormGroup, FormLabel } from '@material-ui/core';
 import Card from '../../share/components/card';
-import { useSelector } from 'react-redux';
-import Role from '../../models/data/role';
 import Axios from 'axios';
 import ApiUrl from '../../constants/ApiUrl';
-import rentalPost from '../../api/rentalPost';
 import authApi from '../../api/authApi';
+import ownerRegisterValidationSchema from '../../models/ValidateForm/profile';
+import TelegramIcon from '@material-ui/icons/Telegram';
 
 ProfilePage.propTypes = {};
 
@@ -85,8 +83,9 @@ function ProfilePage(props) {
                     initialValues={defaultValue}
                     onSubmit={(value) => handleSubmit(value)}
                     enableReinitialize
+                    validationSchema={ownerRegisterValidationSchema}
                 >
-                    {({ errors, values, handleChange }) => (
+                    {({ errors, values, handleChange, touched }) => (
                         <Form>
                             <div className="row">
                                 <FormGroup className="col-6">
@@ -99,6 +98,11 @@ function ProfilePage(props) {
                                         readOnly={haveEditing !== 1}
                                         //defaultValue={defaultValue.name}
                                     />
+                                    {errors && errors.name && touched.name ? (
+                                        <span className="error">
+                                            {errors.name}
+                                        </span>
+                                    ) : null}
                                 </FormGroup>
                                 <FormGroup className="col-6">
                                     <FormLabel>Email</FormLabel>
@@ -110,6 +114,11 @@ function ProfilePage(props) {
                                         //defaultValue={defaultValue.email}
                                         value={values.email}
                                     />
+                                    {errors && errors.email && touched.email ? (
+                                        <span className="error">
+                                            {errors.email}
+                                        </span>
+                                    ) : null}
                                 </FormGroup>
                             </div>
                             <FormGroup>
@@ -122,6 +131,9 @@ function ProfilePage(props) {
                                     //defaultValue={defaultValue.address}
                                     value={values.address}
                                 />
+                                {errors && errors.address && touched.address ? (
+                                    <span className="error">{errors.name}</span>
+                                ) : null}
                             </FormGroup>
                             <div className="row">
                                 <FormGroup className="col-6">
@@ -135,6 +147,11 @@ function ProfilePage(props) {
                                         //defaultValue={defaultValue.phone}
                                         value={values.phone}
                                     />
+                                    {errors && errors.phone && touched.phone ? (
+                                        <span className="error">
+                                            {errors.phone}
+                                        </span>
+                                    ) : null}
                                 </FormGroup>
 
                                 <FormGroup className="col-6">
@@ -148,6 +165,13 @@ function ProfilePage(props) {
                                         value={values.identification}
                                         //defaultValue={defaultValue.identification}
                                     />
+                                    {errors &&
+                                    errors.identification &&
+                                    touched.identification ? (
+                                        <span className="error">
+                                            {errors.identification}
+                                        </span>
+                                    ) : null}
                                 </FormGroup>
                             </div>
                             <div className="btn-group">
@@ -169,6 +193,9 @@ function ProfilePage(props) {
                                         disabled={haveEditing === 0}
                                     >
                                         Xác nhận
+                                        <TelegramIcon
+                                            style={{ marginLeft: '8px' }}
+                                        />
                                     </Button>
                                 )}
                             </div>

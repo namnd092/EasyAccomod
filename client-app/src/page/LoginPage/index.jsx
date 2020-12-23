@@ -1,13 +1,10 @@
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import './style.css';
 import PropTypes from 'prop-types';
-import { Formik, Field, Form } from 'formik';
+import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import {
-    TextField,
     Button,
-    FormControl,
-    Input,
     FormGroup,
     InputLabel,
     Backdrop,
@@ -18,7 +15,7 @@ import { useHistory } from 'react-router-dom';
 import './style.css';
 import authApi from '../../api/authApi';
 import { setUser } from '../../redux/slice/userSlice';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import Axios from 'axios';
 import ApiUrl from '../../constants/ApiUrl';
 

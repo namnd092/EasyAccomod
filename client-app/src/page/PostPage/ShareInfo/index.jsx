@@ -1,14 +1,11 @@
 import React from 'react';
 import Rating from '@material-ui/lab/Rating';
-import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
-import FavoriteIcon from '@material-ui/icons/Favorite';
 import ReportProblemIcon from '@material-ui/icons/ReportProblem';
 import { Button, makeStyles, TextareaAutosize } from '@material-ui/core';
 import rentalPost from '../../../api/rentalPost';
 import { useSelector } from 'react-redux';
 import { isDisplayByRole } from '../../../helper/auth';
 import Role from '../../../models/data/role';
-import VisibilityIcon from '@material-ui/icons/Visibility';
 import ThumbUpAltIcon from '@material-ui/icons/ThumbUpAlt';
 import ThumbDownAltIcon from '@material-ui/icons/ThumbDownAlt';
 const useStyles = makeStyles((theme) => ({

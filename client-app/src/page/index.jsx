@@ -1,13 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import PropTypes from 'prop-types';
-import {
-    Switch,
-    Route,
-    BrowserRouter as Router,
-    Link,
-    Redirect,
-} from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { Switch, Route, BrowserRouter as Router } from 'react-router-dom';
 import { HomePage } from './HomePage';
 import PostPage from './PostPage';
 import LoginPage from './LoginPage';
@@ -19,9 +12,9 @@ import ProfilePage from './ProfilePage';
 import PrivateRoute from '../components/PrivateRoute';
 import AuthRoute from '../components/AuthRoute';
 import './style.css';
-import authApi from '../api/authApi';
+
 import { setUser } from '../redux/slice/userSlice';
-import effectGetInfo from '../utils/Auth';
+
 import ApprovedPage from './ApprovedPage';
 import NewPostPage from './NewPostPage';
 import FavoritePage from './FavoritePage';

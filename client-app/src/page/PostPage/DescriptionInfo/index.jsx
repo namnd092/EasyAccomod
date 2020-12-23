@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import Card from '../../../share/components/card';
 
 DescriptionInfo.propTypes = {};

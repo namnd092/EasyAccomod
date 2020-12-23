@@ -133,13 +133,13 @@ const rentalPost = {
             ApiUrl.GET_EXTEND_RENTAL_POST + `?_page=${_page}&_limit=${_limit}`;
         return axiosClient.get(url);
     },
-    postApproveExtend(extendId) {
+    postApproveExtend(id) {
         const url = ApiUrl.APPROVE_EXTEND;
-        return axiosClient.post(url, { extendId });
+        return axiosClient.post(url, { id });
     },
-    postRejectExtend(extendId) {
+    postRejectExtend(id) {
         const url = ApiUrl.REJECT_EXTEND;
-        return axiosClient.post(url, { extendId });
+        return axiosClient.post(url, { id });
     },
     getCommendPending() {
         const url = ApiUrl.GET_COMMENT_PENDING;
@@ -172,9 +172,9 @@ const rentalPost = {
         const url = ApiUrl.GET_STATUS_OPTION;
         return axiosClient.get(url);
     },
-    putOwnerSetRentalStatus() {
+    putOwnerSetRentalStatus(wasRented, accommodationId) {
         const url = ApiUrl.PUT_OWNER_RENTAL_STATUS;
-        return axiosClient.put(url);
+        return axiosClient.put(url, { wasRented, accommodationId });
     },
     postExtendPeriod(accommodationRentalPostId, extendPeriod) {
         const url = ApiUrl.POST_EXTEND_PERIOD;

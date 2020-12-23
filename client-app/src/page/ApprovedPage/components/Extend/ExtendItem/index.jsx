@@ -1,4 +1,5 @@
 import React from 'react';
+import { getTime } from '../../../../../helper/time';
 
 export default function ExtendItem(props) {
     const { index, item, handleClick, handleApprove, handleReject } = props;
@@ -12,10 +13,7 @@ export default function ExtendItem(props) {
                 {item && item.ownerName}
             </td>
             <td onClick={() => handleClick(item.id)}>
-                {item && item.ownerEmail}
-            </td>
-            <td onClick={() => handleClick(item.id)}>
-                {item && item.dateAdded}
+                {item && getTime(item.dateAdded)}
             </td>
             <td onClick={() => handleClick(item.id)}>
                 {item && item.extendPeriod}
@@ -25,13 +23,13 @@ export default function ExtendItem(props) {
                     className="btn btn-primary"
                     onClick={() => handleApprove(item.extendId)}
                 >
-                    Chấp nhận
+                    <i class="fas fa-check-circle"></i> Chấp nhận
                 </button>
                 <button
                     className="btn btn-danger"
                     onClick={() => handleReject(item.extendId)}
                 >
-                    Từ chối
+                    <i class="fas fa-ban"></i> Từ chối
                 </button>
             </td>
         </tr>

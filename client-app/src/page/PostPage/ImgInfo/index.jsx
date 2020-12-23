@@ -1,6 +1,5 @@
 import React from 'react';
 import SimpleImageSlider from 'react-simple-image-slider';
-import rentalPost from '../../../api/rentalPost';
 import Card from '../../../share/components/card';
 import './style.css';
 

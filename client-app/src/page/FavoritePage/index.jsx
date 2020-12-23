@@ -4,7 +4,6 @@ import { useHistory } from 'react-router-dom';
 import rentalPost from '../../api/rentalPost';
 import Card from '../../share/components/card';
 import PostItem from '../HomePage/components/PostList/PostItem';
-import FavoriteItem from './FavoriteItem';
 import { Button } from '@material-ui/core';
 import ThumbDownAltIcon from '@material-ui/icons/ThumbDownAlt';
 

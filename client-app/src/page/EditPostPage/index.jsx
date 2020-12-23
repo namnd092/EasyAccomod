@@ -12,15 +12,9 @@ import 'filepond/dist/filepond.min.css';
 import FilePondPluginImageExifOrientation from 'filepond-plugin-image-exif-orientation';
 import FilePondPluginImagePreview from 'filepond-plugin-image-preview';
 import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css';
-import { Form, Formik } from 'formik';
-import Card from '../../share/components/card';
-import BasicInfo from '../NewPostPage/components/BasicInfo';
 import newPostInitialValue from '../../models/InitialValueForm/newPost';
 import newPostValidationSchema from '../../models/ValidateForm/newPost';
-import PostingTutorial from '../NewPostPage/components/PostingTutorial';
-import DescriptionInfo from '../NewPostPage/components/DescriptionInfo';
-import DurationInfo from '../NewPostPage/components/DurationInfo';
-import { Button } from '@material-ui/core';
+
 import uploadMultipleFile from '../../utils/cloudinaryUpload';
 import { useParams } from 'react-router-dom';
 import rentalPost from '../../api/rentalPost';
@@ -28,14 +22,6 @@ import EditPostForm from './Form';
 
 // Register the plugins
 registerPlugin(FilePondPluginImageExifOrientation, FilePondPluginImagePreview);
-
-const ButtonDrag = () => {
-    return (
-        <Button type="submit" color="primary" size="large" variant="contained">
-            Thêm ảnh
-        </Button>
-    );
-};
 
 const EditPostPage = () => {
     const { id } = useParams();
@@ -80,7 +66,6 @@ const EditPostPage = () => {
         owner: {},
     });
     const [defaultValue, setDefaultValue] = React.useState(null);
-    const resetRef = React.useRef(false);
     const handleSubmit = async (value) => {
         console.log(value);
         const newFiles = files.map((file) => file.file);

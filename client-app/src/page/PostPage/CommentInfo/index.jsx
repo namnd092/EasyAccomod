@@ -11,7 +11,6 @@ import rentalPost from '../../../api/rentalPost';
 import { useSelector } from 'react-redux';
 import { isDisplayByRole } from '../../../helper/auth';
 import Role from '../../../models/data/role';
-import SendIcon from '@material-ui/icons/Send';
 import TelegramIcon from '@material-ui/icons/Telegram';
 
 const useStyles = makeStyles((theme) => ({

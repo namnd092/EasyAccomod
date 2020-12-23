@@ -10,7 +10,9 @@ export default function THeadComponent() {
                 <th scope="col">Địa chỉ</th>
                 <th scope="col">SDT</th>
                 <th scope="col">Email</th>
-                <th scope="col">Hành động</th>
+                <th scope="col" style={{ minWidth: '260px' }}>
+                    Hành động
+                </th>
             </tr>
         </thead>
     );

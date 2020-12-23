@@ -6,15 +6,15 @@ import {
     Accordion,
     AccordionDetails,
     AccordionSummary,
-    InputBase,
     makeStyles,
 } from '@material-ui/core';
-import { Button, FormGroup, FormLabel, TextField } from '@material-ui/core';
+import { Button, FormGroup, FormLabel } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Select from 'react-select';
 import { useState } from 'react';
 import addressApi from '../../../../api/addressApi';
 import roomApi from '../../../../api/roomApi';
+import SearchIcon from '@material-ui/icons/Search';
 
 SearchFrom.propTypes = {
     onSumbit: PropTypes.func,
@@ -532,8 +532,10 @@ function SearchFrom(props) {
                                 color={'secondary'}
                                 variant="contained"
                                 disabled={isLoading}
+                                size={'large'}
                             >
-                                Tìm kiếm
+                                Tìm kiếm{' '}
+                                <SearchIcon style={{ marginLeft: '7px' }} />
                             </Button>
                         </div>
                     </div>

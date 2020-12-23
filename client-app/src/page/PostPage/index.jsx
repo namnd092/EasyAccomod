@@ -1,6 +1,5 @@
 import React from 'react';
 import './style.css';
-import PropTypes from 'prop-types';
 import { useHistory, useParams } from 'react-router-dom';
 import {} from '@material-ui/core';
 import BasicInfo from './BasicInfo';

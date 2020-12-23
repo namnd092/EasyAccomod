@@ -59,6 +59,18 @@ const authApi = {
             `?_page=${_page}&_limit=${_limit}&confirmationStatus=${-2}`;
         return axiosClient.get(url);
     },
+    postSetOwner(accountId) {
+        const url = ApiUrl.SET_OWNER;
+        return axiosClient.post(url, { accountId });
+    },
+    postRejectOwner(accountId) {
+        const url = ApiUrl.REJECT_OWNER;
+        return axiosClient.post(url, { accountId });
+    },
+    postOwnerCanEditInfo(ownerId, canEditInfo) {
+        const url = ApiUrl.SET_REJECT_OWNER_EDIT_INFO;
+        return axiosClient.post(url, { ownerId, canEditInfo });
+    },
 };
 
 export default authApi;

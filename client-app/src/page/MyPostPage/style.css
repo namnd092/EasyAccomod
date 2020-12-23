@@ -1,0 +1,9 @@
+.myPostPage{
+
+}
+.myPostPage .MuiFormGroup-root{
+    margin-bottom: 20px;
+}
+.myPostPage .MuiFormLabel-root{
+    color: black;
+}

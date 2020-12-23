@@ -10,19 +10,21 @@ const Extend = () => {
     const handleClick = (postId) => {
         history.push(`/post/${postId}`);
     };
-    const handleApprove = async (extendId) => {
+    const handleApprove = async (extendId, index) => {
         try {
             const response = await rentalPost.postApproveExtend(extendId);
             console.log(response);
+            postList.splice(index, 1);
             setPostList([...postList]);
         } catch (error) {
             console.log(error);
         }
     };
-    const handleReject = async (extendId) => {
+    const handleReject = async (extendId, index) => {
         try {
             const response = await rentalPost.postRejectExtend(extendId);
             console.log(response);
+            postList.splice(index, 1);
             setPostList([...postList]);
         } catch (error) {
             console.log(error);
@@ -50,7 +52,7 @@ const Extend = () => {
                             <th scope="col">STT</th>
                             <th scope="col">Tiêu đề</th>
                             <th scope="col">Tên chủ trọ</th>
-                            <th scope="col">Email</th>
+
                             <th scope="col">Ngày thêm</th>
                             <th scope="col">Số ngày gia hạn</th>
                             <th scope="col">Hành động</th>

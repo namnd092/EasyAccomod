@@ -1,3 +1,5 @@
+import date from 'date-and-time';
+
 function getDistanceTime(time) {
     const distanceTime = Date.now() - Date.parse(new Date(`${time}`));
 
@@ -10,4 +12,8 @@ function getDistanceTime(time) {
     return `${Math.floor(distanceTime / (3600 * 24 * 1000))} ngày trước`;
 }
 
-export { getDistanceTime };
+function getTime(time) {
+    const newTime = new Date(time);
+    return date.format(newTime, 'DD-MM-YYYY');
+}
+export { getDistanceTime, getTime };
