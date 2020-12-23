@@ -20,6 +20,6 @@ namespace EasyAccomod.Dtos
 
         [Required] public string Email { get; set; }
 
-        [Required] [StringLength(128)] public string AccountId { get; set; }
+        public string AccountId { get; set; }
     }
 }

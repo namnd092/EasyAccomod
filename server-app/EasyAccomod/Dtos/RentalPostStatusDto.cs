@@ -11,6 +11,9 @@ namespace EasyAccomod.Dtos
         [Required]
         public byte? Id { get; set; }
 
+        [Required]
+        public int? PostId { get; set; }
+
         public string Name { get; set; }
     }
 }

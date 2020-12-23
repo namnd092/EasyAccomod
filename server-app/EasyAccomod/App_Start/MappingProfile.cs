@@ -44,7 +44,8 @@ namespace Vidly.App_Start
             Mapper.CreateMap<Comment, CommentDto>()
                 .ForMember(c => c.RenterName, act => act.MapFrom(c => c.Renter.Name));
             Mapper.CreateMap<Report, ReportDto>()
-                .ForMember(r => r.RenterName, act => act.MapFrom(r => r.Renter.Name));
+                .ForMember(r => r.RenterName, act => act.MapFrom(r => r.Renter.Name))
+                .ForMember(r => r.PostTitle, act => act.MapFrom(p => p.AccommodationRentalPost.Title));
 
             // Dto to Domain
             Mapper.CreateMap<DistrictDto, District>();
@@ -56,7 +57,8 @@ namespace Vidly.App_Start
             Mapper.CreateMap<AddressDto, Address>()
                 .ForMember(a => a.Id, opt => opt.Ignore());
             Mapper.CreateMap<OwnerDto, Owner>()
-                .ForMember(o => o.Id, opt => opt.Ignore());
+                .ForMember(o => o.Id, opt => opt.Ignore())
+                .ForMember(o => o.AccountId, opt => opt.Ignore());
             Mapper.CreateMap<AccommodationRentalPostDto, AccommodationRentalPost>()
                 .ForMember(p => p.Id, opt => opt.Ignore());
             Mapper.CreateMap<AccommodationPictureDto, AccommodationPicture>()

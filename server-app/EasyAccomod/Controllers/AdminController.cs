@@ -132,29 +132,29 @@ namespace EasyAccomod.Controllers
             return Ok("Rejected");
         }
 
-        // PUT	api/Admin/RentalPosts/1/SetStatus
+        // PUT	api/Admin/RentalPost/SetStatus
         [HttpPut]
-        [Route("RentalPosts/{id}/SetStatus")]
-        public IHttpActionResult SetRentalPostStatus(int id, RentalPostStatusDto rentalPostStatusDto)
+        [Route("RentalPost/SetStatus")]
+        public IHttpActionResult SetRentalPostStatus(RentalPostStatusDto rentalPostStatusDto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
             var rentalPostInDb = _context.AccommodationRentalPosts
                 .Include(p => p.Status)
-                .SingleOrDefault(p => p.Id == id);
+                .SingleOrDefault(p => p.Id == rentalPostStatusDto.PostId);
 
             if (rentalPostInDb == null)
-                return NotFound();
+                return BadRequest("Post not found.");
 
             var status = _context.RentalPostStatuses.SingleOrDefault(s => s.Id == rentalPostStatusDto.Id);
             if (status == null)
                 return BadRequest("Status does not exist.");
 
-            rentalPostInDb.StatusId = (byte)rentalPostStatusDto.Id;
+            rentalPostInDb.StatusId = status.Id;
             _context.SaveChanges();
 
-            return Ok();
+            return Ok("Status: " + status.Name);
         }
 
         // GET	api/Admin/RentalPosts
@@ -327,6 +327,40 @@ namespace EasyAccomod.Controllers
             _context.SaveChanges();
 
             return Ok("Rejected");
+        }
+
+        // GET	api/Admin/RentalPost/Reports
+        [HttpGet]
+        [Route("RentalPost/Reports")]
+        public IHttpActionResult GetReports(bool isSolved = false)
+        {
+            var listReport = _context.Reports
+                .Include(r => r.AccommodationRentalPost)
+                .Include(r => r.Renter)
+                .Where(r => r.IsSolved == isSolved)
+                .ToList()
+                .ConvertAll(Mapper.Map<Report, ReportDto>);
+
+            return Ok(listReport);
+        }
+
+        // POST	api/Admin/RentalPost/ResolveReport
+        [HttpPost]
+        [Route("RentalPost/ResolveReport")]
+        public IHttpActionResult ResolveReport(ReportId reportId)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var report = _context.Reports.SingleOrDefault(r => r.Id == reportId.Id);
+
+            if (report == null)
+                return BadRequest("Report not exist.");
+
+            report.IsSolved = true;
+            _context.SaveChanges();
+
+            return Ok("Resolved");
         }
     }
 }
