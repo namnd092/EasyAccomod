@@ -26,58 +26,58 @@ namespace EasyAccomod.Controllers
             _context = new ApplicationDbContext();
         }
 
-        // GET api/Accommodations
-        [Authorize(Roles = RoleName.Owner)]
-        [HttpGet]
-        [Route("")]
-        public IHttpActionResult GetAccommodations()
-        {
-            var ownerAccountId = User.Identity.GetUserId();
-            var ownerId = _context.Owners.Single(o => o.AccountId == ownerAccountId).Id;
+        //// GET api/Accommodations
+        //[Authorize(Roles = RoleName.Owner)]
+        //[HttpGet]
+        //[Route("")]
+        //public IHttpActionResult GetAccommodations()
+        //{
+        //    var ownerAccountId = User.Identity.GetUserId();
+        //    var ownerId = _context.Owners.Single(o => o.AccountId == ownerAccountId).Id;
 
-            var accommodations = _context.Accommodations
-                .Where(a => a.OwnerId == ownerId)
-                .Include(a => a.AccommodationType)
-                .Include(a => a.Address)
-                .Include(a => a.KitchenType)
-                .Include(a => a.PaymentType)
-                .Include(a => a.RoomAreaRange)
-                .Include(a => a.Status)
-                .ToList();
+        //    var accommodations = _context.Accommodations
+        //        .Where(a => a.OwnerId == ownerId)
+        //        .Include(a => a.AccommodationType)
+        //        .Include(a => a.Address)
+        //        .Include(a => a.KitchenType)
+        //        .Include(a => a.PaymentType)
+        //        .Include(a => a.RoomAreaRange)
+        //        .Include(a => a.Status)
+        //        .ToList();
 
-            if (!accommodations.Any())
-                return NotFound();
+        //    if (!accommodations.Any())
+        //        return NotFound();
 
-            var accommodationDtos = accommodations.ConvertAll(a => Mapper.Map<Accommodation, AccommodationDto>(a));
+        //    var accommodationDtos = accommodations.ConvertAll(a => Mapper.Map<Accommodation, AccommodationDto>(a));
 
-            return Ok(accommodationDtos);
-        }
+        //    return Ok(accommodationDtos);
+        //}
 
-        // GET	api/Accommodations/1
-        [Authorize(Roles = RoleName.Owner + ", " + RoleName.Admin)]
-        [HttpGet]
-        [Route("{id}")]
-        public IHttpActionResult GetAccommodation(int id)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+        //// GET	api/Accommodations/1
+        //[Authorize(Roles = RoleName.Owner + ", " + RoleName.Admin)]
+        //[HttpGet]
+        //[Route("{id}")]
+        //public IHttpActionResult GetAccommodation(int id)
+        //{
+        //    if (!ModelState.IsValid)
+        //        return BadRequest(ModelState);
 
-            var accommodation = _context.Accommodations
-                .Include(a => a.AccommodationType)
-                .Include(a => a.Address)
-                .Include(a => a.KitchenType)
-                .Include(a => a.PaymentType)
-                .Include(a => a.RoomAreaRange)
-                .Include(a => a.Status)
-                .SingleOrDefault(a => a.Id == id);
+        //    var accommodation = _context.Accommodations
+        //        .Include(a => a.AccommodationType)
+        //        .Include(a => a.Address)
+        //        .Include(a => a.KitchenType)
+        //        .Include(a => a.PaymentType)
+        //        .Include(a => a.RoomAreaRange)
+        //        .Include(a => a.Status)
+        //        .SingleOrDefault(a => a.Id == id);
 
-            if (accommodation == null)
-                return NotFound();
+        //    if (accommodation == null)
+        //        return NotFound();
 
-            var accommodationDto = Mapper.Map<Accommodation, AccommodationDto>(accommodation);
+        //    var accommodationDto = Mapper.Map<Accommodation, AccommodationDto>(accommodation);
 
-            return Ok(accommodationDto);
-        }
+        //    return Ok(accommodationDto);
+        //}
 
         // GET api/Accommodations/Types
         [AllowAnonymous]
@@ -124,56 +124,56 @@ namespace EasyAccomod.Controllers
             return Ok(_context.AccommodationStatuses.ToList());
         }
 
-        // POST	api/Accommodations
-        [Authorize(Roles = RoleName.Owner)]
-        [HttpPost]
-        [Route("")]
-        public IHttpActionResult AddAccommodation(AccommodationDto accommodationDto)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+        //// POST	api/Accommodations
+        //[Authorize(Roles = RoleName.Owner)]
+        //[HttpPost]
+        //[Route("")]
+        //public IHttpActionResult AddAccommodation(AccommodationDto accommodationDto)
+        //{
+        //    if (!ModelState.IsValid)
+        //        return BadRequest(ModelState);
 
-            if (!(bool)accommodationDto.IsStateElectricityPrice)
-            {
-                if (accommodationDto.ElectricityPrice <= 0)
-                    return BadRequest("Enter Electricity price.");
-            }
-            else
-            {
-                accommodationDto.ElectricityPrice = 0;
-            }
+        //    if (!(bool)accommodationDto.IsStateElectricityPrice)
+        //    {
+        //        if (accommodationDto.ElectricityPrice <= 0)
+        //            return BadRequest("Enter Electricity price.");
+        //    }
+        //    else
+        //    {
+        //        accommodationDto.ElectricityPrice = 0;
+        //    }
 
-            if (!(bool)accommodationDto.IsStateWaterPrice)
-            {
-                if (accommodationDto.WaterPrice <= 0)
-                    return BadRequest("Enter Water price.");
-            }
-            else
-            {
-                accommodationDto.WaterPrice = 0;
-            }
+        //    if (!(bool)accommodationDto.IsStateWaterPrice)
+        //    {
+        //        if (accommodationDto.WaterPrice <= 0)
+        //            return BadRequest("Enter Water price.");
+        //    }
+        //    else
+        //    {
+        //        accommodationDto.WaterPrice = 0;
+        //    }
 
-            var accommodation = Mapper.Map<AccommodationDto, Accommodation>(accommodationDto);
+        //    var accommodation = Mapper.Map<AccommodationDto, Accommodation>(accommodationDto);
 
-            var ownerAccountId = User.Identity.GetUserId();
-            accommodation.OwnerId = _context.Owners.Single(o => o.AccountId == ownerAccountId).Id;
-            accommodation.StatusId = _context.AccommodationStatuses.Single(s => s.Name == "Chưa cho thuê").Id;
+        //    var ownerAccountId = User.Identity.GetUserId();
+        //    accommodation.OwnerId = _context.Owners.Single(o => o.AccountId == ownerAccountId).Id;
+        //    accommodation.StatusId = _context.AccommodationStatuses.Single(s => s.Name == "Chưa cho thuê").Id;
 
-            _context.Accommodations.Add(accommodation);
-            _context.SaveChanges();
+        //    _context.Accommodations.Add(accommodation);
+        //    _context.SaveChanges();
 
-            var accommodationInDb = _context.Accommodations
-                .Include(a => a.AccommodationType)
-                .Include(a => a.Address)
-                .Include(a => a.KitchenType)
-                .Include(a => a.PaymentType)
-                .Include(a => a.RoomAreaRange)
-                .Include(a => a.Status)
-                .Single(a => a.Id == accommodation.Id);
+        //    var accommodationInDb = _context.Accommodations
+        //        .Include(a => a.AccommodationType)
+        //        .Include(a => a.Address)
+        //        .Include(a => a.KitchenType)
+        //        .Include(a => a.PaymentType)
+        //        .Include(a => a.RoomAreaRange)
+        //        .Include(a => a.Status)
+        //        .Single(a => a.Id == accommodation.Id);
 
-            var responseAccommodationDto = Mapper.Map<Accommodation, AccommodationDto>(accommodationInDb);
+        //    var responseAccommodationDto = Mapper.Map<Accommodation, AccommodationDto>(accommodationInDb);
 
-            return Created(new Uri(Request.RequestUri + "/" + accommodation.Id), responseAccommodationDto);
-        }
+        //    return Created(new Uri(Request.RequestUri + "/" + accommodation.Id), responseAccommodationDto);
+        //}
     }
 }

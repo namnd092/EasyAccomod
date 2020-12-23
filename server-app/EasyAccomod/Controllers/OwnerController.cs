@@ -67,29 +67,29 @@ namespace EasyAccomod.Controllers
             return Ok(rentalPostDtos);
         }
 
-        // POST api/Owner/RentalPosts/1/Edit
-        [HttpPost]
-        [Route("RentalPosts/{id}/Edit")]
-        public IHttpActionResult SendEditRequest(int id)
-        {
-            var rentalPostInDb = _context.AccommodationRentalPosts
-                .Include(p => p.Status)
-                .Include(p => p.Accommodation.Owner)
-                .SingleOrDefault(p => p.Id == id);
+        //// POST api/Owner/RentalPosts/1/Edit
+        //[HttpPost]
+        //[Route("RentalPosts/{id}/Edit")]
+        //public IHttpActionResult SendEditRequest(int id)
+        //{
+        //    var rentalPostInDb = _context.AccommodationRentalPosts
+        //        .Include(p => p.Status)
+        //        .Include(p => p.Accommodation.Owner)
+        //        .SingleOrDefault(p => p.Id == id);
 
-            if (rentalPostInDb == null)
-                return BadRequest("Rental post does not exist.");
+        //    if (rentalPostInDb == null)
+        //        return BadRequest("Rental post does not exist.");
 
-            if (rentalPostInDb.Accommodation.Owner.AccountId != User.Identity.GetUserId())
-                return BadRequest("You do not have permission to edit this post.");
+        //    if (rentalPostInDb.Accommodation.Owner.AccountId != User.Identity.GetUserId())
+        //        return BadRequest("You do not have permission to edit this post.");
 
-            rentalPostInDb.StatusId = _context.RentalPostStatuses
-                .Single(s => s.Name == RentalPostStatusName.WaitingEditPermission).Id;
+        //    rentalPostInDb.StatusId = _context.RentalPostStatuses
+        //        .Single(s => s.Name == RentalPostStatusName.WaitingEditPermission).Id;
 
-            _context.SaveChanges();
+        //    _context.SaveChanges();
 
-            return Ok();
-        }
+        //    return Ok();
+        //}
 
         // PUT	api/Owner/Accommodation/1/SetStatus
         [HttpPut]
