@@ -376,5 +376,31 @@ namespace EasyAccomod.Controllers
 
             return Ok("Resolved");
         }
+
+        // POST	api/Admin/ResolveEditInfo
+        [HttpPost]
+        [Route("ResolveEditInfo")]
+        public IHttpActionResult ResolveEditInfo(EditInfoRequest editInfoRequest)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var request = _context.EditInfoRequests.SingleOrDefault(r => r.OwnerId == editInfoRequest.OwnerId);
+
+            if (request == null)
+                return BadRequest("Edit request doesn't exist.");
+
+            if (editInfoRequest.CanEditInfo)
+            {
+                request.CanEditInfo = true;
+                _context.SaveChanges();
+                return Ok("Approved request");
+            }
+
+            _context.EditInfoRequests.Remove(request);
+            _context.SaveChanges();
+
+            return Ok("Rejected request");
+        }
     }
 }
