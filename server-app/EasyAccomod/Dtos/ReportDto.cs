@@ -18,10 +18,18 @@ namespace EasyAccomod.Dtos
         [Required]
         public int? AccommodationRentalPostId { get; set; }
 
+        public string PostTitle { get; set; }
+
         [Required] public string Content { get; set; }
 
         public DateTime Time { get; set; }
 
         public bool IsSolved { get; set; }
+    }
+
+    public class ReportId
+    {
+        [Required]
+        public int? Id { get; set; }
     }
 }
