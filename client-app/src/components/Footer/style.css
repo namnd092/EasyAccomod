@@ -1,0 +1,27 @@
+footer{
+    background-color: var(--bg-color);
+    padding: 20px;
+}
+footer p {
+    color: white;
+    color: gray;
+}
+footer a {
+    color: gray;
+}
+footer a:hover{
+    color: white;
+}
+footer h5 {
+    color: white;
+}
+.footer__group{
+    
+}
+.footer__group > a{
+    display: flex;
+    margin: 10px 0;
+}
+.footer__group > p{
+    margin: 10px 0;
+}

@@ -11,6 +11,6 @@ namespace EasyAccomod.Models
     public class SetRoleBindingModel
     {
         [Required]
-        public string UserName { get; set; }
+        public string AccountId { get; set; }
     }
 }

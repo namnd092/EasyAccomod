@@ -1,0 +1,13 @@
+.approvedPage__appBar{
+    width: 96% !important;
+    margin: auto;
+}
+button:focus{
+    outline: none;
+}
+.approvedPage .card{
+    margin-bottom: 30px;
+}
+.approvedPage button {
+    margin-right: 10px;
+}

@@ -1,10 +1,21 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 
 namespace EasyAccomod.Models
 {
     // Models used as parameters to AccountController actions.
+
+    public class CreateTokenBindingModel
+    {
+        [Required]
+        public string UserName { get; set; }
+
+        [Required]
+        [DataType(DataType.Password)]
+        public string Password { get; set; }
+    }
 
     public class AddExternalLoginBindingModel
     {
@@ -35,19 +46,28 @@ namespace EasyAccomod.Models
     public class OwnerRegisterBindingModel
     {
         [Required]
+        [StringLength(255)]
         public string Name { get; set; }
 
         [Required]
+        [StringLength(255)]
         public string UserName { get; set; }
 
-        [Required] public string Identification { get; set; }
-
-        [Required] public string Address { get; set; }
-
-        [Required] public string Phone { get; set; }
+        [Required]
+        [StringLength(12)]
+        public string Identification { get; set; }
 
         [Required]
-        [Display(Name = "Email")]
+        [StringLength(255)]
+        public string Address { get; set; }
+
+        [Required]
+        [RegularExpression(@"^0[1-9]{1}[0-9]{8}$")]
+
+        public string Phone { get; set; }
+
+        [Required]
+        [RegularExpression(@"^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$")]
         public string Email { get; set; }
 
         [Required]
@@ -65,13 +85,15 @@ namespace EasyAccomod.Models
     public class RegisterBindingModel
     {
         [Required]
+        [StringLength(255)]
         public string Name { get; set; }
 
         [Required]
+        [StringLength(255)]
         public string UserName { get; set; }
 
         [Required]
-        [Display(Name = "Email")]
+        [RegularExpression(@"^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$")]
         public string Email { get; set; }
 
         [Required]

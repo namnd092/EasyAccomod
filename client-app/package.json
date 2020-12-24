@@ -3,14 +3,45 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^1.2.32",
+    "@fortawesome/free-solid-svg-icons": "^5.15.1",
+    "@material-ui/core": "^4.11.0",
+    "@material-ui/icons": "^4.9.1",
+    "@material-ui/lab": "^4.0.0-alpha.56",
+    "@material-ui/styles": "^4.10.0",
+    "@reduxjs/toolkit": "^1.4.0",
     "@testing-library/jest-dom": "^5.11.5",
     "@testing-library/react": "^11.1.2",
     "@testing-library/user-event": "^12.2.2",
     "axios": "^0.21.0",
+    "cloudinary": "^1.23.0",
+    "cloudinary-core": "^2.11.3",
+    "date-and-time": "^0.14.1",
+    "filepond-plugin-image-exif-orientation": "^1.0.9",
+    "filepond-plugin-image-preview": "^4.6.4",
+    "formik": "^2.2.5",
+    "jodit-react": "^1.0.66",
+    "moment": "^2.29.1",
+    "query-string": "^6.13.7",
     "react": "^17.0.1",
+    "react-debounce-input": "^3.2.3",
     "react-dom": "^17.0.1",
+    "react-image-gallery": "^1.0.8",
+    "react-images-upload": "^1.2.8",
+    "react-js-pagination": "^3.0.3",
+    "react-rating-stars-component": "^2.2.0",
+    "react-redux": "^7.2.2",
+    "react-router-dom": "^5.2.0",
+    "react-rte": "^0.16.3",
     "react-scripts": "4.0.0",
-    "web-vitals": "^0.2.4"
+    "react-select": "^3.1.0",
+    "react-simple-image-slider": "^2.0.1",
+    "react-slideshow-image": "^3.4.2",
+    "react-swipeable-views": "^0.13.9",
+    "redux": "^4.0.5",
+    "redux-saga": "^1.1.3",
+    "web-vitals": "^0.2.4",
+    "yup": "^0.30.0"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -35,5 +66,14 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "prettier": {
+    "trailingComma": "es5",
+    "tabWidth": 4,
+    "semi": true,
+    "singleQuote": true
+  },
+  "devDependencies": {
+    "eslint": "^7.14.0"
   }
 }

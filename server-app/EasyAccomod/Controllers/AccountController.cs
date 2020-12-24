@@ -17,6 +17,7 @@ using Microsoft.Owin.Security.OAuth;
 using EasyAccomod.Models;
 using EasyAccomod.Providers;
 using EasyAccomod.Results;
+using Newtonsoft.Json;
 
 namespace EasyAccomod.Controllers
 {
@@ -55,6 +56,64 @@ namespace EasyAccomod.Controllers
 
         public ISecureDataFormat<AuthenticationTicket> AccessTokenFormat { get; private set; }
 
+        // POST api/Account/Token
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("Token")]
+        public IHttpActionResult CreateToken(CreateTokenBindingModel model)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest();
+
+            var client = new HttpClient();
+
+            var loginData = new Dictionary<string, string>
+            {
+                {"UserName", model.UserName},
+                {"Password", model.Password},
+                {"grant_type", "password"}
+            };
+
+            var content = new FormUrlEncodedContent(loginData);
+
+            var response = client.PostAsync("https://localhost:44360/token", content).Result;
+
+            if (!response.IsSuccessStatusCode)
+                return BadRequest("User name or password is invalid.");
+
+            string resultJson = response.Content.ReadAsStringAsync().Result;
+            var result = JsonConvert.DeserializeObject<CreateTokenViewModel>(resultJson);
+
+            result.account_id = _context.Users.Single(u => u.UserName == model.UserName).Id;
+
+            var roleId = _context.Users.Single(u => u.UserName == model.UserName).Roles.Single().RoleId;
+            result.role = _context.Roles.Single(r => r.Id == roleId).Name;
+
+            switch (result.role)
+            {
+                case RoleName.Admin:
+                    var admin = _context.Admins.Single(a => a.AccountId == result.account_id);
+                    result.user_id = admin.Id;
+                    result.name = admin.Name;
+                    break;
+
+                case RoleName.WaitForConfirmation:
+                case RoleName.Owner:
+                    var owner = _context.Owners.Single(o => o.AccountId == result.account_id);
+                    result.user_id = owner.Id;
+                    result.name = owner.Name;
+                    break;
+
+                case RoleName.Renter:
+                    var renter = _context.Renters.Single(r => r.AccountId == result.account_id);
+                    result.user_id = renter.Id;
+                    result.name = renter.Name;
+                    break;
+            }
+
+            return Ok(result);
+        }
+
         // GET api/Account/UserInfo
         [HostAuthentication(DefaultAuthenticationTypes.ExternalBearer)]
         [Route("UserInfo")]
@@ -68,6 +127,53 @@ namespace EasyAccomod.Controllers
                 HasRegistered = externalLogin == null,
                 LoginProvider = externalLogin != null ? externalLogin.LoginProvider : null
             };
+        }
+
+        // GET api/Account/Info
+        [Authorize]
+        [HttpGet]
+        public IHttpActionResult Info()
+        {
+            var accountId = User.Identity.GetUserId();
+
+            var roleId = _context.Users.Single(u => u.Id == accountId).Roles.Single().RoleId;
+            var roleName = _context.Roles.Single(r => r.Id == roleId).Name;
+
+            var userInfo = new InfoViewModel()
+            {
+                AccountId = accountId,
+                Role = roleName
+            };
+
+            switch (roleName)
+            {
+                case RoleName.Admin:
+                    var admin = _context.Admins.Single(a => a.AccountId == accountId);
+                    userInfo.UserId = admin.Id;
+                    userInfo.Name = admin.Name;
+                    userInfo.Email = admin.Email;
+                    break;
+
+                case RoleName.WaitForConfirmation:
+                case RoleName.Owner:
+                    var owner = _context.Owners.Single(o => o.AccountId == accountId);
+                    userInfo.UserId = owner.Id;
+                    userInfo.Name = owner.Name;
+                    userInfo.Email = owner.Email;
+                    userInfo.Address = owner.Address;
+                    userInfo.Identification = owner.Identification;
+                    userInfo.Phone = owner.Phone;
+                    break;
+
+                case RoleName.Renter:
+                    var renter = _context.Renters.Single(r => r.AccountId == accountId);
+                    userInfo.UserId = renter.Id;
+                    userInfo.Name = renter.Name;
+                    userInfo.Email = renter.Email;
+                    break;
+            }
+
+            return Ok(userInfo);
         }
 
         // POST api/Account/Logout
@@ -322,11 +428,11 @@ namespace EasyAccomod.Controllers
             return logins;
         }
 
-        // POST api/Account/Register
+        // POST api/Account/RenterRegister
         [HttpPost]
         [AllowAnonymous]
-        [Route("Register")]
-        public async Task<IHttpActionResult> Register(RegisterBindingModel model)
+        [Route("RenterRegister")]
+        public async Task<IHttpActionResult> RenterRegister(RegisterBindingModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -342,14 +448,20 @@ namespace EasyAccomod.Controllers
                 return GetErrorResult(result);
             }
 
-            Renter renter = new Renter
+            var addToRole = UserManager.AddToRole(user.Id, RoleName.Renter);
+            if (addToRole.Succeeded)
             {
-                AccountId = user.Id,
-                Name = model.Name,
-                Email = model.Email
-            };
-            _context.Renters.Add(renter);
-            _context.SaveChanges();
+                Renter renter = new Renter
+                {
+                    AccountId = user.Id,
+                    Name = model.Name,
+                    Email = model.Email
+                };
+                _context.Renters.Add(renter);
+                _context.SaveChanges();
+            }
+            else
+                return BadRequest("Error when add to role");
 
             return Ok();
         }
@@ -373,17 +485,23 @@ namespace EasyAccomod.Controllers
             if (!result.Succeeded)
                 return GetErrorResult(result);
 
-            var owner = new Owner()
+            var addToRole = UserManager.AddToRole(user.Id, RoleName.WaitForConfirmation);
+            if (addToRole.Succeeded)
             {
-                AccountId = user.Id,
-                Address = model.Address,
-                Email = model.Email,
-                Identification = model.Identification,
-                Name = model.Name,
-                Phone = model.Name
-            };
-            _context.Owners.Add(owner);
-            _context.SaveChanges();
+                var owner = new Owner()
+                {
+                    AccountId = user.Id,
+                    Address = model.Address,
+                    Email = model.Email,
+                    Identification = model.Identification,
+                    Name = model.Name,
+                    Phone = model.Phone
+                };
+                _context.Owners.Add(owner);
+                _context.SaveChanges();
+            }
+            else
+                return BadRequest("Error when add to role");
 
             return Ok();
         }

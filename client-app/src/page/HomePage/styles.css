@@ -1,0 +1,26 @@
+.homePage{
+    padding-bottom: 20px;
+}
+.homepage__searchFrom{
+    background-color: white;
+    padding: 20px;
+}
+.homepage__searchFrom label{
+    
+}
+
+.homePage__pagination{
+   
+}
+.homePage__pagination button {
+    outline: none;
+}
+.homepage__searchFrom .MuiAccordion-root.Mui-expanded:first-child{
+    background-color: whitesmoke;
+}
+.homePage .MuiAccordion-root.Mui-expanded:last-child{
+    background-color: whitesmoke;
+}
+.homePage .MuiAccordionSummary-root{
+    background-color: whitesmoke;
+}

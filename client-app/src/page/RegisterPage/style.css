@@ -1,0 +1,57 @@
+.registerPage{
+
+}
+.registerPage{
+    display: flex;
+    height: 100%;
+}
+.registerPage .main{
+    background-color: white;
+    min-width: 500px;
+    min-height: 350px;
+    margin: auto;
+    margin-top: 50px;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 50px;
+    max-width: 600px;
+}
+.registerPage .top{
+    min-height: 70px;
+    background-color: #282830;
+    padding-top: 25px;
+}
+.registerPage .title{
+    color: white;
+    text-align: center;
+}
+.registerPage .bot{
+    padding: 10px 20px;
+}
+.registerPage .bot input{
+}
+.registerPage .MuiFormGroup-root{
+    margin-bottom: 10px;
+    margin-top: 10px;
+}
+.registerPage .MuiFormLabel-root{
+    color: black;
+}
+.registerPage .error{
+    color: red;
+    font-size: small;
+    margin-top: 5px;
+}
+.registerPage .group-btn{
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+    padding: 0 20px;
+}
+.registerPage .btn-group{
+    width: 150px;
+}
+.registerPage .btn-group button{
+    width: 150px;
+    height: 40px;
+}

@@ -1,0 +1,6 @@
+.favorite{
+    padding-top: 30px;
+}
+.favorite tr:hover{
+    cursor: pointer;
+}

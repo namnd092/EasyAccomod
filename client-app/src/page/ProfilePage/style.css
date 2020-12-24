@@ -1,0 +1,17 @@
+.profilePage{
+
+}
+.profilePage .MuiFormLabel-root{
+    color: black;
+}
+.profilePage .MuiFormGroup-root{
+    margin-bottom: 20px;
+}
+.profilePage .btn-group{
+    display: flex;
+    justify-content: center;
+}
+.profilePage .error{
+    font-size: smaller;
+    color: red;
+}
