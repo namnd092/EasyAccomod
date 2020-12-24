@@ -1,4 +1,11 @@
-import { Button, FormGroup, FormLabel } from '@material-ui/core';
+import {
+    Backdrop,
+    Button,
+    CircularProgress,
+    FormGroup,
+    FormLabel,
+    makeStyles,
+} from '@material-ui/core';
 import { Field, Form, Formik } from 'formik';
 import React from 'react';
 import { useHistory } from 'react-router-dom';
@@ -7,16 +14,29 @@ import { ownerRegisterInitialValue } from '../../../models/InitialValueForm/regi
 import { ownerRegisterValidationSchema } from '../../../models/ValidateForm/register';
 
 export default function OwnerRegister(props) {
+    const [message, setMessage] = React.useState('');
+    const [isLoading, setIsLoading] = React.useState(false);
     const history = useHistory();
     const handleSubmit = async (values) => {
         try {
+            setIsLoading(true);
             const response = await authApi.ownerRegister(values);
             console.log(response);
             history.push('/login');
         } catch (error) {
             console.log(error);
+            setMessage('Tên đăng nhập hoặc email đã được đăng ký');
+        } finally {
+            setIsLoading(false);
         }
     };
+    const useStyles = makeStyles((theme) => ({
+        backdrop: {
+            zIndex: theme.zIndex.drawer + 1,
+            color: '#fff',
+        },
+    }));
+    const classes = useStyles();
     return (
         <div>
             <Formik
@@ -26,6 +46,7 @@ export default function OwnerRegister(props) {
             >
                 {({ errors, touched, values, isValid, handleChange }) => (
                     <Form>
+                        {message && <span className="error">{message}</span>}
                         <FormGroup>
                             <FormLabel>Tên đăng nhập</FormLabel>
                             <Field
@@ -181,6 +202,15 @@ export default function OwnerRegister(props) {
                     </Form>
                 )}
             </Formik>
+            {isLoading && (
+                <Backdrop
+                    className={classes.backdrop}
+                    open={() => setIsLoading(true)}
+                    onClick={() => setIsLoading(false)}
+                >
+                    <CircularProgress color="inherit" />
+                </Backdrop>
+            )}
         </div>
     );
 }

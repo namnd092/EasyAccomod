@@ -1,4 +1,5 @@
 import React from 'react';
+import { getTime } from '../../../helper/time';
 import './style.css';
 
 const yesOrNo = (bool) => {
@@ -88,25 +89,27 @@ function BasicInfo(props) {
                             <tr>
                                 <td className="title">Ngày cập nhật</td>
                                 <td colSpan={3}>
-                                    {dateAdded
+                                    {/* {dateAdded
                                         ? dateAdded
                                               .replace('T00:', ' ')
                                               .substring(
                                                   0,
                                                   dateAdded.length - 6
                                               )
-                                        : ''}
+                                        : ''} */}
+                                    {dateAdded ? getTime(dateAdded) : ''}
                                 </td>
                                 <td className="title">Ngày hết hạn</td>
                                 <td colSpan={3}>
-                                    {dateExpired
+                                    {/* {dateExpired
                                         ? dateExpired
                                               .replace('T00:', ' ')
                                               .substring(
                                                   0,
                                                   dateExpired.length - 6
                                               )
-                                        : ''}
+                                        : ''} */}
+                                    {dateExpired ? getTime(dateExpired) : ''}
                                 </td>
                             </tr>
                             <tr>
@@ -171,14 +174,15 @@ function BasicInfo(props) {
                                 <td>
                                     {accommodation &&
                                     !accommodation.isStateElectricityPrice
-                                        ? accommodation.electricityPrice
+                                        ? accommodation.electricityPrice +
+                                          'đ/số'
                                         : ''}
                                 </td>
                                 <td className="title">Giá nước</td>
                                 <td>
                                     {accommodation &&
                                     !accommodation.isStateElectricityPrice
-                                        ? accommodation.waterPrice
+                                        ? accommodation.waterPrice + 'đ/khối'
                                         : ''}
                                 </td>
                             </tr>

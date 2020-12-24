@@ -96,7 +96,9 @@ function ShareInfo(props) {
             try {
                 const response = await rentalPost.getViews(postId);
                 console.log(response);
-                setNumberOfView(response);
+                setNumberOfView(
+                    typeof response === 'object' ? response.data : response
+                );
             } catch (error) {
                 console.log(error);
             }
