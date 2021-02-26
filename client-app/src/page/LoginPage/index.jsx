@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import './style.css';
 import PropTypes from 'prop-types';
 import { Formik, Form } from 'formik';
-import * as Yup from 'yup';
 import {
     Button,
     FormGroup,
@@ -18,6 +17,7 @@ import { setUser } from '../../redux/slice/userSlice';
 import { useDispatch } from 'react-redux';
 import Axios from 'axios';
 import ApiUrl from '../../constants/ApiUrl';
+import loginValidator from '../../models/ValidateForm/login';
 
 LoginPage.propTypes = {
     handle: PropTypes.func,
@@ -30,7 +30,6 @@ function LoginPage(props) {
     const history = useHistory();
     const dispatch = useDispatch();
     const [message, setMessage] = useState('');
-    const [role, setRole] = useState('');
     const [isLoading, setIsLoading] = React.useState(false);
     const initialValues = {
         username: '',
@@ -43,16 +42,6 @@ function LoginPage(props) {
         },
     }));
     const classes = useStyles();
-    const validationSchema = Yup.object().shape({
-        username: Yup.string().required('Tên đăng nhập không được bỏ trống'),
-        password: Yup.string()
-            .required('Mật khẩu không được bỏ trống')
-            .min(6, 'Mật khẩu phải chứa ít nhất 6 ký tự')
-            .matches(
-                /\w*(?:[A-Z]+)\w*(?:[\W.]+)\w*/,
-                'Mật khẩu phải chứa ít nhất 1 ký tự in hoa và 1 ký tự đặc biệt'
-            ),
-    });
     const handleSubmit = async (value) => {
         console.log('Submit Login', value);
         const { username, password } = value;
@@ -69,10 +58,15 @@ function LoginPage(props) {
                 },
             })
                 .then(async (response) => {
+                    console.log(response);
                     const infoResponse = await response.data;
-                    await dispatch(setUser({ ...infoResponse }));
-                    setMessage('Bạn đã đăng nhập thành công');
-                    history.push('/');
+                    if (response.status === 200 || response.status === 201) {
+                        await dispatch(setUser({ ...infoResponse }));
+                        setMessage('Bạn đã đăng nhập thành công');
+                        history.push('/');
+                    } else {
+                        setMessage(response.message);
+                    }
                 })
                 .catch((error) => console.log(error));
             // const infoResponse = await authApi.getAccountInfoByToken();
@@ -92,7 +86,7 @@ function LoginPage(props) {
                 </div>
                 <div className="bot">
                     <Formik
-                        validationSchema={validationSchema}
+                        validationSchema={loginValidator}
                         onSubmit={(value) => handleSubmit(value)}
                         initialValues={initialValues}
                     >

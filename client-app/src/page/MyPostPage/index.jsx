@@ -12,50 +12,50 @@ export default function MyPostPage() {
     const [postListSuccess, setPostListSuccess] = React.useState([]);
     const [postListPending, setPostListPending] = React.useState([]);
     const [statusList, setStatusList] = React.useState(defaultOptions);
+    React.useEffect(() => {
+        getStatusList();
+        getSuccessList();
+        getPendingList();
+    }, []);
     const handleClick = (postId) => {
         history.push(`/post/${postId}`);
     };
     const handleEditPost = (postId) => {
         history.push(`post/${postId}/edit`);
     };
-    React.useEffect(() => {
-        async function getStatusList() {
-            try {
-                const response = await rentalPost.getStatusOptions();
-                setStatusList(
-                    defaultOptions.concat(
-                        [...response].slice(0, 2).map((e) => ({
-                            value: e.id,
-                            label: e.name,
-                        }))
-                    )
-                );
-            } catch (error) {
-                console.log(error);
-            }
+    async function getStatusList() {
+        try {
+            const response = await rentalPost.getStatusOptions();
+            setStatusList(
+                defaultOptions.concat(
+                    [...response].slice(0, 2).map((e) => ({
+                        value: e.id,
+                        label: e.name,
+                    }))
+                )
+            );
+        } catch (error) {
+            console.log(error);
         }
-        getStatusList();
-        async function getSuccessList() {
-            try {
-                const response = await rentalPost.getOwnerRentalPost(1, 15, 2);
-                console.log(response);
-                setPostListSuccess([...response.ownerSimplePostDtos]);
-            } catch (error) {
-                console.log(error);
-            }
+    }
+    async function getSuccessList() {
+        try {
+            const response = await rentalPost.getOwnerRentalPost(1, 15, 2);
+            console.log(response);
+            setPostListSuccess([...response.ownerSimplePostDtos]);
+        } catch (error) {
+            console.log(error);
         }
-        getSuccessList();
-        async function getPendingList() {
-            try {
-                const response = await rentalPost.getOwnerRentalPost(1, 15, 1);
-                console.log(response);
-                setPostListPending([...response.ownerSimplePostDtos]);
-            } catch (error) {
-                console.log(error);
-            }
+    }
+    async function getPendingList() {
+        try {
+            const response = await rentalPost.getOwnerRentalPost(1, 15, 1);
+            console.log(response);
+            setPostListPending([...response.ownerSimplePostDtos]);
+        } catch (error) {
+            console.log(error);
         }
-        getPendingList();
-    }, []);
+    }
     return (
         <div className="myPostPage" style={{ paddingBottom: '30px' }}>
             <div style={{ paddingTop: '30px' }}>

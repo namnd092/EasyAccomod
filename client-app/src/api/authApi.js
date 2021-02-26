@@ -1,6 +1,5 @@
 import axiosClient from './axiosClient';
 import ApiUrl from '../constants/ApiUrl';
-import queryString from 'query-string';
 const authApi = {
     postLogin: (username, password) => {
         const url = ApiUrl.GET_TOKEN;

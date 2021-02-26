@@ -67,6 +67,9 @@ const EditPostPage = () => {
         owner: {},
     });
     const [defaultValue, setDefaultValue] = React.useState(null);
+    React.useEffect(() => {
+        getDefaultValue();
+    }, []);
     const handleSubmit = async (values) => {
         console.log(values);
         const newFiles = files.map((file) => {
@@ -76,8 +79,6 @@ const EditPostPage = () => {
                 return file.file;
             }
         });
-        console.log(newFiles);
-
         try {
             const fileUploaded = await uploadMultipleFile(newFiles);
             console.log(fileUploaded);
@@ -97,25 +98,18 @@ const EditPostPage = () => {
             history.push('/my-post');
         }
     };
-
-    React.useEffect(() => {
-        async function getDefaultValue() {
-            try {
-                const response = await rentalPost.getRentalPostInfo(id);
-                console.log(response);
-                setDefaultValue(response);
-                setFiles(
-                    [...response.accommodationPictures].map(
-                        (e) => e.pictureLink
-                    )
-                );
-            } catch (error) {
-                console.log(error);
-            }
+    async function getDefaultValue() {
+        try {
+            const response = await rentalPost.getRentalPostInfo(id);
+            console.log(response);
+            setDefaultValue(response);
+            setFiles(
+                [...response.accommodationPictures].map((e) => e.pictureLink)
+            );
+        } catch (error) {
+            console.log(error);
         }
-        getDefaultValue();
-    }, []);
-    console.log(defaultValue);
+    }
     return (
         <div className="editPostPage">
             <EditPostForm

@@ -8,17 +8,17 @@ const Report = () => {
     const history = useHistory();
     const [reportList, setReportList] = React.useState([]);
     React.useState(() => {
-        async function getReportList() {
-            try {
-                const response = await rentalPost.getReportPost();
-                setReportList([...response]);
-                console.log(response);
-            } catch (error) {
-                console.log(error);
-            }
-        }
         getReportList();
     }, []);
+    async function getReportList() {
+        try {
+            const response = await rentalPost.getReportPost();
+            setReportList([...response]);
+            console.log(response);
+        } catch (error) {
+            console.log(error);
+        }
+    }
     const handleClick = (postId) => {
         history.push(`/post/${postId}`);
     };

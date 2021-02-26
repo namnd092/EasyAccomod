@@ -25,41 +25,41 @@ function ProfilePage(props) {
         identification: '',
     });
     React.useEffect(() => {
-        async function effectGetInfo() {
-            Axios.get('https://localhost:44360/' + ApiUrl.GET_ACCOUNT_INFO, {
-                headers: {
-                    'content-type': 'application/json',
-                    Authorization: `Bearer ${token}`,
-                },
-            })
-                .then(async (response) => {
-                    const infoResponse = await response.data;
-                    console.log(infoResponse);
-                    setDefaultValue({
-                        name: (infoResponse && infoResponse.name) || '',
-                        email: (infoResponse && infoResponse.email) || '',
-                        phone: (infoResponse && infoResponse.phone) || '',
-                        address: (infoResponse && infoResponse.address) || '',
-                        identification:
-                            (infoResponse && infoResponse.identification) || '',
-                    });
-                    console.log(defaultValue);
-                })
-                .catch((error) => console.log(error));
-        }
-
         effectGetInfo();
-        async function getHaveEditing() {
-            try {
-                const response = await authApi.getCanEditProfile();
-                console.log(response);
-                setHaveEditing(response.result);
-            } catch (error) {
-                console.log(error);
-            }
-        }
         getHaveEditing();
     }, []);
+    async function effectGetInfo() {
+        Axios.get('https://localhost:44360/' + ApiUrl.GET_ACCOUNT_INFO, {
+            headers: {
+                'content-type': 'application/json',
+                Authorization: `Bearer ${token}`,
+            },
+        })
+            .then(async (response) => {
+                const infoResponse = await response.data;
+                console.log(infoResponse);
+                setDefaultValue({
+                    name: (infoResponse && infoResponse.name) || '',
+                    email: (infoResponse && infoResponse.email) || '',
+                    phone: (infoResponse && infoResponse.phone) || '',
+                    address: (infoResponse && infoResponse.address) || '',
+                    identification:
+                        (infoResponse && infoResponse.identification) || '',
+                });
+                console.log(defaultValue);
+            })
+            .catch((error) => console.log(error));
+    }
+    async function getHaveEditing() {
+        try {
+            const response = await authApi.getCanEditProfile();
+            console.log(response);
+            setHaveEditing(response.result);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     const handleSubmit = async (value) => {
         console.log(value);
         try {

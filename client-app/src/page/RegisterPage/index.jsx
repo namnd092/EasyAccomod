@@ -1,4 +1,4 @@
-import { AppBar, makeStyles, Tab, Tabs, useTheme } from '@material-ui/core';
+import { AppBar, Tab, Tabs, useTheme } from '@material-ui/core';
 import './style.css';
 import React from 'react';
 import SwipeableViews from 'react-swipeable-views';
@@ -7,14 +7,8 @@ import OwnerRegister from './Owner';
 import RenterRegister from './Renter';
 
 RegisterPage.propTypes = {};
-const useStyles = makeStyles((theme) => ({
-    root: {
-        backgroundColor: theme.palette.background.paper,
-        width: 500,
-    },
-}));
+
 function RegisterPage(props) {
-    const classes = useStyles();
     const theme = useTheme();
     const [value, setValue] = React.useState(0);
 

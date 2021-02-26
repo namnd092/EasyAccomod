@@ -15,27 +15,20 @@ function PostPage(props) {
     const history = useHistory();
     const [rentalPostInfo, setRentalPostInfo] = React.useState({});
     React.useEffect(() => {
-        async function getRentalPostInfoEffect() {
-            // try {
-            //     const response = await rentalPost.getRentalPostInfo(id);
-            //     console.log(response.status);
-            //     setRentalPostInfo({ ...response });
-            // } catch (error) {
-            //     console.log(error);
-            // }
-            rentalPost
-                .getRentalPostInfo(id)
-                .then((response) => {
-                    console.log(response);
-                    setRentalPostInfo({ ...response });
-                })
-                .catch((error) => {
-                    console.log(error);
-                    history.push('/notfound');
-                });
-        }
         getRentalPostInfoEffect();
     }, []);
+    async function getRentalPostInfoEffect() {
+        rentalPost
+            .getRentalPostInfo(id)
+            .then((response) => {
+                console.log(response);
+                setRentalPostInfo({ ...response });
+            })
+            .catch((error) => {
+                console.log(error);
+                history.push('/notfound');
+            });
+    }
     const {
         accommodation,
         dateAdded,

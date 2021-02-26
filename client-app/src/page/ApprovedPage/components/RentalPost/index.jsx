@@ -22,82 +22,82 @@ const RenterPost = (props) => {
     const [postListPending, setPostListPending] = React.useState([]);
     const [allPost, setAllPost] = React.useState([]);
     React.useEffect(() => {
-        async function getAllPost() {
-            try {
-                const postListSuccessResponse = await rentalPost.getRentalPost(
-                    1,
-                    100,
-                    options[0].value
-                );
-                setAllPost([...postListSuccessResponse.simplePostDtos]);
-            } catch (error) {
-                console.log(error);
-                setAllPost([]);
-            }
-        }
         getAllPost();
-        async function getPostListSuccess() {
-            try {
-                const postListSuccessResponse = await rentalPost.getRentalPost(
-                    1,
-                    100,
-                    // options[2].value || 2
-                    2
-                );
-                setPostListSuccess([...postListSuccessResponse.simplePostDtos]);
-            } catch (error) {
-                console.log(error);
-                setPostListSuccess([]);
-            }
-        }
         getPostListSuccess();
-        async function getPostListReject() {
-            try {
-                const postListRejectResponse = await rentalPost.getRentalPost(
-                    1,
-                    100,
-                    // options[3].value || 3
-                    3
-                );
-                setPostListReject([...postListRejectResponse.simplePostDtos]);
-            } catch (error) {
-                console.log(error);
-                setPostListReject([]);
-            }
-        }
         getPostListReject();
-        async function getPostListPending() {
-            try {
-                const postListPendingResponse = await rentalPost.getRentalPost(
-                    1,
-                    100,
-                    // options[1].value || 1
-                    1
-                );
-                setPostListPending([...postListPendingResponse.simplePostDtos]);
-            } catch (error) {
-                console.log(error);
-                setPostListPending([]);
-            }
-        }
         getPostListPending();
-        async function getOptions() {
-            try {
-                const response = await rentalPost.getStatusOptions();
-                setOptions(
-                    defaultOptions.concat(
-                        [...response].slice(0, 3).map((e) => ({
-                            value: e.id,
-                            label: e.name,
-                        }))
-                    )
-                );
-            } catch (error) {
-                console.log(error);
-            }
-        }
         getOptions();
     }, []);
+    async function getPostListSuccess() {
+        try {
+            const postListSuccessResponse = await rentalPost.getRentalPost(
+                1,
+                100,
+                // options[2].value || 2
+                2
+            );
+            setPostListSuccess([...postListSuccessResponse.simplePostDtos]);
+        } catch (error) {
+            console.log(error);
+            setPostListSuccess([]);
+        }
+    }
+    async function getPostListReject() {
+        try {
+            const postListRejectResponse = await rentalPost.getRentalPost(
+                1,
+                100,
+                // options[3].value || 3
+                3
+            );
+            setPostListReject([...postListRejectResponse.simplePostDtos]);
+        } catch (error) {
+            console.log(error);
+            setPostListReject([]);
+        }
+    }
+    async function getPostListPending() {
+        try {
+            const postListPendingResponse = await rentalPost.getRentalPost(
+                1,
+                100,
+                // options[1].value || 1
+                1
+            );
+            setPostListPending([...postListPendingResponse.simplePostDtos]);
+        } catch (error) {
+            console.log(error);
+            setPostListPending([]);
+        }
+    }
+    async function getOptions() {
+        try {
+            const response = await rentalPost.getStatusOptions();
+            setOptions(
+                defaultOptions.concat(
+                    [...response].slice(0, 3).map((e) => ({
+                        value: e.id,
+                        label: e.name,
+                    }))
+                )
+            );
+        } catch (error) {
+            console.log(error);
+        }
+    }
+    async function getAllPost() {
+        try {
+            const postListSuccessResponse = await rentalPost.getRentalPost(
+                1,
+                100,
+                options[0].value
+            );
+            setAllPost([...postListSuccessResponse.simplePostDtos]);
+        } catch (error) {
+            console.log(error);
+            setAllPost([]);
+        }
+    }
     const handleOptionChange = (value) => {
         console.log(value.value);
         setOptionValue(Number(value.value));

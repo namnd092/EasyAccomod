@@ -7,7 +7,7 @@ const yesOrNo = (bool) => {
 };
 function BasicInfo(props) {
     const { basicInfo } = props;
-    const { accommodation, dateAdded, dateExpired, title, owner } = basicInfo;
+    const { accommodation, dateAdded, dateExpired, title } = basicInfo;
     return (
         <div style={{ paddingTop: '30px' }}>
             <div class="card">

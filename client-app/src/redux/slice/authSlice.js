@@ -1,8 +1,8 @@
-import {createSlice} from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-   role: null,
-}
+    role: null,
+};
 
 const authSlice = createSlice({
     name: 'role',
@@ -10,10 +10,10 @@ const authSlice = createSlice({
     reducers: {
         modifyRole: (state, action) => {
             state.role = action.payload;
-        }
-    }
-})
+        },
+    },
+});
 
-const {reducer, actions} = authSlice;
+const { reducer, actions } = authSlice;
 export default reducer;
-export const {modifyRole} = actions;
+export const { modifyRole } = actions;

@@ -5,7 +5,6 @@ import authApi from '../../../../api/authApi';
 import AccountItem from './accountItem';
 import THeadComponent from './thead';
 import AccItemSuccess from './accountItemSuccess';
-import AccountItemEditPending from './itemEditPending';
 import AccountItemEditRequire from './itemEditRequire';
 
 const Account = () => {
@@ -13,62 +12,47 @@ const Account = () => {
         []
     );
     const [accountSuccess, setAccountSuccess] = React.useState([]);
-    // const [accountEditPending, setAccountEditPending] = React.useState([]);
     const [accountEditRequire, setAccountEditRequire] = React.useState([]);
     React.useEffect(() => {
-        async function getAccountRegisterPending() {
-            try {
-                const accountRegisterPendingResponse = await authApi.getOwnerRegisterPending(
-                    1,
-                    15
-                );
-                console.log(accountRegisterPendingResponse);
-                setAccountRegisterPending([
-                    ...accountRegisterPendingResponse.owners,
-                ]);
-            } catch (error) {
-                console.log(error);
-                setAccountRegisterPending([]);
-            }
-        }
         getAccountRegisterPending();
-        async function getAccountSuccess() {
-            try {
-                const accountSuccessResponse = await authApi.getOwnerSuccess(
-                    1,
-                    15
-                );
-                console.log(accountSuccessResponse);
-                setAccountSuccess([...accountSuccessResponse.owners]);
-            } catch (error) {
-                console.log(error);
-                setAccountSuccess([]);
-            }
-        }
         getAccountSuccess();
-        // async function getAccountEditPending() {
-        //     try {
-        //         const response = await authApi.getAccountEditPending(1, 15);
-        //         console.log(response);
-        //         setAccountEditPending([...response.owners]);
-        //     } catch (error) {
-        //         console.log(error);
-        //         setAccountEditPending([]);
-        //     }
-        // }
-        // getAccountEditPending();
-        async function getAccountEditRequire() {
-            try {
-                const response = await authApi.getAccountEditRequire(1, 15);
-                console.log(response);
-                setAccountEditRequire([...response.owners]);
-            } catch (error) {
-                console.log(error);
-                setAccountEditRequire([]);
-            }
-        }
         getAccountEditRequire();
     }, []);
+    async function getAccountRegisterPending() {
+        try {
+            const accountRegisterPendingResponse = await authApi.getOwnerRegisterPending(
+                1,
+                15
+            );
+            console.log(accountRegisterPendingResponse);
+            setAccountRegisterPending([
+                ...accountRegisterPendingResponse.owners,
+            ]);
+        } catch (error) {
+            console.log(error);
+            setAccountRegisterPending([]);
+        }
+    }
+    async function getAccountSuccess() {
+        try {
+            const accountSuccessResponse = await authApi.getOwnerSuccess(1, 15);
+            console.log(accountSuccessResponse);
+            setAccountSuccess([...accountSuccessResponse.owners]);
+        } catch (error) {
+            console.log(error);
+            setAccountSuccess([]);
+        }
+    }
+    async function getAccountEditRequire() {
+        try {
+            const response = await authApi.getAccountEditRequire(1, 15);
+            console.log(response);
+            setAccountEditRequire([...response.owners]);
+        } catch (error) {
+            console.log(error);
+            setAccountEditRequire([]);
+        }
+    }
     const handleConfirmAccRegisterPending = async (accountId, index) => {
         try {
             setAccountSuccess(

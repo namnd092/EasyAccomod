@@ -7,6 +7,9 @@ import { useHistory } from 'react-router-dom';
 const Extend = () => {
     const history = useHistory();
     const [postList, setPostList] = React.useState([]);
+    React.useEffect(() => {
+        getPostList();
+    }, []);
     const handleClick = (postId) => {
         history.push(`/post/${postId}`);
     };
@@ -30,19 +33,16 @@ const Extend = () => {
             console.log(error);
         }
     };
-    React.useState(() => {
-        async function getPostList() {
-            try {
-                const response = await rentalPost.getExtendRentalPost(1, 100);
-                console.log(response);
-                setPostList([...response.listPost]);
-            } catch (error) {
-                console.log(error);
-                setPostList([]);
-            }
+    async function getPostList() {
+        try {
+            const response = await rentalPost.getExtendRentalPost(1, 100);
+            console.log(response);
+            setPostList([...response.listPost]);
+        } catch (error) {
+            console.log(error);
+            setPostList([]);
         }
-        getPostList();
-    }, []);
+    }
     return (
         <div>
             <Card title="Yêu cầu gia hạn bài đăng">

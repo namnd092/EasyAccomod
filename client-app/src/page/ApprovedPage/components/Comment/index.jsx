@@ -6,18 +6,18 @@ import CommentItem from './CommentItem';
 const Comment = () => {
     const [commentList, setCommentList] = React.useState([]);
     React.useEffect(() => {
-        async function getCommentList() {
-            try {
-                const response = await rentalPost.getCommendPending();
-                console.log(response);
-                setCommentList([...response]);
-            } catch (error) {
-                console.log(error);
-                setCommentList([]);
-            }
-        }
         getCommentList();
     }, []);
+    async function getCommentList() {
+        try {
+            const response = await rentalPost.getCommendPending();
+            console.log(response);
+            setCommentList([...response]);
+        } catch (error) {
+            console.log(error);
+            setCommentList([]);
+        }
+    }
     const handleApprove = (id, index) => {
         try {
             const response = rentalPost.postApproveComment(id);

@@ -24,7 +24,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 function CommentInfo(props) {
     const { postId } = props;
-    const renterName = useSelector((state) => state.user.name);
     const role = useSelector((state) => state.user.role);
     const [starValue, setStarValue] = React.useState(5);
     const [commentContent, setCommentContent] = React.useState('');

@@ -26,7 +26,7 @@ import Axios from 'axios';
 
 export const Page = () => {
     const dispatch = useDispatch();
-    const [role, setRole] = React.useState('');
+    const [role] = React.useState('');
     const token = localStorage.getItem('token') || '';
     useEffect(() => {
         async function effectGetInfo() {

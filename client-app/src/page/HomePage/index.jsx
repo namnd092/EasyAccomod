@@ -11,6 +11,7 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 
 export const HomePage = () => {
     const [maxPage, setMaxPage] = React.useState(0);
+    const [errorMessage, setErrorMessage] = React.useState('');
     const [postList, setPostList] = React.useState([]);
     const [isLoading, setIsLoading] = React.useState(false);
     const [filterSearch, setFilterSearch] = React.useState({
@@ -47,11 +48,16 @@ export const HomePage = () => {
             try {
                 setIsLoading(true);
                 const response = await rentalPostApi.getPostBySearch(query);
-                console.log(response);
-                setPostList(response.simplePostDtos);
-                setMaxPage(response.maxPage);
+                if (response.status === 200 || response.status === 201) {
+                    console.log(response);
+                    setPostList(response.simplePostDtos);
+                    setMaxPage(response.maxPage);
+                } else {
+                    setErrorMessage(response.message);
+                }
             } catch (error) {
                 console.log(error);
+                setErrorMessage(error.message);
                 setPostList([]);
             } finally {
                 setIsLoading(false);

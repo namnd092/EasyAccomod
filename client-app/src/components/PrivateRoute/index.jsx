@@ -1,4 +1,3 @@
-import NotFound from '../NotFound';
 import React from 'react';
 import { useSelector } from 'react-redux';
 import Authorization from '../Authauthorization';

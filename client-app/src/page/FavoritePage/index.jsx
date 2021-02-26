@@ -10,6 +10,9 @@ import ThumbDownAltIcon from '@material-ui/icons/ThumbDownAlt';
 export default function FavoritePage() {
     const history = useHistory();
     const [postList, setPostList] = React.useState([]);
+    React.useEffect(() => {
+        getPostListEffect();
+    }, []);
     const gotoPost = (postId) => {
         history.push(`/post/${postId}`);
     };
@@ -30,19 +33,16 @@ export default function FavoritePage() {
             }
         }
     };
-    React.useEffect(() => {
-        async function getPostListEffect() {
-            try {
-                const response = await rentalPost.getAllFavoriteRentalPost();
-                console.log(response);
-                setPostList([...response.simplePostDtos]);
-            } catch (error) {
-                setPostList([]);
-                console.log(error);
-            }
+    async function getPostListEffect() {
+        try {
+            const response = await rentalPost.getAllFavoriteRentalPost();
+            console.log(response);
+            setPostList([...response.simplePostDtos]);
+        } catch (error) {
+            setPostList([]);
+            console.log(error);
         }
-        getPostListEffect();
-    }, []);
+    }
     return (
         <div className="favorite">
             <Card title="Bài đăng yêu thích">
