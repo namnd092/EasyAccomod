@@ -64,12 +64,27 @@ export function pageFromParams(params) {
     return Number.isInteger(page) && page > 0 ? page : 1;
 }
 
+// The orders the API sorts by; the first one (no value) keeps the order the posts were created in.
+export const SORT_OPTIONS = [
+    { value: '', label: 'Mặc định' },
+    { value: 'newest', label: 'Mới nhất' },
+    { value: 'priceAsc', label: 'Giá tăng dần' },
+    { value: 'priceDesc', label: 'Giá giảm dần' },
+];
+
+export function sortFromParams(params) {
+    const sort = params.get('sort');
+    return SORT_OPTIONS.some((option) => option.value === sort) ? sort : '';
+}
+
 // Only what differs from the defaults is written, so an unfiltered search has a clean URL.
-export function filtersToParams(filters, page = 1) {
+// The sort order is part of the URL but is not a filter.
+export function filtersToParams(filters, page = 1, sort = '') {
     const params = new URLSearchParams();
     for (const key of Object.keys(DEFAULT_FILTERS)) {
         if (filters[key] !== DEFAULT_FILTERS[key]) params.set(key, String(filters[key]));
     }
+    if (sort) params.set('sort', sort);
     if (page > 1) params.set('page', String(page));
     return params;
 }
@@ -85,4 +100,10 @@ export function countActiveFilters(filters) {
 export function priceRangeValue({ minPrice, maxPrice }) {
     const range = PRICE_RANGES.find((r) => r.minPrice === minPrice && r.maxPrice === maxPrice);
     return range ? range.value : null;
+}
+
+// The filters with the price bounds of the given PRICE_RANGES option.
+export function withPriceRange(filters, rangeValue) {
+    const { minPrice, maxPrice } = PRICE_RANGES.find((range) => range.value === rangeValue);
+    return { ...filters, minPrice, maxPrice };
 }

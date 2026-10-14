@@ -7,6 +7,8 @@ import {
     filtersToParams,
     pageFromParams,
     priceRangeValue,
+    sortFromParams,
+    withPriceRange,
 } from './searchFilters';
 
 describe('filtersFromParams', () => {
@@ -104,5 +106,47 @@ describe('priceRangeValue', () => {
 
     it('lists the "any price" option first', () => {
         expect(PRICE_RANGES[0].value).toBe('all');
+    });
+});
+
+describe('sortFromParams', () => {
+    it('has no sort order by default', () => {
+        expect(sortFromParams(new URLSearchParams())).toBe('');
+    });
+
+    it.each(['newest', 'priceAsc', 'priceDesc'])('reads %s', (sort) => {
+        expect(sortFromParams(new URLSearchParams({ sort }))).toBe(sort);
+    });
+
+    it('ignores an order the API does not know', () => {
+        expect(sortFromParams(new URLSearchParams('sort=cheapest'))).toBe('');
+    });
+});
+
+describe('filtersToParams with a sort order', () => {
+    it('writes the sort order next to the filters', () => {
+        const params = filtersToParams({ ...DEFAULT_FILTERS, provinceId: 1 }, 2, 'priceAsc');
+        expect(params.get('sort')).toBe('priceAsc');
+        expect(params.get('provinceId')).toBe('1');
+        expect(params.get('page')).toBe('2');
+    });
+
+    it('writes no sort for the default order', () => {
+        expect(filtersToParams(DEFAULT_FILTERS, 1, '').has('sort')).toBe(false);
+    });
+
+    it('does not count the sort order as a filter', () => {
+        expect(countActiveFilters(filtersFromParams(new URLSearchParams('sort=newest')))).toBe(0);
+    });
+});
+
+describe('withPriceRange', () => {
+    it('sets both bounds from the option and keeps the other filters', () => {
+        const filters = { ...DEFAULT_FILTERS, provinceId: 1 };
+        expect(withPriceRange(filters, '1_2')).toEqual({ ...filters, minPrice: 1, maxPrice: 2 });
+    });
+
+    it('clears the price for the "all" option', () => {
+        expect(withPriceRange({ ...DEFAULT_FILTERS, minPrice: 1, maxPrice: 2 }, 'all')).toEqual(DEFAULT_FILTERS);
     });
 });

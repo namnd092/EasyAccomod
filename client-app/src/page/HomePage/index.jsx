@@ -4,6 +4,7 @@ import { useSearchParams } from 'react-router-dom';
 import SearchForm from './components/SearchForm';
 import PostList, { PostListSkeleton } from './components/PostList';
 import HomePagination from './components/HomePagination';
+import ResultsToolbar from './components/ResultsToolbar';
 import rentalPostApi from '../../api/rentalPost';
 import { notifyError } from '../../helper/notify';
 import {
@@ -12,6 +13,8 @@ import {
     filtersFromParams,
     filtersToParams,
     pageFromParams,
+    sortFromParams,
+    withPriceRange,
 } from './searchFilters';
 
 const PAGE_SIZE = 15;
@@ -21,13 +24,15 @@ const DONG_PER_MILLION = 1_000_000;
 export const HomePage = () => {
     const [searchParams, setSearchParams] = useSearchParams();
     const [maxPage, setMaxPage] = React.useState(0);
+    const [totalCount, setTotalCount] = React.useState(0);
     const [postList, setPostList] = React.useState([]);
     const [isLoading, setIsLoading] = React.useState(false);
     const filters = filtersFromParams(searchParams);
     const page = pageFromParams(searchParams);
+    const sort = sortFromParams(searchParams);
     const search = searchParams.toString();
-    const showFirstPage = React.useEffectEvent((current) => {
-        setSearchParams(filtersToParams(current), { replace: true });
+    const showFirstPage = React.useEffectEvent((current, currentSort) => {
+        setSearchParams(filtersToParams(current, 1, currentSort), { replace: true });
     });
 
     React.useEffect(() => {
@@ -35,6 +40,7 @@ export const HomePage = () => {
         async function searchByFilter() {
             const current = filtersFromParams(new URLSearchParams(search));
             const currentPage = pageFromParams(new URLSearchParams(search));
+            const currentSort = sortFromParams(new URLSearchParams(search));
             const { street, publicLocationNearby, ...rest } = current;
             const query = queryString.stringify({
                 ...rest,
@@ -43,6 +49,7 @@ export const HomePage = () => {
                 maxPrice: rest.maxPrice * DONG_PER_MILLION,
                 ...(street && { street }),
                 ...(publicLocationNearby && { publicLocationNearby }),
+                ...(currentSort && { sortBy: currentSort }),
                 _page: currentPage,
                 _limit: PAGE_SIZE,
             });
@@ -52,15 +59,17 @@ export const HomePage = () => {
                 if (ignore) return;
                 setPostList(response.simplePostDtos);
                 setMaxPage(response.maxPage);
+                setTotalCount(response.totalCount);
             } catch (error) {
                 if (ignore) return;
                 // The URL points past the last page (a stale link): show the first page instead.
                 if (error.response?.status === 404 && currentPage > 1) {
-                    showFirstPage(current);
+                    showFirstPage(current, currentSort);
                     return;
                 }
                 notifyError(error);
                 setPostList([]);
+                setTotalCount(0);
             } finally {
                 if (!ignore) setIsLoading(false);
             }
@@ -71,15 +80,21 @@ export const HomePage = () => {
         };
     }, [search]);
 
-    // A new search always starts on the first page.
+    // A new search or sort order always starts on the first page; the sort order outlives the filters.
     const handleFilterChange = (values) => {
-        setSearchParams(filtersToParams(values));
+        setSearchParams(filtersToParams(values, 1, sort));
     };
     const handlePageChange = (nextPage) => {
-        setSearchParams(filtersToParams(filters, nextPage));
+        setSearchParams(filtersToParams(filters, nextPage, sort));
     };
     const handleClear = () => {
-        setSearchParams(filtersToParams(DEFAULT_FILTERS));
+        setSearchParams(filtersToParams(DEFAULT_FILTERS, 1, sort));
+    };
+    const handlePriceChange = (rangeValue) => {
+        handleFilterChange(withPriceRange(filters, rangeValue));
+    };
+    const handleSortChange = (nextSort) => {
+        setSearchParams(filtersToParams(filters, 1, nextSort));
     };
     return (
         <div className="py-6">
@@ -93,6 +108,14 @@ export const HomePage = () => {
                     isLoading={isLoading}
                 />
             </section>
+            <ResultsToolbar
+                filters={filters}
+                sort={sort}
+                totalCount={totalCount}
+                isLoading={isLoading}
+                onPriceChange={handlePriceChange}
+                onSortChange={handleSortChange}
+            />
             {isLoading ? <PostListSkeleton /> : <PostList postList={postList} />}
             {!isLoading && maxPage > 0 && (
                 <HomePagination

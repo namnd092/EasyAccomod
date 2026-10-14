@@ -30,7 +30,7 @@ const searchButtonReady = () => waitFor(() => expect(searchButton()).toBeEnabled
 
 beforeEach(() => {
     vi.resetAllMocks();
-    rentalPostApi.getPostBySearch.mockResolvedValue({ simplePostDtos: [], maxPage: 3 });
+    rentalPostApi.getPostBySearch.mockResolvedValue({ simplePostDtos: [], maxPage: 3, totalCount: 42 });
     addressApi.getAllProvince.mockResolvedValue([{ id: 1, name: 'Hà Nội' }]);
     addressApi.getDistrictByProvinceId.mockResolvedValue([{ id: 7, name: 'Cầu Giấy' }]);
     addressApi.getWardByDistrictID.mockResolvedValue([]);
@@ -109,5 +109,71 @@ describe('HomePage', () => {
         renderWithProviders(<HomePage />, { route: '/?page=9' });
         await waitFor(() => expect(lastQuery().get('_page')).toBe('1'));
         expect(rentalPostApi.getPostBySearch).toHaveBeenCalledTimes(2);
+    });
+
+    it('says how many posts matched', async () => {
+        renderWithProviders(<HomePage />);
+        expect(await screen.findByText('42 kết quả')).toBeInTheDocument();
+    });
+
+    it('shows no count when nothing matched', async () => {
+        rentalPostApi.getPostBySearch.mockResolvedValue({ simplePostDtos: [], maxPage: 0, totalCount: 0 });
+        renderWithProviders(<HomePage />);
+        await searchButtonReady();
+        expect(screen.queryByText(/kết quả/)).not.toBeInTheDocument();
+    });
+
+    it('sorts by the order in the URL, and sends none by default', async () => {
+        renderWithProviders(<HomePage />, { route: '/?sort=priceAsc' });
+        await searchButtonReady();
+        expect(lastQuery().get('sortBy')).toBe('priceAsc');
+        expect(screen.getByLabelText('Sắp xếp')).toHaveValue('priceAsc');
+    });
+
+    it('sends no sort order for a bare URL', async () => {
+        renderWithProviders(<HomePage />);
+        await searchButtonReady();
+        expect(lastQuery().has('sortBy')).toBe(false);
+    });
+
+    it('changes the sort order and starts again from the first page', async () => {
+        renderWithProviders(<HomePage />, { route: '/?provinceId=1&page=2' });
+        await searchButtonReady();
+        await userEvent.selectOptions(await screen.findByLabelText('Sắp xếp'), 'priceDesc');
+        await waitFor(() => expect(lastQuery().get('sortBy')).toBe('priceDesc'));
+        expect(lastQuery().get('_page')).toBe('1');
+        expect(lastQuery().get('provinceId')).toBe('1');
+    });
+
+    it('keeps the sort order when the filters are searched or cleared', async () => {
+        renderWithProviders(<HomePage />, { route: '/?provinceId=1&sort=newest' });
+        await searchButtonReady();
+        await userEvent.click(searchButton());
+        await waitFor(() => expect(lastQuery().get('sortBy')).toBe('newest'));
+        await userEvent.click(screen.getByRole('button', { name: 'Xóa bộ lọc' }));
+        await waitFor(() => expect(lastQuery().get('provinceId')).toBe('0'));
+        expect(lastQuery().get('sortBy')).toBe('newest');
+    });
+
+    it('applies a price chip at once and keeps the other filters', async () => {
+        renderWithProviders(<HomePage />, { route: '/?provinceId=1&page=2' });
+        await searchButtonReady();
+        await userEvent.click(screen.getByRole('button', { name: 'Dưới 1 triệu' }));
+        await waitFor(() => expect(lastQuery().get('maxPrice')).toBe('1000000'));
+        expect(lastQuery().get('minPrice')).toBe('0');
+        expect(lastQuery().get('provinceId')).toBe('1');
+        expect(lastQuery().get('_page')).toBe('1');
+        expect(screen.getByRole('button', { name: 'Dưới 1 triệu' })).toHaveAttribute('aria-pressed', 'true');
+    });
+
+    it('takes the price filter off when the chosen chip is pressed again', async () => {
+        renderWithProviders(<HomePage />, { route: '/?minPrice=1&maxPrice=2' });
+        await searchButtonReady();
+        const chip = screen.getByRole('button', { name: '1 triệu - 2 triệu' });
+        expect(chip).toHaveAttribute('aria-pressed', 'true');
+        await userEvent.click(chip);
+        await waitFor(() => expect(lastQuery().get('maxPrice')).toBe('0'));
+        expect(lastQuery().get('minPrice')).toBe('0');
+        expect(screen.getByRole('button', { name: '1 triệu - 2 triệu' })).toHaveAttribute('aria-pressed', 'false');
     });
 });

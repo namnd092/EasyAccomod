@@ -164,17 +164,18 @@ function SearchForm({ filters, activeCount, onSubmit, onClear, isLoading }) {
                 </Collapsible>
                 {/* Stuck to the bottom of the screen on phones so the search button is always in reach. */}
                 <div className="sticky bottom-0 z-10 -mx-5 flex items-center justify-between gap-3 border-t border-gray-200 bg-white px-5 py-3 lg:static lg:mx-0 lg:border-0 lg:px-0 lg:py-0">
-                    <div className="flex items-center gap-3 text-sm text-gray-600">
+                    <div className="flex items-center gap-2 text-xs text-gray-600 sm:gap-3 sm:text-sm">
                         {activeCount > 0 && (
                             <>
-                                <span>Đang áp dụng {activeCount} bộ lọc</span>
-                                <Button variant="neutral" onClick={onClear}>
+                                <span className="whitespace-nowrap sm:hidden">{activeCount} bộ lọc</span>
+                                <span className="hidden sm:inline">Đang áp dụng {activeCount} bộ lọc</span>
+                                <Button variant="neutral" onClick={onClear} className="whitespace-nowrap">
                                     Xóa bộ lọc
                                 </Button>
                             </>
                         )}
                     </div>
-                    <Button type="submit" variant="secondary" disabled={isLoading} size="lg">
+                    <Button type="submit" variant="secondary" disabled={isLoading} size="lg" className="whitespace-nowrap">
                         Tìm kiếm <i className="fas fa-search ml-1.5" aria-hidden="true"></i>
                     </Button>
                 </div>

@@ -24,6 +24,21 @@ test.describe('visitor', () => {
         await expect(page.getByRole('button', { name: 'Xóa bộ lọc' })).toHaveCount(0);
     });
 
+    test('sorts by newest, counts the results and narrows them with the price chips', async ({ page, request }) => {
+        // The post costs 3 triệu a month. Newest first, it is the first one a search it matches can show.
+        const post = await createPost(request, { approved: true });
+        await page.goto('/?sort=newest');
+        await expect(page.getByText(post.title).first()).toBeVisible();
+        await expect(page.getByText(/\d+ kết quả/)).toBeVisible();
+        await page.getByRole('button', { name: '3 triệu - 5 triệu' }).click();
+        await expect(page).toHaveURL(/minPrice=3&maxPrice=5/);
+        await expect(page.getByText(post.title).first()).toBeVisible();
+        await page.getByRole('button', { name: 'Dưới 1 triệu' }).click();
+        await expect(page).toHaveURL(/maxPrice=1(&|$)/);
+        await expect(page.getByRole('button', { name: 'Dưới 1 triệu' })).toHaveAttribute('aria-pressed', 'true');
+        await expect(page.getByText(post.title)).toHaveCount(0);
+    });
+
     test('falls back to the first page when the URL asks for a page that does not exist', async ({ page }) => {
         await page.goto('/?page=9999');
         await expect(page).toHaveURL(/\/$/);
