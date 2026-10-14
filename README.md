@@ -63,7 +63,7 @@ npm run dev
 
 ## Continuous integration
 
-`.github/workflows/ci.yml` builds the client (including `npm audit` and the Vitest suite), builds the API and runs the smoke test against a PostgreSQL service for every pull request.
+`.github/workflows/ci.yml` builds the client (including `npm audit` and the Vitest suite), builds the API and runs the smoke test and the Playwright e2e tests against a PostgreSQL service for every pull request.
 
 ## Client tests
 
@@ -71,6 +71,18 @@ npm run dev
 cd client-app
 npm test
 ```
+
+## End-to-end tests
+
+Playwright drives the real client against the real API (visitor, owner, admin and renter flows). They create their own posts, and the owner's post list shows only the first 15 posts, so run them against a fresh database with the API in Development:
+
+```bash
+cd client-app
+npx playwright install chromium          # once
+npx playwright test                      # starts `npm run dev` on port 3000 unless it is already running
+```
+
+Set `E2E_BASE_URL` and `E2E_API_URL` to point at other hosts. In CI (`CI=1`) the tests run against the production build served by `vite preview`.
 
 ## Smoke test
 
