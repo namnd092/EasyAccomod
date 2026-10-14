@@ -9,9 +9,8 @@ import {
     InputLabel,
     Backdrop,
     CircularProgress,
-    makeStyles,
-} from '@material-ui/core';
-import { useHistory } from 'react-router-dom';
+} from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 import './style.css';
 import authApi from '../../api/authApi';
 import { setUser } from '../../redux/slice/userSlice';
@@ -27,7 +26,7 @@ LoginPage.defaultType = {
 };
 
 function LoginPage(props) {
-    const history = useHistory();
+    const navigate = useNavigate();
     const dispatch = useDispatch();
     const [message, setMessage] = useState('');
     const [role, setRole] = useState('');
@@ -36,13 +35,7 @@ function LoginPage(props) {
         username: '',
         password: '',
     };
-    const useStyles = makeStyles((theme) => ({
-        backdrop: {
-            zIndex: theme.zIndex.drawer + 1,
-            color: '#fff',
-        },
-    }));
-    const classes = useStyles();
+
     const validationSchema = Yup.object().shape({
         username: Yup.string().required('Tên đăng nhập không được bỏ trống'),
         password: Yup.string()
@@ -62,7 +55,7 @@ function LoginPage(props) {
             const { access_token } = await loginResponse;
             localStorage.setItem('token', access_token);
             console.log(localStorage.getItem('token'));
-            Axios.get('https://localhost:44360/' + ApiUrl.GET_ACCOUNT_INFO, {
+            Axios.get(`${import.meta.env.VITE_API_URL}/` + ApiUrl.GET_ACCOUNT_INFO, {
                 headers: {
                     'content-type': 'application/json',
                     Authorization: `Bearer ${access_token}`,
@@ -72,7 +65,7 @@ function LoginPage(props) {
                     const infoResponse = await response.data;
                     await dispatch(setUser({ ...infoResponse }));
                     setMessage('Bạn đã đăng nhập thành công');
-                    history.push('/');
+                    navigate('/');
                 })
                 .catch((error) => console.log(error));
             // const infoResponse = await authApi.getAccountInfoByToken();
@@ -156,7 +149,7 @@ function LoginPage(props) {
                                         <Button
                                             onClick={(e) => {
                                                 e.preventDefault();
-                                                history.push('/register');
+                                                navigate('/register');
                                             }}
                                             variant="contained"
                                             color="secondary"
@@ -182,8 +175,8 @@ function LoginPage(props) {
             </div>
             {isLoading && (
                 <Backdrop
-                    className={classes.backdrop}
-                    open={() => setIsLoading(true)}
+                    sx={{ zIndex: (theme) => theme.zIndex.drawer + 1, color: '#fff' }}
+                    open
                     onClick={() => setIsLoading(false)}
                 >
                     <CircularProgress color="inherit" />

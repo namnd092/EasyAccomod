@@ -1,9 +1,9 @@
 import React from 'react';
-import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
+import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
 import ExtendDuration from '../extend';
-import CheckBoxIcon from '@material-ui/icons/CheckBox';
-import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
-import { Button } from '@material-ui/core';
+import CheckBoxIcon from '@mui/icons-material/CheckBox';
+import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
+import { Button } from '@mui/material';
 import rentalPost from '../../../api/rentalPost';
 import { getTime } from '../../../helper/time';
 function SuccessItem(props) {

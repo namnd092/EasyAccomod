@@ -1,1 +1,6 @@
-/client-app/node-modules
+node_modules/
+.env
+*.log
+.vs/
+dist/
+.playwright-mcp/

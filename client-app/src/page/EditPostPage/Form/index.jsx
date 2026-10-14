@@ -15,7 +15,7 @@ import { Form, Formik } from 'formik';
 import PostingTutorial from '../../NewPostPage/components/PostingTutorial';
 import BasicInfo from '../../NewPostPage/components/BasicInfo';
 import DescriptionInfo from '../../NewPostPage/components/DescriptionInfo';
-import { Button } from '@material-ui/core';
+import { Button } from '@mui/material';
 import Card from '../../../share/components/card';
 import newPostValidationSchema from '../../../models/ValidateForm/newPost';
 

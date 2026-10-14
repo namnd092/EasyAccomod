@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { FormGroup, FormLabel, TextareaAutosize } from '@material-ui/core';
+import { FormGroup, FormLabel, TextareaAutosize } from '@mui/material';
 // import JoditEditor from 'jodit-react';
 
 DescriptionInfo.propTypes = {
@@ -33,7 +33,7 @@ function DescriptionInfo(props) {
                                 : values.description
                         }
                         className="form-control"
-                        rowsMin={10}
+                        minRows={10}
                         placeholder="Viết mô tả về phòng trọ (Tối thiểu 30 ký tự)"
                     />
                     {/* <JoditEditor

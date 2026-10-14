@@ -5,8 +5,7 @@ import {
     Backdrop,
     Button,
     CircularProgress,
-    makeStyles,
-} from '@material-ui/core';
+} from '@mui/material';
 import BasicInfo from './components/BasicInfo';
 import DescriptionInfo from './components/DescriptionInfo';
 import ImgInfo from './components/ImgInfo';
@@ -16,23 +15,17 @@ import uploadMultipleFile from '../../utils/cloudinaryUpload';
 import newPostInitialValue from '../../models/InitialValueForm/newPost';
 import newPostValidationSchema from '../../models/ValidateForm/newPost';
 import rentalPost from '../../api/rentalPost';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import TelegramIcon from '@material-ui/icons/Telegram';
+import TelegramIcon from '@mui/icons-material/Telegram';
 
 NewPostPage.propTypes = {};
 
 function NewPostPage(props) {
-    const history = useHistory();
+    const navigate = useNavigate();
     const user = useSelector((state) => state.user);
     const { role } = user;
-    const useStyles = makeStyles((theme) => ({
-        backdrop: {
-            zIndex: theme.zIndex.drawer + 1,
-            color: '#fff',
-        },
-    }));
-    const classes = useStyles();
+
     const [isLoading, setIsLoading] = React.useState(false);
     const handleSubmit = async (values) => {
         //event.preventDefault();
@@ -52,7 +45,7 @@ function NewPostPage(props) {
             };
             const response = await rentalPost.postNewPost(params);
             console.log(response);
-            history.push('/');
+            navigate('/');
         } catch (error) {
             console.log(error);
         } finally {
@@ -139,8 +132,8 @@ function NewPostPage(props) {
             </div>
             {isLoading && (
                 <Backdrop
-                    className={classes.backdrop}
-                    open={() => setIsLoading(true)}
+                    sx={{ zIndex: (theme) => theme.zIndex.drawer + 1, color: '#fff' }}
+                    open
                     onClick={() => setIsLoading(false)}
                 >
                     <CircularProgress color="inherit" />

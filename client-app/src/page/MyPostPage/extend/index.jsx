@@ -7,7 +7,7 @@ import {
     TableBody,
     TableCell,
     TableHead,
-} from '@material-ui/core';
+} from '@mui/material';
 import Select from 'react-select';
 import rentalPost from '../../../api/rentalPost';
 export default function ExtendDuration(props) {

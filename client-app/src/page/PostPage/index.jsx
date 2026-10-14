@@ -1,7 +1,7 @@
 import React from 'react';
 import './style.css';
-import { useHistory, useParams } from 'react-router-dom';
-import {} from '@material-ui/core';
+import { useNavigate, useParams } from 'react-router-dom';
+import {} from '@mui/material';
 import BasicInfo from './BasicInfo';
 import DescriptionInfo from './DescriptionInfo';
 import ImgInfo from './ImgInfo';
@@ -12,7 +12,7 @@ PostPage.propTypes = {};
 
 function PostPage(props) {
     const { id } = useParams();
-    const history = useHistory();
+    const navigate = useNavigate();
     const [rentalPostInfo, setRentalPostInfo] = React.useState({});
     React.useEffect(() => {
         async function getRentalPostInfoEffect() {
@@ -31,7 +31,7 @@ function PostPage(props) {
                 })
                 .catch((error) => {
                     console.log(error);
-                    history.push('/notfound');
+                    navigate('/notfound');
                 });
         }
         getRentalPostInfoEffect();

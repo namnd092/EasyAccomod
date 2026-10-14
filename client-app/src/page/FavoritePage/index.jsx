@@ -1,17 +1,17 @@
 import React from 'react';
 import './style.css';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import rentalPost from '../../api/rentalPost';
 import Card from '../../share/components/card';
 import PostItem from '../HomePage/components/PostList/PostItem';
-import { Button } from '@material-ui/core';
-import ThumbDownAltIcon from '@material-ui/icons/ThumbDownAlt';
+import { Button } from '@mui/material';
+import ThumbDownAltIcon from '@mui/icons-material/ThumbDownAlt';
 
 export default function FavoritePage() {
-    const history = useHistory();
+    const navigate = useNavigate();
     const [postList, setPostList] = React.useState([]);
     const gotoPost = (postId) => {
-        history.push(`/post/${postId}`);
+        navigate(`/post/${postId}`);
     };
     const handleDislike = async (postId) => {
         try {

@@ -7,7 +7,7 @@ import {
     TableBody,
     TableCell,
     TableHead,
-} from '@material-ui/core';
+} from '@mui/material';
 import Select from 'react-select';
 import MySelect from '../../../../share/components/select';
 import { DebounceInput } from 'react-debounce-input';

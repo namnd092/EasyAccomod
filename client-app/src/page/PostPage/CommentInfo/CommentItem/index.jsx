@@ -1,7 +1,7 @@
 import React from 'react';
 import './style.css';
 import userImg from '../../../../assets/img/user.png';
-import Rating from '@material-ui/lab/Rating';
+import Rating from '@mui/material/Rating';
 import { getDistanceTime } from '../../../../helper/time';
 
 const CommentItem = (props) => {

@@ -1,7 +1,7 @@
 import React from 'react';
-import Rating from '@material-ui/lab/Rating';
+import Rating from '@mui/material/Rating';
 import './style.css';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import moment from 'moment';
 
 function getDistanceTime(time) {
@@ -17,7 +17,7 @@ function getDistanceTime(time) {
 }
 
 function PostItem(props) {
-    const history = useHistory();
+    const navigate = useNavigate();
     const { rentalPost } = props;
     const {
         id,
@@ -31,7 +31,7 @@ function PostItem(props) {
         accommodationProvince,
     } = rentalPost;
     const handleClickTitle = () => {
-        history.push(`/post/${id}`);
+        navigate(`/post/${id}`);
     };
     return (
         <div className="post__item">

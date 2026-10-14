@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import './style.css';
 import { Link } from 'react-router-dom';
-import PhoneIcon from '@material-ui/icons/Phone';
+import PhoneIcon from '@mui/icons-material/Phone';
 
 const Footer = props => {
     return (
@@ -15,18 +15,18 @@ const Footer = props => {
                     </div>
                     <div className="footer__group col-lg-3 col-md-6 col-sm-12 mt-5">
                         <h5>THÔNG TIN</h5>
-                        <Link>Giới thiệu</Link>
-                        <Link>Blog</Link>
-                        <Link>Chính sách bảo mật</Link>
-                        <Link>Quy định sử dụng</Link>
-                        <Link>Quy chế hoạt động</Link>
+                        <Link to="#">Giới thiệu</Link>
+                        <Link to="#">Blog</Link>
+                        <Link to="#">Chính sách bảo mật</Link>
+                        <Link to="#">Quy định sử dụng</Link>
+                        <Link to="#">Quy chế hoạt động</Link>
                     </div>
                     <div className="footer__group col-lg-3 col-md-6 col-sm-12 mt-5">
                         <h5>HƯỚNG DẪN</h5>
-                        <Link>Hướng dẫn đăng tin</Link>
-                        <Link>Bảng giá dịch vụ</Link>
-                        <Link>Quy định đăng tin</Link>
-                        <Link>Liên hệ hỗ trợ</Link>
+                        <Link to="#">Hướng dẫn đăng tin</Link>
+                        <Link to="#">Bảng giá dịch vụ</Link>
+                        <Link to="#">Quy định đăng tin</Link>
+                        <Link to="#">Liên hệ hỗ trợ</Link>
                     </div>
                     <div className="footer__group col-lg-3 col-md-6 col-sm-12 mt-5">
                         <h5>KẾT NỐI VỚI CHÚNG TÔI</h5>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { AppBar, Tab, Tabs } from '@material-ui/core';
+import { AppBar, Tab, Tabs } from '@mui/material';
 import './style.css';
 import TabPanel from '../../share/components/tab-panel';
 import RentalPost from './components/RentalPost';

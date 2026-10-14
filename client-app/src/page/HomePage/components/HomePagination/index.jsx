@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 // import Pagination from "react-js-pagination";
-import Pagination from '@material-ui/lab/Pagination';
+import Pagination from '@mui/material/Pagination';
 
 HomePagination.propTypes = {
     activePage: PropTypes.number,

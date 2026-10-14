@@ -3,20 +3,20 @@ import './style.css';
 import rentalPost from '../../api/rentalPost';
 import Card from '../../share/components/card';
 import SuccessItem from './successItem';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import PendingItem from './pendingItem';
 
 export default function MyPostPage() {
-    const history = useHistory();
+    const navigate = useNavigate();
     const defaultOptions = [{ value: 0, label: 'Tất cả' }];
     const [postListSuccess, setPostListSuccess] = React.useState([]);
     const [postListPending, setPostListPending] = React.useState([]);
     const [statusList, setStatusList] = React.useState(defaultOptions);
     const handleClick = (postId) => {
-        history.push(`/post/${postId}`);
+        navigate(`/post/${postId}`);
     };
     const handleEditPost = (postId) => {
-        history.push(`post/${postId}/edit`);
+        navigate(`post/${postId}/edit`);
     };
     React.useEffect(() => {
         async function getStatusList() {

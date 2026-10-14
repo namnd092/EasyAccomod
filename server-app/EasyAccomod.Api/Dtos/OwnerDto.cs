@@ -1,0 +1,37 @@
+using System.ComponentModel.DataAnnotations;
+
+namespace EasyAccomod.Api.Dtos;
+
+public class OwnerDto
+{
+    public int Id { get; set; }
+
+    [Required]
+    [StringLength(255)]
+    public string Name { get; set; }
+
+    [Required]
+    [StringLength(12)]
+    public string Identification { get; set; }
+
+    [Required]
+    [StringLength(255)]
+    public string Address { get; set; }
+
+    [Required]
+    [RegularExpression(@"^0[1-9]{1}[0-9]{8}$")]
+    public string Phone { get; set; }
+
+    [Required]
+    [RegularExpression(@"^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$")]
+    public string Email { get; set; }
+
+    public string AccountId { get; set; }
+}
+
+public class ListOwnersDto
+{
+    public IEnumerable<OwnerDto> Owners { get; set; }
+
+    public int MaxPage { get; set; }
+}

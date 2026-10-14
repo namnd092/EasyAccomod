@@ -6,15 +6,14 @@ import {
     Accordion,
     AccordionDetails,
     AccordionSummary,
-    makeStyles,
-} from '@material-ui/core';
-import { Button, FormGroup, FormLabel } from '@material-ui/core';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+} from '@mui/material';
+import { Button, FormGroup, FormLabel } from '@mui/material';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import Select from 'react-select';
 import { useState } from 'react';
 import addressApi from '../../../../api/addressApi';
 import roomApi from '../../../../api/roomApi';
-import SearchIcon from '@material-ui/icons/Search';
+import SearchIcon from '@mui/icons-material/Search';
 
 SearchFrom.propTypes = {
     onSumbit: PropTypes.func,
@@ -24,17 +23,8 @@ SearchFrom.defaultProps = {
     onSumbit: null,
 };
 
-const useStyles = makeStyles((theme) => ({
-    root: {
-        width: '100%',
-    },
-    heading: {
-        fontSize: theme.typography.pxToRem(15),
-        fontWeight: theme.typography.fontWeightRegular,
-    },
-}));
+
 function SearchFrom(props) {
-    const classes = useStyles();
     const { isLoading } = props;
     const initialValues = {
         provinceId: 0,
