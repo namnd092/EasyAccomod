@@ -20,8 +20,10 @@ axiosClient.interceptors.request.use((config) => {
 
 axiosClient.interceptors.response.use(
     (response) => {
-        if (response && response.data) {
-            return response.data;
+        // Falsy bodies such as 0 (a post with no views) or false are real values; only an empty body falls back.
+        const body = response && response.data;
+        if (body !== undefined && body !== null && body !== '') {
+            return body;
         }
         return response;
     },

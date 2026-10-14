@@ -20,4 +20,11 @@ describe('axiosClient', () => {
         localStorage.setItem('token', 'abc');
         expect((await capture()).headers.Authorization).toBe('Bearer abc');
     });
+
+    it.each([[0], [false]])('returns the body when it is the falsy value %s', async (value) => {
+        const body = await axiosClient.get('/x', {
+            adapter: async (config) => ({ data: value, status: 200, statusText: 'OK', headers: {}, config }),
+        });
+        expect(body).toBe(value);
+    });
 });
