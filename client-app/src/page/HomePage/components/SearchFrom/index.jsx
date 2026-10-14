@@ -12,6 +12,9 @@ SearchFrom.propTypes = {
     isLoading: PropTypes.bool,
 };
 
+// On phones the filters would push the results far down, so start collapsed there.
+const isDesktop = typeof window.matchMedia === 'function' && window.matchMedia('(min-width: 1024px)').matches;
+
 function SearchFrom(props) {
     const { isLoading } = props;
     const initialValues = {
@@ -208,9 +211,8 @@ function SearchFrom(props) {
         >
             {({ handleChange, handleBlur, handleSubmit, values }) => (
                 <Form>
-                    <div className="grid grid-cols-12 gap-x-4">
-                        <div className="col-span-12 lg:col-span-10">
-                            <Collapsible title="Tìm kiếm cơ bản">
+                    <div className="flex flex-col gap-3">
+                            <Collapsible title="Tìm kiếm cơ bản" defaultOpen={isDesktop}>
                                     <div style={{ width: '100%' }}>
                                         <div className="grid grid-cols-12 gap-x-4">
                                             <FormGroup className="col-span-12 md:col-span-6 xl:col-span-4">
@@ -481,15 +483,14 @@ function SearchFrom(props) {
                                         </div>
                                     </div>
                                 </Collapsible>
-                        </div>
-                        <div className="lg:col-span-2 col-span-12">
+                        <div className="flex justify-end">
                             <Button
                                 type={'submit'}
                                 variant="secondary"
                                 disabled={isLoading}
                                 size="lg"
                             >
-                                Tìm kiếm <i className="fas fa-search ml-1.5"></i>
+                                Tìm kiếm <i className="fas fa-search ml-1.5" aria-hidden="true"></i>
                             </Button>
                         </div>
                     </div>

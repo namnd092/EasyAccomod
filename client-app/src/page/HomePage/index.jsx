@@ -1,12 +1,10 @@
 import React, { Component } from 'react';
 import { useSelector } from 'react-redux';
 import queryString from 'query-string';
-import './styles.css';
 import SearchFrom from './components/SearchFrom';
-import PostList from './components/PostList';
+import PostList, { PostListSkeleton } from './components/PostList';
 import HomePagination from './components/HomePagination';
 import rentalPostApi from '../../api/rentalPost';
-import { LinearProgress } from '../../ui';
 
 export const HomePage = () => {
     const [maxPage, setMaxPage] = React.useState(0);
@@ -65,23 +63,21 @@ export const HomePage = () => {
         setFilterSearch({ ...filterSearch, _page });
     };
     return (
-        <div className="homePage">
-            <div className="homepage__searchFrom">
+        <div className="py-6">
+            <section className="rounded-lg bg-white p-5 shadow-sm">
+                <h1 className="mb-4 text-2xl font-semibold">Tìm phòng trọ</h1>
                 <SearchFrom
                     onSubmit={handleFilterChange}
                     isLoading={isLoading}
                 />
-            </div>
-            {isLoading ? <LinearProgress /> : <PostList postList={postList} />}
+            </section>
+            {isLoading ? <PostListSkeleton /> : <PostList postList={postList} />}
             {!isLoading && maxPage > 0 && (
-                <div className="homePage__pagination">
-                    <HomePagination
-                        onPageChange={handlePageChange}
-                        maxPage={maxPage}
-                        page={filterSearch._page}
-                        activePage={filterSearch._page}
-                    />
-                </div>
+                <HomePagination
+                    onPageChange={handlePageChange}
+                    maxPage={maxPage}
+                    activePage={filterSearch._page}
+                />
             )}
         </div>
     );
