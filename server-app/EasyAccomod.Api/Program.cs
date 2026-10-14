@@ -1,3 +1,4 @@
+using System.Net;
 using System.Security.Claims;
 using System.Text.Json.Serialization;
 using EasyAccomod.Api.Auth;
@@ -5,6 +6,7 @@ using EasyAccomod.Api.Data;
 using EasyAccomod.Api.Health;
 using EasyAccomod.Api.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.RateLimiting;
 using System.Threading.RateLimiting;
@@ -91,9 +93,30 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddScoped<DbSeeder>();
 
-// Per-IP limit on logins: the per-account lockout alone does not stop guessing across many
-// accounts or parallel guesses against one. Behind a proxy, enable forwarded headers so the
-// client address, not the proxy's, is what gets counted.
+// Behind a reverse proxy the client address arrives in X-Forwarded-For. It is only trusted from
+// the proxies listed in ForwardedHeaders:KnownProxies / KnownNetworks (a CIDR such as 10.0.0.0/8),
+// and only the entry the nearest proxy added is used, so a client cannot spoof its own address.
+// With nothing configured the headers are ignored and the connection's address is used.
+var knownProxies = builder.Configuration.GetSection("ForwardedHeaders:KnownProxies").Get<string[]>() ?? Array.Empty<string>();
+var knownNetworks = builder.Configuration.GetSection("ForwardedHeaders:KnownNetworks").Get<string[]>() ?? Array.Empty<string>();
+var useForwardedHeaders = knownProxies.Length + knownNetworks.Length > 0;
+if (useForwardedHeaders)
+{
+    builder.Services.Configure<ForwardedHeadersOptions>(options =>
+    {
+        options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+        options.ForwardLimit = 1;
+        options.KnownProxies.Clear();
+        options.KnownIPNetworks.Clear();
+        foreach (var proxy in knownProxies)
+            options.KnownProxies.Add(IPAddress.Parse(proxy));
+        foreach (var network in knownNetworks)
+            options.KnownIPNetworks.Add(System.Net.IPNetwork.Parse(network));
+    });
+}
+
+// Per-address limit on logins: the per-account lockout alone does not stop guessing across many
+// accounts or parallel guesses against one. Clients behind one NAT or proxy address share the budget.
 var loginPermitLimit = builder.Configuration.GetValue("RateLimiting:LoginPermitLimit", 10);
 var loginWindowSeconds = builder.Configuration.GetValue("RateLimiting:LoginWindowSeconds", 60);
 builder.Services.AddRateLimiter(options =>
@@ -105,7 +128,7 @@ builder.Services.AddRateLimiter(options =>
         return ValueTask.CompletedTask;
     };
     options.AddPolicy("login", httpContext => RateLimitPartition.GetFixedWindowLimiter(
-        httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+        ClientAddress.PartitionKey(httpContext.Connection.RemoteIpAddress),
         _ => new FixedWindowRateLimiterOptions
         {
             PermitLimit = loginPermitLimit,
@@ -129,10 +152,13 @@ using (var scope = app.Services.CreateScope())
     await scope.ServiceProvider.GetRequiredService<DbSeeder>().SeedAsync(app.Environment.IsDevelopment());
 }
 
+if (useForwardedHeaders)
+    app.UseForwardedHeaders();
+
 if (!app.Environment.IsDevelopment())
 {
-    // TLS is expected to end at a reverse proxy, which sets X-Forwarded-Proto
-    // (enable it with ASPNETCORE_FORWARDEDHEADERS_ENABLED=true); browsers only honor HSTS over HTTPS.
+    // TLS is expected to end at a reverse proxy that sets X-Forwarded-Proto (see above);
+    // browsers only honor HSTS over HTTPS.
     app.UseHsts();
 }
 

@@ -63,9 +63,10 @@ npm run dev
 
 ## Deployment notes
 
-- The API serves plain HTTP; terminate TLS at a reverse proxy and set `ASPNETCORE_FORWARDEDHEADERS_ENABLED=true` so the API trusts `X-Forwarded-Proto`. Outside Development it also sends an HSTS header (browsers only honor it over HTTPS).
+- The API serves plain HTTP; terminate TLS at a reverse proxy. Outside Development it also sends an HSTS header (browsers only honor it over HTTPS).
+- Behind a proxy, list it in `ForwardedHeaders__KnownProxies__0` (an IP) or `ForwardedHeaders__KnownNetworks__0` (a CIDR such as `10.0.0.0/8`). The API then takes the client address and scheme from `X-Forwarded-For` / `X-Forwarded-Proto`, honoring only the entry the nearest trusted proxy added, so a client cannot spoof its address. Without these settings the headers are ignored and every client behind the proxy shares one address (and one login rate limit).
 - `GET /health` returns 200 when the API can reach the database and 503 otherwise; point the load balancer or orchestrator probe at it.
-- Five failed logins lock an account for five minutes, and a locked account is rejected even with the right password; the reply is the same as for a wrong password. Because the lockout is per account, anyone who knows a user name can lock that account for five minutes, so logins are also limited per client address: `POST /api/Account/Token` allows 10 requests per 60 seconds (`RateLimiting__LoginPermitLimit`, `RateLimiting__LoginWindowSeconds`) and answers 429 with `Retry-After` beyond that. Behind a proxy, enable forwarded headers (above), otherwise every client shares the proxy's address.
+- Five failed logins lock an account for five minutes, and a locked account is rejected even with the right password; the reply is the same as for a wrong password. Because the lockout is per account, anyone who knows a user name can lock that account for five minutes, so logins are also limited per client address: `POST /api/Account/Token` allows 10 requests per 60 seconds (`RateLimiting__LoginPermitLimit`, `RateLimiting__LoginWindowSeconds`) and answers 429 with `Retry-After` beyond that. Behind a proxy, configure the trusted proxies (above), otherwise every client shares the proxy's address. IPv6 clients are counted per /64, and clients behind one NAT address share the budget, so raise the limit if that is a concern.
 - Set `Cors__Origins__0` to the real client origin, and keep the demo accounts out of Production (they are only seeded in Development).
 
 ## Continuous integration
