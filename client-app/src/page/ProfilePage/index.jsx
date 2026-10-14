@@ -1,14 +1,12 @@
 import React from 'react';
-import './style.css';
 import { Form, Formik } from 'formik';
-import { Button, FormGroup, FormLabel } from '@mui/material';
 import Card from '../../share/components/card';
 import Axios from 'axios';
 import ApiUrl from '../../constants/ApiUrl';
 import authApi from '../../api/authApi';
 import ownerRegisterValidationSchema from '../../models/ValidateForm/profile';
-import TelegramIcon from '@mui/icons-material/Telegram';
 import { useNavigate } from 'react-router-dom';
+import { Button, FormGroup, FormLabel, inputClass } from '../../ui';
 
 ProfilePage.propTypes = {};
 
@@ -81,7 +79,7 @@ function ProfilePage(props) {
         }
     };
     return (
-        <div className="profilePage pt-5">
+        <div className="profilePage pt-12">
             <Card title="Thông tin cá nhân">
                 <Formik
                     initialValues={defaultValue}
@@ -91,11 +89,11 @@ function ProfilePage(props) {
                 >
                     {({ errors, values, handleChange, touched }) => (
                         <Form>
-                            <div className="row">
-                                <FormGroup className="col-6">
+                            <div className="grid grid-cols-12 gap-x-4">
+                                <FormGroup className="col-span-6">
                                     <FormLabel>Tên</FormLabel>
                                     <input
-                                        className="form-control"
+                                        className={inputClass}
                                         name="name"
                                         onChange={handleChange}
                                         value={values.name}
@@ -103,15 +101,15 @@ function ProfilePage(props) {
                                         //defaultValue={defaultValue.name}
                                     />
                                     {errors && errors.name && touched.name ? (
-                                        <span className="error">
+                                        <span className="mt-1 text-sm text-red-600">
                                             {errors.name}
                                         </span>
                                     ) : null}
                                 </FormGroup>
-                                <FormGroup className="col-6">
+                                <FormGroup className="col-span-6">
                                     <FormLabel>Email</FormLabel>
                                     <input
-                                        className="form-control"
+                                        className={inputClass}
                                         name="email"
                                         onChange={handleChange}
                                         readOnly={haveEditing !== 1}
@@ -119,7 +117,7 @@ function ProfilePage(props) {
                                         value={values.email}
                                     />
                                     {errors && errors.email && touched.email ? (
-                                        <span className="error">
+                                        <span className="mt-1 text-sm text-red-600">
                                             {errors.email}
                                         </span>
                                     ) : null}
@@ -128,7 +126,7 @@ function ProfilePage(props) {
                             <FormGroup>
                                 <FormLabel>Address</FormLabel>
                                 <input
-                                    className="form-control"
+                                    className={inputClass}
                                     name="address"
                                     onChange={handleChange}
                                     readOnly={haveEditing !== 1}
@@ -136,14 +134,14 @@ function ProfilePage(props) {
                                     value={values.address}
                                 />
                                 {errors && errors.address && touched.address ? (
-                                    <span className="error">{errors.name}</span>
+                                    <span className="mt-1 text-sm text-red-600">{errors.name}</span>
                                 ) : null}
                             </FormGroup>
-                            <div className="row">
-                                <FormGroup className="col-6">
+                            <div className="grid grid-cols-12 gap-x-4">
+                                <FormGroup className="col-span-6">
                                     <FormLabel>Phone</FormLabel>
                                     <input
-                                        className="form-control"
+                                        className={inputClass}
                                         type="number"
                                         name="phone"
                                         onChange={handleChange}
@@ -152,16 +150,16 @@ function ProfilePage(props) {
                                         value={values.phone}
                                     />
                                     {errors && errors.phone && touched.phone ? (
-                                        <span className="error">
+                                        <span className="mt-1 text-sm text-red-600">
                                             {errors.phone}
                                         </span>
                                     ) : null}
                                 </FormGroup>
 
-                                <FormGroup className="col-6">
+                                <FormGroup className="col-span-6">
                                     <FormLabel>Identification</FormLabel>
                                     <input
-                                        className="form-control"
+                                        className={inputClass}
                                         name="identification"
                                         type="number"
                                         onChange={handleChange}
@@ -172,34 +170,26 @@ function ProfilePage(props) {
                                     {errors &&
                                     errors.identification &&
                                     touched.identification ? (
-                                        <span className="error">
+                                        <span className="mt-1 text-sm text-red-600">
                                             {errors.identification}
                                         </span>
                                     ) : null}
                                 </FormGroup>
                             </div>
-                            <div className="btn-group">
+                            <div className="flex justify-center gap-2">
                                 {haveEditing === -1 ? (
                                     <Button
-                                        variant="contained"
-                                        className="btn btn-primary"
-                                        color="primary"
                                         onClick={handleRequireEditInfo}
                                     >
                                         Yêu cầu chỉnh sửa tài khoản
                                     </Button>
                                 ) : (
                                     <Button
-                                        variant="contained"
-                                        className="btn btn-primary"
-                                        color="primary"
                                         type="submit"
                                         disabled={haveEditing === 0}
                                     >
                                         Xác nhận
-                                        <TelegramIcon
-                                            style={{ marginLeft: '8px' }}
-                                        />
+                                        <i className="fas fa-paper-plane ml-2"></i>
                                     </Button>
                                 )}
                             </div>

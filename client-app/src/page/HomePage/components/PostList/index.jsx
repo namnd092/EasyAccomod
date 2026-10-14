@@ -16,7 +16,7 @@ function PostList(props) {
                 </div>
             ))} */}
             {postList.length === 0 && <p className="text-center">Không tìm thấy bài đăng nào</p>}
-            <div className="main_list col-12">
+            <div className="main_list col-span-12">
                 {postList.map((item) => (
                     <PostItem key={item.id} rentalPost={item} />
                 ))}

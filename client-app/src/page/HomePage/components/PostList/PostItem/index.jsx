@@ -1,8 +1,8 @@
 import React from 'react';
-import Rating from '@mui/material/Rating';
 import './style.css';
 import { useNavigate } from 'react-router-dom';
 import moment from 'moment';
+import { Rating } from '../../../../../ui';
 
 function getDistanceTime(time) {
     const distanceTime = Date.now() - Date.parse(new Date(`${time}`));

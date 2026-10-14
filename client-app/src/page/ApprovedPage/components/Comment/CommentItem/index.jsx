@@ -1,4 +1,5 @@
 import React from 'react';
+import { Button } from '../../../../../ui';
 
 export default function CommentItem(props) {
     const { index, item, handleApprove, handleReject } = props;
@@ -10,18 +11,16 @@ export default function CommentItem(props) {
             <td>{item && item.content}</td>
             <td>{item && item.time}</td>
             <td>
-                <button
-                    className="btn btn-primary"
+                <Button
                     onClick={() => handleApprove(item.id, index)}
                 >
                     <i className="fas fa-check-circle"></i> Xác nhận
-                </button>
-                <button
-                    className="btn btn-danger"
+                </Button>
+                <Button variant="danger"
                     onClick={() => handleReject(item.id, index)}
                 >
                     <i className="fas fa-ban"></i> Từ chối
-                </button>
+                </Button>
             </td>
         </tr>
     );

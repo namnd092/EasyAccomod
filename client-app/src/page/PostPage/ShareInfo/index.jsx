@@ -1,13 +1,9 @@
 import React from 'react';
-import Rating from '@mui/material/Rating';
-import ReportProblemIcon from '@mui/icons-material/ReportProblem';
-import { Button, TextareaAutosize } from '@mui/material';
 import rentalPost from '../../../api/rentalPost';
 import { useSelector } from 'react-redux';
 import { isDisplayByRole } from '../../../helper/auth';
 import Role from '../../../models/data/role';
-import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
-import ThumbDownAltIcon from '@mui/icons-material/ThumbDownAlt';
+import { Button, Textarea, Rating, Modal, inputClass, cardClass, cardHeaderClass, cardBodyClass } from '../../../ui';
 
 
 function ShareInfo(props) {
@@ -48,6 +44,7 @@ function ShareInfo(props) {
             console.log(error);
         } finally {
             setIsReported(true);
+            setOpenModal(false);
         }
     };
     React.useEffect(() => {
@@ -102,9 +99,9 @@ function ShareInfo(props) {
     }, []);
     return (
         <div className="shareInfo" style={{ marginTop: '30px' }}>
-            <div className="card mt-2">
-                <h5 className="card-header">Chia sẻ</h5>
-                <div className="card-body">
+            <div className={`${cardClass} mt-2`}>
+                <h5 className={cardHeaderClass}>Chia sẻ</h5>
+                <div className={cardBodyClass}>
                     <h6>Lượt xem: {numberOfView}</h6>
                     <h6>Lượt thích: {numberOfLike}</h6>
                     <div style={{ display: 'flex' }}>
@@ -130,111 +127,43 @@ function ShareInfo(props) {
                             display: isDisplayByRole([Role.RENTER], role),
                         }}
                     >
-                        <div
-                            style={{ display: 'flex' }}
-                            className="btn-share-info"
-                        >
-                            <div style={{ marginRight: '10px' }}>
-                                {!isFavorite ? (
-                                    <Button
-                                        onClick={handleChangeFavorite}
-                                        className="btn btn-primary"
-                                        variant="contained"
-                                        color="primary"
-                                    >
-                                        <ThumbUpAltIcon />
-                                        Thích
-                                    </Button>
-                                ) : (
-                                    <Button
-                                        onClick={handleChangeFavorite}
-                                        className="btn btn-primary"
-                                        variant="contained"
-                                        color="primary"
-                                    >
-                                        <ThumbDownAltIcon />
-                                        Bỏ thích
-                                    </Button>
-                                )}
-                            </div>
-
-                            <div>
-                                <Button
-                                    className="btn btn-danger"
-                                    variant="contained"
-                                    color="secondary"
-                                    data-toggle="modal"
-                                    data-target="#exampleModalCenter"
-                                    onClick={() => setOpenModal(true)}
-                                    disabled={isReported}
-                                >
-                                    <ReportProblemIcon /> <span>Báo cáo</span>
-                                </Button>
-                            </div>
+                        <div className="flex gap-2.5">
+                            <Button onClick={handleChangeFavorite}>
+                                <i className={`fas ${isFavorite ? 'fa-thumbs-down' : 'fa-thumbs-up'}`}></i>
+                                {isFavorite ? 'Bỏ thích' : 'Thích'}
+                            </Button>
+                            <Button
+                                variant="danger"
+                                onClick={() => setOpenModal(true)}
+                                disabled={isReported}
+                            >
+                                <i className="fas fa-exclamation-triangle"></i> <span>Báo cáo</span>
+                            </Button>
                         </div>
                     </div>
                 </div>
 
-                <div
-                    className="modal fade"
-                    id="exampleModalCenter"
-                    tabIndex="-1"
-                    role="dialog"
-                    aria-labelledby="exampleModalCenterTitle"
-                    aria-hidden="true"
+                <Modal
+                    open={openModal}
+                    onClose={() => setOpenModal(false)}
+                    title="Báo cáo"
+                    footer={
+                        <>
+                            <Button variant="neutral" onClick={() => setOpenModal(false)}>
+                                Đóng
+                            </Button>
+                            <Button onClick={handleSubmitReport}>Gửi</Button>
+                        </>
+                    }
                 >
-                    <div
-                        className="modal-dialog modal-dialog-centered modal-lg"
-                        role="document"
-                    >
-                        <div className="modal-content">
-                            <div className="modal-header">
-                                <h5
-                                    className="modal-title"
-                                    id="exampleModalLongTitle"
-                                >
-                                    Báo cáo
-                                </h5>
-                                <button
-                                    type="button"
-                                    className="close"
-                                    data-dismiss="modal"
-                                    aria-label="Close"
-                                >
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div className="modal-body">
-                                <TextareaAutosize
-                                    minRows={5}
-                                    maxLength={1000}
-                                    placeholder="Viết phản hồi của bạn (tối đa 1000 ký tự)"
-                                    className="form-control"
-                                    onChange={(value) =>
-                                        handleChangeReport(value)
-                                    }
-                                />
-                            </div>
-                            <div className="modal-footer">
-                                <button
-                                    type="button"
-                                    className="btn btn-secondary"
-                                    data-dismiss="modal"
-                                >
-                                    Đóng
-                                </button>
-                                <button
-                                    type="button"
-                                    className="btn btn-primary"
-                                    onClick={handleSubmitReport}
-                                    data-dismiss="modal"
-                                >
-                                    Gửi
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                    <Textarea
+                        rows={5}
+                        maxLength={1000}
+                        placeholder="Viết phản hồi của bạn (tối đa 1000 ký tự)"
+                        className={inputClass}
+                        onChange={(value) => handleChangeReport(value)}
+                    />
+                </Modal>
             </div>
         </div>
     );

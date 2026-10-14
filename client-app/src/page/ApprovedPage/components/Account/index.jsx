@@ -7,6 +7,7 @@ import THeadComponent from './thead';
 import AccItemSuccess from './accountItemSuccess';
 import AccountItemEditPending from './itemEditPending';
 import AccountItemEditRequire from './itemEditRequire';
+import { tableClass } from '../../../../ui';
 
 const Account = () => {
     const [accountRegisterPending, setAccountRegisterPending] = React.useState(
@@ -107,7 +108,7 @@ const Account = () => {
     return (
         <div className="approved__account">
             <Card title={'Tài khoản đăng ký đang chờ'}>
-                <table className="table table-hover">
+                <table className={tableClass}>
                     <THeadComponent />
                     <tbody>
                         {accountRegisterPending.length === 0 ? (
@@ -127,7 +128,7 @@ const Account = () => {
                 </table>
             </Card>
             {/* <Card title={'Tài khoản chỉnh sửa đang chờ'}>
-                <table className="table table-hover">
+                <table className={tableClass}>
                     <THeadComponent />
                     <tbody>
                         {accountEditPending.length === 0 ? (
@@ -145,7 +146,7 @@ const Account = () => {
                 </table>
             </Card> */}
             <Card title={'Tài khoản yêu cầu quyền chỉnh sửa'}>
-                <table className="table table-hover">
+                <table className={tableClass}>
                     <THeadComponent />
                     <tbody>
                         {accountEditRequire.length === 0 ? (
@@ -164,7 +165,7 @@ const Account = () => {
                 </table>
             </Card>
             <Card title={'Tài khoản đã xác nhận'}>
-                <table className="table table-hover">
+                <table className={tableClass}>
                     <thead>
                         <tr>
                             <th scope="col">STT</th>

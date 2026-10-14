@@ -1,10 +1,10 @@
-import { Button, FormGroup, FormLabel } from '@mui/material';
 import { Field, Form, Formik } from 'formik';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import authApi from '../../../api/authApi';
 import { ownerRegisterInitialValue } from '../../../models/InitialValueForm/register';
 import { ownerRegisterValidationSchema } from '../../../models/ValidateForm/register';
+import { Button, FormGroup, FormLabel, inputClass } from '../../../ui';
 
 export default function OwnerRegister(props) {
     const navigate = useNavigate();
@@ -31,12 +31,12 @@ export default function OwnerRegister(props) {
                             <Field
                                 type="text"
                                 name="username"
-                                className="form-control"
+                                className={inputClass}
                                 value={values.username}
                                 onChange={handleChange}
                             />
                             {errors && errors.username && touched.username ? (
-                                <span className="error">{errors.username}</span>
+                                <span className="mt-1 text-sm text-red-600">{errors.username}</span>
                             ) : null}
                         </FormGroup>
                         <FormGroup>
@@ -44,12 +44,12 @@ export default function OwnerRegister(props) {
                             <Field
                                 type="password"
                                 name="password"
-                                className="form-control"
+                                className={inputClass}
                                 value={values.password}
                                 onChange={handleChange}
                             />
                             {errors && errors.password && touched.password ? (
-                                <span className="error">{errors.password}</span>
+                                <span className="mt-1 text-sm text-red-600">{errors.password}</span>
                             ) : null}
                         </FormGroup>
                         <FormGroup>
@@ -57,14 +57,14 @@ export default function OwnerRegister(props) {
                             <Field
                                 type="password"
                                 name="confirmPassword"
-                                className="form-control"
+                                className={inputClass}
                                 value={values.confirmPassword}
                                 onChange={handleChange}
                             />
                             {errors &&
                             errors.confirmPassword &&
                             touched.confirmPassword ? (
-                                <span className="error">
+                                <span className="mt-1 text-sm text-red-600">
                                     {errors.confirmPassword}
                                 </span>
                             ) : null}
@@ -74,12 +74,12 @@ export default function OwnerRegister(props) {
                             <Field
                                 type="text"
                                 name="name"
-                                className="form-control"
+                                className={inputClass}
                                 value={values.name}
                                 onChange={handleChange}
                             />
                             {errors && errors.name && touched.name ? (
-                                <span className="error">{errors.name}</span>
+                                <span className="mt-1 text-sm text-red-600">{errors.name}</span>
                             ) : null}
                         </FormGroup>
                         <FormGroup>
@@ -87,12 +87,12 @@ export default function OwnerRegister(props) {
                             <Field
                                 type="text"
                                 name="address"
-                                className="form-control"
+                                className={inputClass}
                                 value={values.address}
                                 onChange={handleChange}
                             />
                             {errors && errors.address && touched.address ? (
-                                <span className="error">{errors.address}</span>
+                                <span className="mt-1 text-sm text-red-600">{errors.address}</span>
                             ) : null}
                         </FormGroup>
                         <FormGroup>
@@ -100,43 +100,43 @@ export default function OwnerRegister(props) {
                             <Field
                                 type="text"
                                 name="email"
-                                className="form-control"
+                                className={inputClass}
                                 value={values.email}
                                 onChange={handleChange}
                             />
                             {errors && errors.email && touched.email ? (
-                                <span className="error">{errors.email}</span>
+                                <span className="mt-1 text-sm text-red-600">{errors.email}</span>
                             ) : null}
                         </FormGroup>
-                        <div className="row">
-                            <FormGroup className="col-6">
+                        <div className="grid grid-cols-12 gap-x-4">
+                            <FormGroup className="col-span-6">
                                 <FormLabel>Số điện thoại</FormLabel>
                                 <Field
                                     type="text"
                                     name="phone"
-                                    className="form-control"
+                                    className={inputClass}
                                     value={values.phone}
                                     onChange={handleChange}
                                 />
                                 {errors && errors.phone && touched.phone ? (
-                                    <span className="error">
+                                    <span className="mt-1 text-sm text-red-600">
                                         {errors.phone}
                                     </span>
                                 ) : null}
                             </FormGroup>
-                            <FormGroup className="col-6">
+                            <FormGroup className="col-span-6">
                                 <FormLabel>CMTND/CCCD</FormLabel>
                                 <Field
                                     type="text"
                                     name="identification"
-                                    className="form-control"
+                                    className={inputClass}
                                     value={values.identification}
                                     onChange={handleChange}
                                 />
                                 {errors &&
                                 errors.identification &&
                                 touched.identification ? (
-                                    <span className="error">
+                                    <span className="mt-1 text-sm text-red-600">
                                         {errors.identification}
                                     </span>
                                 ) : null}
@@ -144,39 +144,30 @@ export default function OwnerRegister(props) {
                         </div>
                         {/* <FormGroup>
                             <Button
-                                type="submit"
-                                color="primary"
-                                size="large"
-                                variant="contained"
+                                type="submit" size="lg"
                                 style={{ margin: '20px' }}
                                 disabled={!isValid}
                             >
                                 Đăng ký
                             </Button>
                         </FormGroup> */}
-                        <div className="group-btn">
-                            <div className="btn-group">
-                                <Button
+                        <div className="mt-5 flex justify-between px-5">
+                            <Button
+ className="h-10 w-[150px]"
                                     onClick={(e) => {
                                         e.preventDefault();
                                         navigate('/login');
-                                    }}
-                                    variant="contained"
-                                    color="secondary"
+                                    }} variant="secondary"
                                 >
                                     Đăng nhập
                                 </Button>
-                            </div>
-                            <div className="btn-group">
-                                <Button
+                            <Button
+ className="h-10 w-[150px]"
                                     type="submit"
                                     disabled={!isValid}
-                                    variant="contained"
-                                    color="primary"
                                 >
                                     Đăng ký
                                 </Button>
-                            </div>
                         </div>
                     </Form>
                 )}

@@ -1,10 +1,10 @@
 import React from 'react';
-import './style.css';
 import rentalPost from '../../api/rentalPost';
 import Card from '../../share/components/card';
 import SuccessItem from './successItem';
 import { useNavigate } from 'react-router-dom';
 import PendingItem from './pendingItem';
+import { Button, tableClass } from '../../ui';
 
 export default function MyPostPage() {
     const navigate = useNavigate();
@@ -60,7 +60,7 @@ export default function MyPostPage() {
         <div className="myPostPage" style={{ paddingBottom: '30px' }}>
             <div style={{ paddingTop: '30px' }}>
                 <Card title="Bài đăng đã xác nhận">
-                    <table className="table table-hover">
+                    <table className={tableClass}>
                         <thead>
                             <tr>
                                 <th scope="col" style={{ minWidth: '10%' }}>
@@ -100,7 +100,7 @@ export default function MyPostPage() {
             </div>
             <div style={{ marginTop: '30px' }}>
                 <Card title="Bài đăng đang chờ xác nhận">
-                    <table className="table table-hover">
+                    <table className={tableClass}>
                         <thead>
                             <tr>
                                 <th scope="col" style={{ minWidth: '10%' }}>
@@ -133,7 +133,7 @@ export default function MyPostPage() {
                 </Card>
             </div>
             {/* <Card title="Bài đăng đã bị từ chối">
-                <table className="table">
+                <table className={tableClass}>
                     <thead>
                         <tr>
                             <th scope="col" style={{ minWidth: '10%' }}>
@@ -148,9 +148,9 @@ export default function MyPostPage() {
                             <th scope="row">1</th>
                             <td></td>
                             <td>
-                                <button className="btn btn-danger">
+                                <Button variant="danger">
                                     <i className="fas fa-trash-alt"></i> Xóa
-                                </button>
+                                </Button>
                             </td>
                         </tr>
                         <tr>

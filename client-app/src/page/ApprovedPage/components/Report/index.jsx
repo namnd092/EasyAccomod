@@ -3,6 +3,7 @@ import rentalPost from '../../../../api/rentalPost';
 import Card from '../../../../share/components/card';
 import ReportItem from './ReportItem';
 import { useNavigate } from 'react-router-dom';
+import { tableClass } from '../../../../ui';
 
 const Report = () => {
     const navigate = useNavigate();
@@ -36,7 +37,7 @@ const Report = () => {
     return (
         <div>
             <Card title="Phản hồi về bài đăng">
-                <table className="table table-hover">
+                <table className={tableClass}>
                     <thead>
                         <tr>
                             <th scope="col">STT</th>

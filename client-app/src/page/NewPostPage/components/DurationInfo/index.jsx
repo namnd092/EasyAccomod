@@ -1,20 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {
-    FormGroup,
-    FormLabel,
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableRow,
-} from '@mui/material';
 import Select from 'react-select';
 import MySelect from '../../../../share/components/select';
 import authApi from '../../../../api/authApi';
 import { useSelector } from 'react-redux';
 import { isDisplayByRole } from '../../../../helper/auth';
 import Role from '../../../../models/data/role';
+import { FormGroup, FormLabel, inputClass, tableClass, cardClass, cardHeaderClass, cardBodyClass } from '../../../../ui';
 
 DurationInfo.propTypes = {};
 
@@ -83,9 +75,9 @@ function DurationInfo(props) {
         getOwnerArr();
     }, []);
     return (
-        <div className="card mt-4">
-            <h5 className="card-header">Lịch đăng tin</h5>
-            <div className="card-body">
+        <div className={`${cardClass} mt-6`}>
+            <h5 className={cardHeaderClass}>Lịch đăng tin</h5>
+            <div className={cardBodyClass}>
                 <FormGroup
                     style={{ display: isDisplayByRole([Role.ADMIN], role) }}
                 >
@@ -119,28 +111,28 @@ function DurationInfo(props) {
                         onChange={handleChange}
                         value={values.numberOfTime ?? 1}
                         name="numberOfTime"
-                        className="form-control"
+                        className={inputClass}
                     />
                     {errors.numberOfTime && touched.numberOfTime && (
                         <span>{errors.numberOfTime}</span>
                     )}
                 </FormGroup>
-                <Table>
-                    <TableHead>
-                        <TableRow>
-                            <TableCell>Đơn giá</TableCell>
-                            <TableCell>Số {type}</TableCell>
-                            <TableCell>Thành tiền</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        <TableRow>
-                            <TableCell>{price}</TableCell>
-                            <TableCell>{time}</TableCell>
-                            <TableCell>{time * Number(price)}</TableCell>
-                        </TableRow>
-                    </TableBody>
-                </Table>
+                <table className={tableClass}>
+                    <thead>
+                        <tr>
+                            <th>Đơn giá</th>
+                            <th>Số {type}</th>
+                            <th>Thành tiền</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>{price}</td>
+                            <td>{time}</td>
+                            <td>{time * Number(price)}</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     );

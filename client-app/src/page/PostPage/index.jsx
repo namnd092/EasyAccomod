@@ -1,7 +1,6 @@
 import React from 'react';
 import './style.css';
 import { useNavigate, useParams } from 'react-router-dom';
-import {} from '@mui/material';
 import BasicInfo from './BasicInfo';
 import DescriptionInfo from './DescriptionInfo';
 import ImgInfo from './ImgInfo';

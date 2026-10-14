@@ -1,18 +1,9 @@
 import React from 'react';
-import { Form, Formik } from 'formik';
-import {
-    FormGroup,
-    FormLabel,
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableRow,
-} from '@mui/material';
 import Select from 'react-select';
 import rentalPost from '../../../api/rentalPost';
+import { Button, FormGroup, FormLabel, Modal, inputClass, tableClass } from '../../../ui';
 export default function ExtendDuration(props) {
-    const { postId } = props;
+    const { postId, open, onClose } = props;
     const handleSubmit = async () => {
         const numberOfDay = packageType.day * numberOfTime;
         console.log(numberOfDay);
@@ -24,6 +15,8 @@ export default function ExtendDuration(props) {
             console.log(response);
         } catch (error) {
             console.log(error);
+        } finally {
+            onClose();
         }
     };
     const packageTypeArr = [
@@ -72,111 +65,54 @@ export default function ExtendDuration(props) {
         setPackageType({ ...value });
     };
     return (
-        <div
-            className="modal fade"
-            id="exampleModalCenter"
-            tabIndex="-1"
-            role="dialog"
-            aria-labelledby="exampleModalCenterTitle"
-            aria-hidden="true"
+        <Modal
+            open={open}
+            onClose={onClose}
+            title="Gia hạn"
+            footer={
+                <>
+                    <Button variant="neutral" onClick={onClose}>
+                        <i className="fas fa-ban"></i> Hủy
+                    </Button>
+                    <Button onClick={handleSubmit}>
+                        <i className="fas fa-check-circle"></i> Xác nhận
+                    </Button>
+                </>
+            }
         >
-            <div className="modal-dialog modal-dialog-centered" role="document">
-                <div className="modal-content">
-                    <div
-                        className="modal-header"
-                        style={{ backgroundColor: '#F7F7F7' }}
-                    >
-                        <h5 className="modal-title" id="exampleModalLongTitle">
-                            Gia hạn
-                        </h5>
-                        <button
-                            type="button"
-                            className="close"
-                            data-dismiss="modal"
-                            aria-label="Close"
-                        >
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div className="modal-body">
-                        <div>
-                            <Formik>
-                                {({ errors, values, handleChange }) => (
-                                    <Form>
-                                        <FormGroup>
-                                            <FormLabel>Chọn gói tin</FormLabel>
-                                            <Select
-                                                options={packageTypeArr}
-                                                onChange={handlePackageChange}
-                                                defaultValue={packageTypeArr[0]}
-                                            />
-                                        </FormGroup>
-                                        <FormGroup>
-                                            <FormLabel>
-                                                Số {packageType.type}
-                                            </FormLabel>
-                                            <input
-                                                type="number"
-                                                values={numberOfTime}
-                                                onChange={handleInputChange}
-                                                className="form-control"
-                                                defaultValue={1}
-                                            />
-                                        </FormGroup>
-                                        <Table style={{ marginTop: '10px' }}>
-                                            <TableHead>
-                                                <TableRow>
-                                                    <TableCell>Đơn giá</TableCell>
-                                                    <TableCell>
-                                                        Số {packageType.type}
-                                                    </TableCell>
-                                                    <TableCell>
-                                                        Thành tiền
-                                                    </TableCell>
-                                                </TableRow>
-                                            </TableHead>
-                                            <TableBody>
-                                                <TableRow>
-                                                    <TableCell>
-                                                        {packageType.price}
-                                                    </TableCell>
-                                                    <TableCell>
-                                                        {numberOfTime}
-                                                    </TableCell>
-                                                    <TableCell>
-                                                        {packageType.price *
-                                                            numberOfTime}
-                                                    </TableCell>
-                                                </TableRow>
-                                            </TableBody>
-                                        </Table>
-                                    </Form>
-                                )}
-                            </Formik>
-                        </div>
-                    </div>
-                    <div
-                        className="modal-footer"
-                        style={{ backgroundColor: '#F7F7F7' }}
-                    >
-                        <button
-                            type="button"
-                            className="btn btn-secondary"
-                            data-dismiss="modal"
-                        >
-                            <i className="fas fa-ban"></i> Hủy
-                        </button>
-                        <button
-                            type="button"
-                            className="btn btn-primary"
-                            onClick={handleSubmit}
-                            data-dismiss="modal"
-                        >
-                            <i className="fas fa-check-circle"></i> Xác nhận
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
+            <FormGroup>
+                <FormLabel>Chọn gói tin</FormLabel>
+                <Select
+                    options={packageTypeArr}
+                    onChange={handlePackageChange}
+                    defaultValue={packageTypeArr[0]}
+                />
+            </FormGroup>
+            <FormGroup>
+                <FormLabel>Số {packageType.type}</FormLabel>
+                <input
+                    type="number"
+                    value={numberOfTime}
+                    onChange={handleInputChange}
+                    className={inputClass}
+                />
+            </FormGroup>
+            <table className={`${tableClass} mt-2.5`}>
+                <thead>
+                    <tr>
+                        <th>Đơn giá</th>
+                        <th>Số {packageType.type}</th>
+                        <th>Thành tiền</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{packageType.price}</td>
+                        <td>{numberOfTime}</td>
+                        <td>{packageType.price * numberOfTime}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </Modal>
     );
 }

@@ -3,6 +3,7 @@ import rentalPost from '../../../../api/rentalPost';
 import Card from '../../../../share/components/card';
 import ExtendItem from './ExtendItem';
 import { useNavigate } from 'react-router-dom';
+import { tableClass } from '../../../../ui';
 
 const Extend = () => {
     const navigate = useNavigate();
@@ -46,7 +47,7 @@ const Extend = () => {
     return (
         <div>
             <Card title="Yêu cầu gia hạn bài đăng">
-                <table className="table table-hover">
+                <table className={tableClass}>
                     <thead>
                         <tr>
                             <th scope="col">STT</th>

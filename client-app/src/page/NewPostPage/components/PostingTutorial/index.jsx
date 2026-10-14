@@ -1,13 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { cardClass, cardHeaderClass, cardBodyClass } from '../../../../ui';
 
 PostingTutorial.propTypes = {};
 
 function PostingTutorial(props) {
     return (
-        <div className="card mt-4">
-            <h5 className="card-header">Hướng dẫn đăng tin</h5>
-            <div className="card-body">
+        <div className={`${cardClass} mt-6`}>
+            <h5 className={cardHeaderClass}>Hướng dẫn đăng tin</h5>
+            <div className={cardBodyClass}>
                 <ul>
                     <li style={{ fontWeight: 'bolder' }}>
                         Thông tin có dấu * là bắt buộc.

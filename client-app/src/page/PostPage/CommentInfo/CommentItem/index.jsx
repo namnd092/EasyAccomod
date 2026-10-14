@@ -1,8 +1,8 @@
 import React from 'react';
 import './style.css';
 import userImg from '../../../../assets/img/user.png';
-import Rating from '@mui/material/Rating';
 import { getDistanceTime } from '../../../../helper/time';
+import { Rating } from '../../../../ui';
 
 const CommentItem = (props) => {
     const { item } = props;

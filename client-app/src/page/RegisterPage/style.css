@@ -30,28 +30,3 @@
 }
 .registerPage .bot input{
 }
-.registerPage .MuiFormGroup-root{
-    margin-bottom: 10px;
-    margin-top: 10px;
-}
-.registerPage .MuiFormLabel-root{
-    color: black;
-}
-.registerPage .error{
-    color: red;
-    font-size: small;
-    margin-top: 5px;
-}
-.registerPage .group-btn{
-    display: flex;
-    justify-content: space-between;
-    margin-top: 20px;
-    padding: 0 20px;
-}
-.registerPage .btn-group{
-    width: 150px;
-}
-.registerPage .btn-group button{
-    width: 150px;
-    height: 40px;
-}

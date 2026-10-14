@@ -1,19 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import './style.css';
 import { Form, Formik } from 'formik';
-import {
-    Accordion,
-    AccordionDetails,
-    AccordionSummary,
-} from '@mui/material';
-import { Button, FormGroup, FormLabel } from '@mui/material';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import Select from 'react-select';
 import { useState } from 'react';
 import addressApi from '../../../../api/addressApi';
 import roomApi from '../../../../api/roomApi';
-import SearchIcon from '@mui/icons-material/Search';
+import { Button, Collapsible, FormGroup, FormLabel, inputClass } from '../../../../ui';
 
 SearchFrom.propTypes = {
     onSubmit: PropTypes.func,
@@ -216,22 +208,12 @@ function SearchFrom(props) {
         >
             {({ handleChange, handleBlur, handleSubmit, values }) => (
                 <Form>
-                    <div className="row">
-                        <div className="col-12 col-lg-10">
-                            <Accordion>
-                                <AccordionSummary
-                                    expandIcon={
-                                        <ExpandMoreIcon fontSize={'large'} />
-                                    }
-                                    aria-controls="panel1a-content"
-                                    id="panel1a-header"
-                                >
-                                    <h2>Tìm kiếm cơ bản</h2>
-                                </AccordionSummary>
-                                <AccordionDetails>
+                    <div className="grid grid-cols-12 gap-x-4">
+                        <div className="col-span-12 lg:col-span-10">
+                            <Collapsible title="Tìm kiếm cơ bản">
                                     <div style={{ width: '100%' }}>
-                                        <div className="row">
-                                            <FormGroup className="col-12 col-md-6 col-xl-4">
+                                        <div className="grid grid-cols-12 gap-x-4">
+                                            <FormGroup className="col-span-12 md:col-span-6 xl:col-span-4">
                                                 <FormLabel>
                                                     Tỉnh/Thành phố
                                                 </FormLabel>
@@ -253,7 +235,7 @@ function SearchFrom(props) {
                                                     }
                                                 />
                                             </FormGroup>
-                                            <FormGroup className="col-12 col-md-6 col-xl-4">
+                                            <FormGroup className="col-span-12 md:col-span-6 xl:col-span-4">
                                                 <FormLabel>
                                                     Quận/Huyện
                                                 </FormLabel>
@@ -275,7 +257,7 @@ function SearchFrom(props) {
                                                     }
                                                 />
                                             </FormGroup>
-                                            <FormGroup className="col-12 col-md-6 col-xl-4">
+                                            <FormGroup className="col-span-12 md:col-span-6 xl:col-span-4">
                                                 <FormLabel>Xã/Phường</FormLabel>
                                                 <Select
                                                     defaultValue={
@@ -296,7 +278,7 @@ function SearchFrom(props) {
                                                     }
                                                 />
                                             </FormGroup>
-                                            <FormGroup className="col-12 col-md-6 col-xl-4">
+                                            <FormGroup className="col-span-12 md:col-span-6 xl:col-span-4">
                                                 <FormLabel>
                                                     Loại Phòng
                                                 </FormLabel>
@@ -315,7 +297,7 @@ function SearchFrom(props) {
                                                     }
                                                 />
                                             </FormGroup>
-                                            <FormGroup className="col-12 col-md-6 col-xl-4">
+                                            <FormGroup className="col-span-12 md:col-span-6 xl:col-span-4">
                                                 <FormLabel>Mức giá</FormLabel>
                                                 <Select
                                                     defaultValue={
@@ -331,7 +313,7 @@ function SearchFrom(props) {
                                                     }
                                                 />
                                             </FormGroup>
-                                            <FormGroup className="col-12 col-md-6 col-xl-4">
+                                            <FormGroup className="col-span-12 md:col-span-6 xl:col-span-4">
                                                 <FormLabel>Diện tích</FormLabel>
                                                 <Select
                                                     defaultValue={
@@ -351,8 +333,8 @@ function SearchFrom(props) {
                                             </FormGroup>
                                         </div>
 
-                                        <div className="row">
-                                            <FormGroup className="col-12 col-lg-6">
+                                        <div className="grid grid-cols-12 gap-x-4">
+                                            <FormGroup className="col-span-12 lg:col-span-6">
                                                 <FormLabel>
                                                     Đường/Số nhà
                                                 </FormLabel>
@@ -360,7 +342,7 @@ function SearchFrom(props) {
                                                     label="Đường/Số nhà"
                                                     variant="outlined"
                                                     name="street"
-                                                    className="form-control"
+                                                    className={inputClass}
                                                     onBlur={(value) =>
                                                         setFilterValues({
                                                             ...filterValues,
@@ -371,7 +353,7 @@ function SearchFrom(props) {
                                                     }
                                                 />
                                             </FormGroup>
-                                            <FormGroup className="col-12 col-lg-6">
+                                            <FormGroup className="col-span-12 lg:col-span-6">
                                                 <FormLabel>
                                                     Gần địa điểm nào
                                                 </FormLabel>
@@ -379,7 +361,7 @@ function SearchFrom(props) {
                                                     label="Gần địa điểm nào"
                                                     variant="outlined"
                                                     name="strpublicLocationNearbyeet"
-                                                    className="form-control"
+                                                    className={inputClass}
                                                     onBlur={(value) =>
                                                         setFilterValues({
                                                             ...filterValues,
@@ -392,22 +374,11 @@ function SearchFrom(props) {
                                             </FormGroup>
                                         </div>
                                     </div>
-                                </AccordionDetails>
-                            </Accordion>
-                            <Accordion>
-                                <AccordionSummary
-                                    expandIcon={
-                                        <ExpandMoreIcon fontSize={'large'} />
-                                    }
-                                    aria-controls="panel2a-content"
-                                    id="panel2a-header"
-                                >
-                                    <h2>Tìm kiếm chi tiết</h2>
-                                </AccordionSummary>
-                                <AccordionDetails>
+                                </Collapsible>
+                            <Collapsible title="Tìm kiếm chi tiết">
                                     <div style={{ width: '100%' }}>
-                                        <div className="row">
-                                            <FormGroup className="col-12 col-md-6 col-lg-4">
+                                        <div className="grid grid-cols-12 gap-x-4">
+                                            <FormGroup className="col-span-12 md:col-span-6 lg:col-span-4">
                                                 <FormLabel>Chung chủ</FormLabel>
                                                 <Select
                                                     defaultValue={choseData[0]}
@@ -423,7 +394,7 @@ function SearchFrom(props) {
                                                     }
                                                 />
                                             </FormGroup>
-                                            <FormGroup className="col-12 col-md-6 col-lg-4">
+                                            <FormGroup className="col-span-12 md:col-span-6 lg:col-span-4">
                                                 <FormLabel>Nóng lạnh</FormLabel>
                                                 <Select
                                                     defaultValue={choseData[0]}
@@ -439,7 +410,7 @@ function SearchFrom(props) {
                                                     }
                                                 />
                                             </FormGroup>
-                                            <FormGroup className="col-12 col-md-6 col-lg-4">
+                                            <FormGroup className="col-span-12 md:col-span-6 lg:col-span-4">
                                                 <FormLabel>Ban công</FormLabel>
                                                 <Select
                                                     defaultValue={choseData[0]}
@@ -455,7 +426,7 @@ function SearchFrom(props) {
                                                     }
                                                 />
                                             </FormGroup>
-                                            <FormGroup className="col-12 col-md-6 col-lg-4">
+                                            <FormGroup className="col-span-12 md:col-span-6 lg:col-span-4">
                                                 <FormLabel>Điều hòa</FormLabel>
                                                 <Select
                                                     defaultValue={choseData[0]}
@@ -471,7 +442,7 @@ function SearchFrom(props) {
                                                     }
                                                 />
                                             </FormGroup>
-                                            <FormGroup className="col-12 col-md-6 col-lg-4">
+                                            <FormGroup className="col-span-12 md:col-span-6 lg:col-span-4">
                                                 <FormLabel>
                                                     Nhà tắm riêng
                                                 </FormLabel>
@@ -489,7 +460,7 @@ function SearchFrom(props) {
                                                     }
                                                 />
                                             </FormGroup>
-                                            <FormGroup className="col-12 col-md-6 col-lg-4">
+                                            <FormGroup className="col-span-12 md:col-span-6 lg:col-span-4">
                                                 <FormLabel>Bếp riêng</FormLabel>
                                                 <Select
                                                     defaultValue={
@@ -509,19 +480,16 @@ function SearchFrom(props) {
                                             </FormGroup>
                                         </div>
                                     </div>
-                                </AccordionDetails>
-                            </Accordion>
+                                </Collapsible>
                         </div>
-                        <div className="col-lg-2 col-12">
+                        <div className="lg:col-span-2 col-span-12">
                             <Button
                                 type={'submit'}
-                                color={'secondary'}
-                                variant="contained"
+                                variant="secondary"
                                 disabled={isLoading}
-                                size={'large'}
+                                size="lg"
                             >
-                                Tìm kiếm{' '}
-                                <SearchIcon style={{ marginLeft: '7px' }} />
+                                Tìm kiếm <i className="fas fa-search ml-1.5"></i>
                             </Button>
                         </div>
                     </div>

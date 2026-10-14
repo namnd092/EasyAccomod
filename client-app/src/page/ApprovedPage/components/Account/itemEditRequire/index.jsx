@@ -1,4 +1,5 @@
 import React from 'react';
+import { Button } from '../../../../../ui';
 
 export default function AccountItemEditRequire(props) {
     const { account, index, handleCanEdit } = props;
@@ -11,18 +12,16 @@ export default function AccountItemEditRequire(props) {
             <td>{account && account.phone}</td>
             <td>{account && account.email}</td>
             <td>
-                <button
-                    className="btn btn-primary"
+                <Button
                     onClick={() => handleCanEdit(account.id, true, index)}
                 >
                     <i className="fas fa-check-circle"></i> Xác nhận
-                </button>
-                <button
-                    className="btn btn-danger"
+                </Button>
+                <Button variant="danger"
                     onClick={() => handleCanEdit(account.id, false, index)}
                 >
                     <i className="fas fa-ban"></i> Từ chối
-                </button>
+                </Button>
             </td>
         </tr>
     );

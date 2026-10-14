@@ -1,17 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {
-    Checkbox,
-    FormControlLabel,
-    FormGroup,
-    FormLabel,
-    Radio,
-    RadioGroup,
-} from '@mui/material';
 import addressApi from '../../../../api/addressApi';
 import roomApi from '../../../../api/roomApi';
 import DebouncedInput from '../../../../components/DebouncedInput';
 import MySelect from '../../../../share/components/select';
+import { FormGroup, FormLabel, Checkbox, Radio, inputClass, cardClass, cardHeaderClass, cardBodyClass } from '../../../../ui';
 
 BasicInfo.propTypes = {
     handleBasicInfoChange: PropTypes.func,
@@ -135,15 +128,15 @@ function BasicInfo(props) {
     }, [values.district]);
 
     return (
-        <div className="card mt-4">
-            <h5 className="card-header">Thông tin cơ bản</h5>
-            <div className="card-body">
+        <div className={`${cardClass} mt-6`}>
+            <h5 className={cardHeaderClass}>Thông tin cơ bản</h5>
+            <div className={cardBodyClass}>
                 <FormGroup>
                     <FormLabel>Tiêu đề</FormLabel>
                     <DebouncedInput
                         type="text"
                         name="title"
-                        className="form-control"
+                        className={inputClass}
                         onChange={handleChange}
                         value={
                             defaultValue
@@ -152,16 +145,16 @@ function BasicInfo(props) {
                         }
                     />
                     {errors.title && touched.title && (
-                        <span className="error">{errors.title}</span>
+                        <span className="mt-1 text-sm text-red-600">{errors.title}</span>
                     )}
                 </FormGroup>
-                <div className="row">
-                    <FormGroup className="col-3">
+                <div className="grid grid-cols-12 gap-x-4">
+                    <FormGroup className="col-span-3">
                         <FormLabel>Số lượng phòng</FormLabel>
                         <DebouncedInput
                             type="number"
                             name="roomQuantity"
-                            className="form-control"
+                            className={inputClass}
                             onChange={handleChange}
                             value={
                                 defaultValue
@@ -171,10 +164,10 @@ function BasicInfo(props) {
                             }
                         />
                         {errors.roomQuantity && touched.roomQuantity && (
-                            <span className="error">{errors.roomQuantity}</span>
+                            <span className="mt-1 text-sm text-red-600">{errors.roomQuantity}</span>
                         )}
                     </FormGroup>
-                    <FormGroup className="col-4">
+                    <FormGroup className="col-span-4">
                         <FormLabel>Loại Phòng</FormLabel>
                         <MySelect
                             name="roomType"
@@ -185,15 +178,15 @@ function BasicInfo(props) {
                             defaultValue={roomTypeData[0]}
                         />
                         {errors.roomType && touched.roomType && (
-                            <span className="error">{errors.roomType}</span>
+                            <span className="mt-1 text-sm text-red-600">{errors.roomType}</span>
                         )}
                     </FormGroup>
-                    <FormGroup className="col-5">
+                    <FormGroup className="col-span-5">
                         <FormLabel>Số nhà, Đường</FormLabel>
                         <DebouncedInput
                             type="text"
                             name="street"
-                            className="form-control"
+                            className={inputClass}
                             onChange={handleChange}
                             value={
                                 defaultValue
@@ -203,7 +196,7 @@ function BasicInfo(props) {
                             }
                         />
                         {errors.street && touched.street && (
-                            <span className="error">{errors.street}</span>
+                            <span className="mt-1 text-sm text-red-600">{errors.street}</span>
                         )}
                     </FormGroup>
                 </div>
@@ -211,7 +204,7 @@ function BasicInfo(props) {
                     <FormLabel>Gần địa điểm công cộng</FormLabel>
                     <DebouncedInput
                         type="text"
-                        className="form-control"
+                        className={inputClass}
                         name="publicLocationNearby"
                         onChange={handleChange}
                         value={
@@ -223,14 +216,14 @@ function BasicInfo(props) {
                     />
                     {errors.publicLocationNearby &&
                         touched.publicLocationNearby && (
-                            <span className="error">
+                            <span className="mt-1 text-sm text-red-600">
                                 {errors.publicLocationNearby}
                             </span>
                         )}
                 </FormGroup>
 
-                <div className="row">
-                    <FormGroup className="col-4">
+                <div className="grid grid-cols-12 gap-x-4">
+                    <FormGroup className="col-span-4">
                         <FormLabel>Tỉnh/Thành phố</FormLabel>
                         <MySelect
                             options={provinceData}
@@ -240,10 +233,10 @@ function BasicInfo(props) {
                             values={values.province}
                         />
                         {errors.province && touched.province && (
-                            <span className="error">{errors.province}</span>
+                            <span className="mt-1 text-sm text-red-600">{errors.province}</span>
                         )}
                     </FormGroup>
-                    <FormGroup className="col-4">
+                    <FormGroup className="col-span-4">
                         <FormLabel>Quận/Huyện</FormLabel>
                         <MySelect
                             options={districtData}
@@ -253,10 +246,10 @@ function BasicInfo(props) {
                             values={values.district}
                         />
                         {errors.district && touched.district && (
-                            <span className="error">{errors.district}</span>
+                            <span className="mt-1 text-sm text-red-600">{errors.district}</span>
                         )}
                     </FormGroup>
-                    <FormGroup className="col-4">
+                    <FormGroup className="col-span-4">
                         <FormLabel>Xã/Phường</FormLabel>
                         <MySelect
                             options={wardData}
@@ -266,16 +259,16 @@ function BasicInfo(props) {
                             values={values.ward}
                         />
                         {errors.ward && touched.ward && (
-                            <span className="error">{errors.ward}</span>
+                            <span className="mt-1 text-sm text-red-600">{errors.ward}</span>
                         )}
                     </FormGroup>
                 </div>
-                <div className="row">
-                    <FormGroup className="col-8">
+                <div className="grid grid-cols-12 gap-x-4">
+                    <FormGroup className="col-span-8">
                         <FormLabel>Giá tiền(vnd)</FormLabel>
                         <DebouncedInput
                             type={'number'}
-                            className="form-control"
+                            className={inputClass}
                             name="roomPrice"
                             onChange={handleChange}
                             value={
@@ -285,10 +278,10 @@ function BasicInfo(props) {
                             }
                         />
                         {errors.roomPrice && touched.roomPrice && (
-                            <span className="error">{errors.roomPrice}</span>
+                            <span className="mt-1 text-sm text-red-600">{errors.roomPrice}</span>
                         )}
                     </FormGroup>
-                    <FormGroup className="col-4">
+                    <FormGroup className="col-span-4">
                         <FormLabel>Tháng/Quý/Năm</FormLabel>
                         <MySelect
                             name="roomPaymentType"
@@ -298,14 +291,14 @@ function BasicInfo(props) {
                             onBlur={setFieldTouched}
                         />
                         {errors.roomPaymentType && touched.roomPaymentType && (
-                            <span className="error">
+                            <span className="mt-1 text-sm text-red-600">
                                 {errors.roomPaymentType}
                             </span>
                         )}
                     </FormGroup>
                 </div>
-                <div className="row">
-                    <FormGroup className="col-6">
+                <div className="grid grid-cols-12 gap-x-4">
+                    <FormGroup className="col-span-6">
                         <FormLabel>Diện tích</FormLabel>
                         <MySelect
                             name="roomArea"
@@ -315,10 +308,10 @@ function BasicInfo(props) {
                             onBlur={setFieldTouched}
                         />
                         {errors.roomArea && touched.roomArea && (
-                            <span className="error">{errors.roomArea}</span>
+                            <span className="mt-1 text-sm text-red-600">{errors.roomArea}</span>
                         )}
                     </FormGroup>
-                    <FormGroup className="col-6">
+                    <FormGroup className="col-span-6">
                         <FormLabel>Bếp(Nấu ăn)</FormLabel>
                         <MySelect
                             name="kitchenType"
@@ -328,33 +321,32 @@ function BasicInfo(props) {
                             onBlur={setFieldTouched}
                         />
                         {errors.kitchenType && touched.kitchenType && (
-                            <span className="error">{errors.kitchenType}</span>
+                            <span className="mt-1 text-sm text-red-600">{errors.kitchenType}</span>
                         )}
                     </FormGroup>
                 </div>
                 <FormGroup>
                     <FormLabel>Điện nước</FormLabel>
-                    <RadioGroup
-                        aria-label="gender"
-                        name="waterElectricity"
-                        value={values.waterElectricity}
-                        onChange={handleChange}
-                    >
-                        <div className="row">
-                            <FormControlLabel
+                    <div className="grid grid-cols-12 gap-x-4">
+                        <label className="col-span-6 flex cursor-pointer items-center gap-2">
+                            <Radio
+                                name="waterElectricity"
                                 value="rent"
-                                control={<Radio />}
-                                label="Giá thuê"
-                                className="col-6"
+                                checked={values.waterElectricity === 'rent'}
+                                onChange={handleChange}
                             />
-                            <FormControlLabel
+                            Giá thuê
+                        </label>
+                        <label className="col-span-5 flex cursor-pointer items-center gap-2">
+                            <Radio
+                                name="waterElectricity"
                                 value="normal"
-                                control={<Radio />}
-                                className="col-5"
-                                label="Giá dân"
+                                checked={values.waterElectricity === 'normal'}
+                                onChange={handleChange}
                             />
-                        </div>
-                    </RadioGroup>
+                            Giá dân
+                        </label>
+                    </div>
                 </FormGroup>
 
                 <div
@@ -363,34 +355,34 @@ function BasicInfo(props) {
                             values.waterElectricity === 'normal' ? 'none' : '',
                     }}
                 >
-                    <div className="row">
-                        <FormGroup className="col-6">
+                    <div className="grid grid-cols-12 gap-x-4">
+                        <FormGroup className="col-span-6">
                             <FormLabel>Giá điện</FormLabel>
                             <DebouncedInput
                                 type="number"
                                 name="electricityPrice"
-                                className="form-control"
+                                className={inputClass}
                                 defaultValue={0}
                                 onChange={handleChange}
                             />
                             {errors.electricityPrice &&
                                 touched.electricityPrice && (
-                                    <span className="error">
+                                    <span className="mt-1 text-sm text-red-600">
                                         {errors.electricityPrice}
                                     </span>
                                 )}
                         </FormGroup>
-                        <FormGroup className="col-6">
+                        <FormGroup className="col-span-6">
                             <FormLabel>Giá nước</FormLabel>
                             <DebouncedInput
                                 type="number"
                                 name="waterPrice"
-                                className="form-control"
+                                className={inputClass}
                                 defaultValue={0}
                                 onChange={handleChange}
                             />
                             {errors.waterPrice && touched.waterPrice && (
-                                <span className="error">
+                                <span className="mt-1 text-sm text-red-600">
                                     {errors.waterPrice}
                                 </span>
                             )}
@@ -437,7 +429,7 @@ function BasicInfo(props) {
                     <FormLabel>Tiện ích khác</FormLabel>
                     <DebouncedInput
                         type="text"
-                        className="form-control"
+                        className={inputClass}
                         name="roomOption"
                         onChange={handleChange}
                         value={
@@ -447,7 +439,7 @@ function BasicInfo(props) {
                         }
                     />
                     {errors.roomOption && touched.roomOption && (
-                        <span className="error">{errors.roomOption}</span>
+                        <span className="mt-1 text-sm text-red-600">{errors.roomOption}</span>
                     )}
                 </FormGroup>
             </div>
