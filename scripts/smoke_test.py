@@ -200,6 +200,10 @@ check("owner got approval notification", any("phê duyệt" in n["content"] for 
 expect("check notification", call("PUT", "/api/Notifications/Check", owner, {"Id": owner_notes[0]["id"]}), 200)
 admin_notes = expect("admin notifications", call("GET", "/api/Notifications", admin), 200)
 check("admin got rented notification", any("đã cho thuê" in n["content"] for n in admin_notes), admin_notes)
+check("owner cannot check another account's notification",
+      call("PUT", "/api/Notifications/Check", owner, {"Id": admin_notes[0]["id"]})[0] == 404)
+check("foreign notification left unchecked",
+      not [n for n in call("GET", "/api/Notifications", admin)[1] if n["id"] == admin_notes[0]["id"]][0]["hasBeenChecked"])
 
 print("edit pending post")
 second = expect("create second post", call("POST", "/api/RentalPosts", owner, post_body("Sửa " + run)), 201)
@@ -251,6 +255,10 @@ foreign = expect("create post to be edited by a stranger", call("POST", "/api/Re
 stranger_edit = post_body("Bị sửa trái phép " + run)
 stranger_edit.pop("TimeDisplayed")
 check("owner cannot edit another owner's post", call("PUT", "/api/RentalPosts/Edit/%d" % foreign["id"], other_owner_token, stranger_edit)[0] == 403)
+check("renter cannot comment on an unpublished post", call("POST", "/api/Renter/RentalPost/Comment", renter,
+      {"AccommodationRentalPostId": foreign["id"], "Rate": 4, "Content": "Tốt"})[0] == 400)
+check("renter cannot report an unpublished post", call("POST", "/api/Renter/RentalPost/Report", renter,
+      {"AccommodationRentalPostId": foreign["id"], "Content": "Sai"})[0] == 400)
 check("foreign edit changed nothing", call("GET", "/api/RentalPosts/Get/%d" % foreign["id"], owner)[1]["title"] == "Của chủ 1 " + run)
 reject_name = "reject" + run
 call("POST", "/api/Account/OwnerRegister", None, {
@@ -276,9 +284,11 @@ expect("edit info", call("PUT", "/api/Owner/EditInfo", owner, {
     "Email": "owner1@owner.com"}), 200)
 changed = login("Owner1", "Owner1234.")[1]
 check("owner back to waiting after edit", changed.get("role") == "Wait for Admin to confirm" and changed.get("name") == "Chủ trọ 1", changed)
+check("old token loses owner access after the role change", call("GET", "/api/Owner/RentalPosts", owner)[0] == 403)
 owner_row = call("GET", "/api/account/info", changed["access_token"])[1]
 expect("re-approve owner", call("POST", "/api/Admin/SetOwner", admin, {"AccountId": owner_row["accountId"]}), 200)
 check("owner restored", login("Owner1", "Owner1234.")[1].get("role") == "Owner")
+check("old token works again once the role is restored", call("GET", "/api/Owner/RentalPosts", owner)[0] in (200, 404))
 
 print("\n%d checks, %d failed" % (checks, len(failures)))
 for name in failures:
