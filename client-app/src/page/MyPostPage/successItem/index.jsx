@@ -81,10 +81,10 @@ function SuccessItem(props) {
                     data-toggle="modal"
                     data-target="#exampleModalCenter"
                 >
-                    <i class="fas fa-money-check-alt"></i> Gia hạn
+                    <i className="fas fa-money-check-alt"></i> Gia hạn
                 </button>
+                <ExtendDuration postId={item.id} />
             </td>
-            <ExtendDuration postId={item.id} />
         </tr>
     );
 }

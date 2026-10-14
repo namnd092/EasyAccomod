@@ -107,7 +107,7 @@ const Account = () => {
     return (
         <div className="approved__account">
             <Card title={'Tài khoản đăng ký đang chờ'}>
-                <table class="table table-hover">
+                <table className="table table-hover">
                     <THeadComponent />
                     <tbody>
                         {accountRegisterPending.length === 0 ? (
@@ -127,7 +127,7 @@ const Account = () => {
                 </table>
             </Card>
             {/* <Card title={'Tài khoản chỉnh sửa đang chờ'}>
-                <table class="table table-hover">
+                <table className="table table-hover">
                     <THeadComponent />
                     <tbody>
                         {accountEditPending.length === 0 ? (
@@ -145,7 +145,7 @@ const Account = () => {
                 </table>
             </Card> */}
             <Card title={'Tài khoản yêu cầu quyền chỉnh sửa'}>
-                <table class="table table-hover">
+                <table className="table table-hover">
                     <THeadComponent />
                     <tbody>
                         {accountEditRequire.length === 0 ? (
@@ -164,7 +164,7 @@ const Account = () => {
                 </table>
             </Card>
             <Card title={'Tài khoản đã xác nhận'}>
-                <table class="table table-hover">
+                <table className="table table-hover">
                     <thead>
                         <tr>
                             <th scope="col">STT</th>

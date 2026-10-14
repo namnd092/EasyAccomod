@@ -99,7 +99,7 @@ function BasicInfo(props) {
 
     React.useEffect(() => {
         async function handleProvinceChange() {
-            if (!values.province) return;
+            if (values.province?.value == null) return;
             values.district = null;
             values.ward = null;
             try {
@@ -118,7 +118,7 @@ function BasicInfo(props) {
 
     React.useEffect(() => {
         async function handleDistrictChange() {
-            if (!values.district) return;
+            if (values.district?.value == null) return;
             values.ward = null;
             try {
                 const response = await addressApi.getWardByDistrictID(
@@ -135,9 +135,9 @@ function BasicInfo(props) {
     }, [values.district]);
 
     return (
-        <div class="card mt-4">
-            <h5 class="card-header">Thông tin cơ bản</h5>
-            <div class="card-body">
+        <div className="card mt-4">
+            <h5 className="card-header">Thông tin cơ bản</h5>
+            <div className="card-body">
                 <FormGroup>
                     <FormLabel>Tiêu đề</FormLabel>
                     <DebounceInput

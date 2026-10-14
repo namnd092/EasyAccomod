@@ -14,13 +14,13 @@ export default function CommentItem(props) {
                     className="btn btn-primary"
                     onClick={() => handleApprove(item.id, index)}
                 >
-                    <i class="fas fa-check-circle"></i> Xác nhận
+                    <i className="fas fa-check-circle"></i> Xác nhận
                 </button>
                 <button
                     className="btn btn-danger"
                     onClick={() => handleReject(item.id, index)}
                 >
-                    <i class="fas fa-ban"></i> Từ chối
+                    <i className="fas fa-ban"></i> Từ chối
                 </button>
             </td>
         </tr>

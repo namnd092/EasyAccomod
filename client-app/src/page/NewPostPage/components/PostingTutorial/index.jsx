@@ -5,9 +5,9 @@ PostingTutorial.propTypes = {};
 
 function PostingTutorial(props) {
     return (
-        <div class="card mt-4">
-            <h5 class="card-header">Hướng dẫn đăng tin</h5>
-            <div class="card-body">
+        <div className="card mt-4">
+            <h5 className="card-header">Hướng dẫn đăng tin</h5>
+            <div className="card-body">
                 <ul>
                     <li style={{ fontWeight: 'bolder' }}>
                         Thông tin có dấu * là bắt buộc.

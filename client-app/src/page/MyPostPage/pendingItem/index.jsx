@@ -21,7 +21,7 @@ export default function PendingItem(props) {
                     onClick={() => handleEditPost(item.id)}
                 >
                     {' '}
-                    <i class="far fa-edit"></i> Chỉnh sửa
+                    <i className="far fa-edit"></i> Chỉnh sửa
                 </button>
             </td>
         </tr>

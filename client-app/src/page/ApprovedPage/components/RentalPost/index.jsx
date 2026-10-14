@@ -153,7 +153,7 @@ const RenterPost = (props) => {
     return (
         <div>
             <Card title="Bài đăng">
-                <table class="table table-hover">
+                <table className="table table-hover">
                     <thead>
                         <tr>
                             <th scope="col">STT</th>
@@ -237,7 +237,7 @@ const RenterPost = (props) => {
                 </table>
             </Card>
             {/* <Card title="Bài đăng bị từ chối">
-                <table class="table table-hover">
+                <table className="table table-hover">
                     <thead>
                         <tr>
                             <th scope="col">STT</th>
@@ -266,7 +266,7 @@ const RenterPost = (props) => {
                 </table>
             </Card>
             <Card title="Bài đăng đã duyệt">
-                <table class="table table-hover">
+                <table className="table table-hover">
                     <thead>
                         <tr>
                             <th scope="col">STT</th>

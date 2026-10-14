@@ -46,7 +46,7 @@ const Extend = () => {
     return (
         <div>
             <Card title="Yêu cầu gia hạn bài đăng">
-                <table class="table table-hover">
+                <table className="table table-hover">
                     <thead>
                         <tr>
                             <th scope="col">STT</th>

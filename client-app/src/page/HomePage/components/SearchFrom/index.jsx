@@ -16,13 +16,9 @@ import roomApi from '../../../../api/roomApi';
 import SearchIcon from '@mui/icons-material/Search';
 
 SearchFrom.propTypes = {
-    onSumbit: PropTypes.func,
+    onSubmit: PropTypes.func,
+    isLoading: PropTypes.bool,
 };
-
-SearchFrom.defaultProps = {
-    onSumbit: null,
-};
-
 
 function SearchFrom(props) {
     const { isLoading } = props;

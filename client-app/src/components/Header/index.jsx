@@ -52,7 +52,7 @@ const Header = (props) => {
                         aria-expanded="false"
                         aria-label="Toggle navigation"
                     >
-                        <i class="fas fa-bars" style={{ color: 'white' }}></i>
+                        <i className="fas fa-bars" style={{ color: 'white' }}></i>
                     </button>
                     <div
                         className="collapse navbar-collapse"
@@ -172,7 +172,7 @@ const Header = (props) => {
                                             ),
                                         }}
                                     >
-                                        <i class="fas fa-user-circle"></i> Quản
+                                        <i className="fas fa-user-circle"></i> Quản
                                         lý tài khoản
                                     </Link>
                                     <Link
@@ -185,7 +185,7 @@ const Header = (props) => {
                                             ),
                                         }}
                                     >
-                                        <i class="fas fa-heart"></i> Phòng trọ
+                                        <i className="fas fa-heart"></i> Phòng trọ
                                         yêu thích
                                     </Link>
                                     <Link
@@ -198,7 +198,7 @@ const Header = (props) => {
                                             ),
                                         }}
                                     >
-                                        <i class="far fa-clipboard"></i> Phòng
+                                        <i className="far fa-clipboard"></i> Phòng
                                         trọ của tôi
                                     </Link>
                                     <div className="dropdown-divider"></div>
@@ -207,7 +207,7 @@ const Header = (props) => {
                                         to="#"
                                         onClick={handleLogout}
                                     >
-                                        <i class="fas fa-sign-out-alt"></i> Đăng
+                                        <i className="fas fa-sign-out-alt"></i> Đăng
                                         xuất
                                     </Link>
                                 </div>

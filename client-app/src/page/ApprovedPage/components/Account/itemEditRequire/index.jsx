@@ -15,13 +15,13 @@ export default function AccountItemEditRequire(props) {
                     className="btn btn-primary"
                     onClick={() => handleCanEdit(account.id, true, index)}
                 >
-                    <i class="fas fa-check-circle"></i> Xác nhận
+                    <i className="fas fa-check-circle"></i> Xác nhận
                 </button>
                 <button
                     className="btn btn-danger"
                     onClick={() => handleCanEdit(account.id, false, index)}
                 >
-                    <i class="fas fa-ban"></i> Từ chối
+                    <i className="fas fa-ban"></i> Từ chối
                 </button>
             </td>
         </tr>

@@ -60,7 +60,7 @@ export default function MyPostPage() {
         <div className="myPostPage" style={{ paddingBottom: '30px' }}>
             <div style={{ paddingTop: '30px' }}>
                 <Card title="Bài đăng đã xác nhận">
-                    <table class="table table-hover">
+                    <table className="table table-hover">
                         <thead>
                             <tr>
                                 <th scope="col" style={{ minWidth: '10%' }}>
@@ -81,7 +81,9 @@ export default function MyPostPage() {
                         </thead>
                         <tbody>
                             {postListSuccess.length === 0 ? (
-                                <p>Không có bài viết nào</p>
+                                <tr>
+                                    <td colSpan={8}>Không có bài viết nào</td>
+                                </tr>
                             ) : (
                                 postListSuccess.map((item, index) => (
                                     <SuccessItem
@@ -98,7 +100,7 @@ export default function MyPostPage() {
             </div>
             <div style={{ marginTop: '30px' }}>
                 <Card title="Bài đăng đang chờ xác nhận">
-                    <table class="table table-hover">
+                    <table className="table table-hover">
                         <thead>
                             <tr>
                                 <th scope="col" style={{ minWidth: '10%' }}>
@@ -112,7 +114,9 @@ export default function MyPostPage() {
                         </thead>
                         <tbody>
                             {postListPending.length === 0 ? (
-                                <p>Không tìm thấy bài viết nào</p>
+                                <tr>
+                                    <td colSpan={5}>Không tìm thấy bài viết nào</td>
+                                </tr>
                             ) : (
                                 postListPending.map((item, index) => (
                                     <PendingItem
@@ -129,7 +133,7 @@ export default function MyPostPage() {
                 </Card>
             </div>
             {/* <Card title="Bài đăng đã bị từ chối">
-                <table class="table">
+                <table className="table">
                     <thead>
                         <tr>
                             <th scope="col" style={{ minWidth: '10%' }}>
@@ -145,7 +149,7 @@ export default function MyPostPage() {
                             <td></td>
                             <td>
                                 <button className="btn btn-danger">
-                                    <i class="fas fa-trash-alt"></i> Xóa
+                                    <i className="fas fa-trash-alt"></i> Xóa
                                 </button>
                             </td>
                         </tr>

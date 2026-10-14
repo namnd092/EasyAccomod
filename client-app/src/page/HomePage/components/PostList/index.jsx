@@ -6,10 +6,6 @@ import PostItem from './PostItem';
 PostList.propTypes = {
     postList: PropTypes.array,
 };
-PostList.defaultProp = {
-    postList: [],
-};
-
 function PostList(props) {
     const { postList } = props;
     return (

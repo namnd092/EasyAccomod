@@ -15,13 +15,13 @@ export default function AccountItem(props) {
                     className="btn btn-primary"
                     onClick={() => onConfirm(account.accountId, index)}
                 >
-                    <i class="fas fa-check-circle"></i> Xác nhận
+                    <i className="fas fa-check-circle"></i> Xác nhận
                 </button>
                 <button
                     className="btn btn-danger"
                     onClick={() => onRefuse(account.accountId, index)}
                 >
-                    <i class="fas fa-ban"></i> Từ chối
+                    <i className="fas fa-ban"></i> Từ chối
                 </button>
             </td>
         </tr>

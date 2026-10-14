@@ -83,9 +83,9 @@ function DurationInfo(props) {
         getOwnerArr();
     }, []);
     return (
-        <div class="card mt-4">
-            <h5 class="card-header">Lịch đăng tin</h5>
-            <div class="card-body">
+        <div className="card mt-4">
+            <h5 className="card-header">Lịch đăng tin</h5>
+            <div className="card-body">
                 <FormGroup
                     style={{ display: isDisplayByRole([Role.ADMIN], role) }}
                 >

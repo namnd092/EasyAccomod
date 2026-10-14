@@ -45,7 +45,7 @@ export default function ReportItem(props) {
                     className="btn btn-danger"
                     onClick={() => handleResolve(rentalPost.id, index)}
                 >
-                    <i class="fas fa-trash"></i> Xóa
+                    <i className="fas fa-trash"></i> Xóa
                 </button>
             </td>
         </tr>

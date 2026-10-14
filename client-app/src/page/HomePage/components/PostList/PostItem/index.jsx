@@ -59,7 +59,7 @@ function PostItem(props) {
                     <div className="rating">
                         <Rating
                             name="half-rating-read"
-                            defaultValue={Math.round(rate * 2) / 2}
+                            value={Math.round(rate * 2) / 2}
                             precision={0.5}
                             readOnly={true}
                         />

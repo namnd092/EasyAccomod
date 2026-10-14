@@ -19,9 +19,9 @@ function DescriptionInfo(props) {
         handleBlur,
     } = props;
     return (
-        <div class="card mt-4">
-            <h5 class="card-header">Thông tin mô tả</h5>
-            <div class="card-body">
+        <div className="card mt-4">
+            <h5 className="card-header">Thông tin mô tả</h5>
+            <div className="card-body">
                 <FormGroup>
                     <FormLabel required>Nội dung</FormLabel>
                     <TextareaAutosize
