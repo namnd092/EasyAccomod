@@ -176,7 +176,7 @@ check("report now solved", any(r["accommodationRentalPostId"] == post_id
 check("dislike toggles", call("POST", "/api/Renter/RentalPost/Like", renter, {"AccommodationRentalPostId": post_id})[1] == "Dislike")
 
 print("owner dashboard, extension and notifications")
-mine_posts = expect("owner posts", call("GET", "/api/Owner/RentalPosts", owner), 200)
+mine_posts = expect("owner posts", call("GET", "/api/Owner/RentalPosts?_limit=1000", owner), 200)
 entry = [p for p in mine_posts["ownerSimplePostDtos"] if p["id"] == post_id]
 check("owner post entry", len(entry) == 1 and entry[0]["status"] == "Được duyệt" and entry[0]["views"] >= 1
       and entry[0]["address"]["ward"]["district"]["province"], entry)
