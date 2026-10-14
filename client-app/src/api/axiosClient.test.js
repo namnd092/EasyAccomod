@@ -121,6 +121,18 @@ describe('axiosClient 401 handling', () => {
 });
 
 describe('refreshSession', () => {
+    it('takes turns with other tabs through a Web Lock when the browser has them', async () => {
+        const request = vi.fn((name, task) => task());
+        vi.stubGlobal('navigator', { locks: { request } });
+        try {
+            mockRefresh('fresh');
+            await refreshSession();
+            expect(request).toHaveBeenCalledWith('easyaccomod-refresh', expect.any(Function));
+        } finally {
+            vi.unstubAllGlobals();
+        }
+    });
+
     it('stores the new access token', async () => {
         mockRefresh('fresh');
         await refreshSession();

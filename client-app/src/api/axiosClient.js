@@ -26,11 +26,15 @@ export const setSessionHandlers = ({ refreshed, unauthorized }) => {
 // Asks the API for a new access token using the refresh cookie. Concurrent callers (several requests
 // expiring together, StrictMode, two effects) share one call: the server rotates the cookie on every
 // refresh, so a second parallel call with the old cookie would look like token theft.
+// Tabs share the cookie, so they take turns (Web Locks): the second tab then sends the cookie the first
+// one just received instead of the one it replaced. Without Web Locks the tab just goes ahead.
+const withRefreshLock = (task) =>
+    typeof navigator !== 'undefined' && navigator.locks ? navigator.locks.request('easyaccomod-refresh', task) : task();
+
 let refreshing = null;
 export function refreshSession() {
     if (!refreshing) {
-        refreshing = axios
-            .post(`${baseURL}/${ApiUrl.REFRESH}`, null, { withCredentials: true })
+        refreshing = withRefreshLock(() => axios.post(`${baseURL}/${ApiUrl.REFRESH}`, null, { withCredentials: true }))
             .then((response) => {
                 setAccessToken(response.data.access_token);
                 onRefreshed(response.data);

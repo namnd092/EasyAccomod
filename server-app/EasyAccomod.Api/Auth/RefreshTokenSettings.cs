@@ -7,9 +7,11 @@ public class RefreshTokenSettings
 
     public bool Secure { get; init; } = true;
 
-    // A token replaced less than this many seconds ago may still be presented once more (two
-    // tabs refreshing at the same moment) without the whole session being treated as stolen.
-    public int ReuseGraceSeconds { get; init; } = 10;
+    // When above 0, a token replaced less than this many seconds ago may still be presented again
+    // without the session being treated as stolen. That weakens theft detection (a stolen token
+    // replayed inside the window gets a working session), so it is off by default; the client
+    // serializes refreshes across tabs instead.
+    public int ReuseGraceSeconds { get; init; } = 0;
 
     public static RefreshTokenSettings Load(IConfiguration configuration, bool isDevelopment)
     {
@@ -35,7 +37,7 @@ public class RefreshTokenSettings
                 "Auth:RefreshCookieSameSite=None requires Auth:RefreshCookieSecure=true; browsers drop SameSite=None cookies that are not Secure.");
         }
 
-        var graceSeconds = configuration.GetValue("Auth:RefreshReuseGraceSeconds", 10);
+        var graceSeconds = configuration.GetValue("Auth:RefreshReuseGraceSeconds", 0);
         if (graceSeconds < 0)
             throw new InvalidOperationException("Auth:RefreshReuseGraceSeconds must not be negative.");
 

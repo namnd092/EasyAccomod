@@ -52,10 +52,12 @@ test.describe('owner', () => {
     test('stays logged in after a reload, without keeping the token in storage', async ({ page }) => {
         await loginViaUi(page, accounts.owner);
         await page.goto('/my-post');
+        // Let the restore after the navigation finish: reloading while its refresh is in flight can drop the rotated cookie.
+        await expect(page.getByRole('button', { name: /Owner1|Chủ trọ|Tài khoản/ })).toBeVisible();
         await page.reload();
         // The session comes back from the HttpOnly refresh cookie.
         await expect(page).toHaveURL(/\/my-post$/);
-        await expect(page.getByRole('button', { name: /Owner1|Tài khoản/ })).toBeVisible();
+        await expect(page.getByRole('button', { name: /Owner1|Chủ trọ|Tài khoản/ })).toBeVisible();
         const stored = await page.evaluate(() => JSON.stringify({ ...localStorage, ...sessionStorage }));
         expect(stored).not.toMatch(/eyJ/);
         const cookies = await page.context().cookies();
@@ -64,7 +66,7 @@ test.describe('owner', () => {
 
     test('logs out for good: the session does not come back after a reload', async ({ page }) => {
         await loginViaUi(page, accounts.owner);
-        await page.getByRole('button', { name: /Owner1|Tài khoản/ }).click();
+        await page.getByRole('button', { name: /Owner1|Chủ trọ|Tài khoản/ }).click();
         await page.getByRole('link', { name: /Đăng xuất/ }).click();
         await expect(page).toHaveURL(/\/login$/);
         expect(await page.evaluate(() => localStorage.getItem('hasSession'))).toBeNull();

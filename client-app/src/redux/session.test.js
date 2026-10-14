@@ -69,11 +69,24 @@ describe('restoreSession', () => {
 
     it('ends up logged out, and forgets the hint, when the cookie is no longer valid', async () => {
         setSessionHint(true);
-        vi.spyOn(axiosClientModule, 'refreshSession').mockRejectedValue(new Error('401'));
+        vi.spyOn(axiosClientModule, 'refreshSession').mockRejectedValue(
+            Object.assign(new Error('401'), { response: { status: 401 } })
+        );
         const store = makeStore();
         await store.dispatch(restoreSession());
         expect(store.getState().auth).toEqual({ token: null, restoring: false });
         expect(hasSessionHint()).toBe(false);
+    });
+
+    it.each([[423], [503], [undefined]])('keeps the hint when the refresh fails with %s', async (status) => {
+        setSessionHint(true);
+        vi.spyOn(axiosClientModule, 'refreshSession').mockRejectedValue(
+            Object.assign(new Error('refresh failed'), { response: status && { status } })
+        );
+        const store = makeStore();
+        await store.dispatch(restoreSession());
+        expect(store.getState().auth).toEqual({ token: null, restoring: false });
+        expect(hasSessionHint()).toBe(true);
     });
 });
 

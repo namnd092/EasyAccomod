@@ -62,6 +62,8 @@ builder.Services
             ValidateIssuerSigningKey = true,
             IssuerSigningKey = JwtTokenService.CreateKey(jwtOptions.Key),
             ValidateLifetime = true,
+            // The default skew of 5 minutes would stretch the 15-minute access token to 20.
+            ClockSkew = TimeSpan.FromSeconds(30),
             NameClaimType = ClaimTypes.Name,
             RoleClaimType = ClaimTypes.Role,
         };

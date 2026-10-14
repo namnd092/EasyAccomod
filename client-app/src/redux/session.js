@@ -32,9 +32,10 @@ export const restoreSession = () => async (dispatch) => {
         try {
             const { access_token } = await refreshSession();
             dispatch(startSession(access_token));
-        } catch {
-            // No valid cookie (expired, revoked, or cleared): the visitor is simply logged out.
-            dispatch(endSession());
+        } catch (error) {
+            // Only a rejected cookie (expired, revoked, or cleared) forgets the session. Being offline, a server
+            // error or a temporary lockout (423) leaves the hint, so the next page load tries again.
+            if (error.response?.status === 401) dispatch(endSession());
         }
     }
     dispatch(finishRestoring());

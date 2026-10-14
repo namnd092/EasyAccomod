@@ -34,6 +34,8 @@ public sealed class ApiFactory : WebApplicationFactory<Program>
         Environment.SetEnvironmentVariable("RateLimiting__LoginPermitLimit", "1000");
         Environment.SetEnvironmentVariable("RateLimiting__RefreshPermitLimit", "1000");
         Environment.SetEnvironmentVariable("Views__DedupeWindowMinutes", "60");
+        // Off by default; the tests exercise the opt-in grace window.
+        Environment.SetEnvironmentVariable("Auth__RefreshReuseGraceSeconds", "10");
     }
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
