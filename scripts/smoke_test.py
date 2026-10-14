@@ -34,6 +34,31 @@ def call(method, path, token=None, body=None):
         return status, raw
 
 
+def call_with_cookie(path, cookie=None):
+    """POST with an optional refresh cookie; returns (status, Set-Cookie headers, JSON body)."""
+    headers = {"Content-Type": "application/json"}
+    if cookie:
+        headers["Cookie"] = "refresh_token=" + cookie
+    request = urllib.request.Request(BASE + path, data=b"", headers=headers, method="POST")
+    try:
+        with urllib.request.urlopen(request) as response:
+            status, raw, set_cookies = response.status, response.read().decode(), response.headers.get_all("Set-Cookie") or []
+    except urllib.error.HTTPError as error:
+        status, raw, set_cookies = error.code, error.read().decode(), error.headers.get_all("Set-Cookie") or []
+    try:
+        return status, set_cookies, json.loads(raw)
+    except ValueError:
+        return status, set_cookies, raw
+
+
+def refresh_cookie(set_cookies):
+    """(value, full header) of the refresh_token cookie among the Set-Cookie headers, or (None, None)."""
+    for header in set_cookies:
+        if header.startswith("refresh_token="):
+            return header.split(";")[0][len("refresh_token="):], header
+    return None, None
+
+
 def check(name, condition, detail=""):
     global checks
     checks += 1
@@ -47,6 +72,20 @@ def check(name, condition, detail=""):
 def expect(name, response, status):
     check(name, response[0] == status, "expected %s, got %s: %s" % (status, response[0], response[1]))
     return response[1]
+
+
+def paged(name, path, key, token=None):
+    """Every item of a paged list endpoint, read in pages of 100 (the API's largest page)."""
+    items, page, max_page = [], 1, 1
+    while page <= max_page:
+        sep = "&" if "?" in path else "?"
+        body = expect("%s (page %d)" % (name, page), call("GET", "%s%s_page=%d&_limit=100" % (path, sep, page), token), 200)
+        if not isinstance(body, dict):
+            break
+        items += body[key]
+        max_page = body["maxPage"]
+        page += 1
+    return items
 
 
 def login(username, password):
@@ -116,19 +155,20 @@ check("renter cannot create post", call("POST", "/api/RentalPosts", renter, post
 check("pending post hidden from anonymous", call("GET", "/api/RentalPosts/Get/%d" % post_id)[0] == 404)
 check("pending post visible to its owner", call("GET", "/api/RentalPosts/Get/%d" % post_id, owner)[0] == 200)
 check("pending post visible to admin", call("GET", "/api/RentalPosts/Get/%d" % post_id, admin)[0] == 200)
-pending_list = expect("admin lists pending posts", call("GET", "/api/Admin/RentalPosts?statusId=1&_limit=1000", admin), 200)
-check("admin list contains post", any(p["id"] == post_id for p in pending_list["simplePostDtos"]), pending_list)
+pending_list = paged("admin lists pending posts", "/api/Admin/RentalPosts?statusId=1", "simplePostDtos", admin)
+check("admin list contains post", any(p["id"] == post_id for p in pending_list), len(pending_list))
 
 print("admin approves, search and view")
 expect("approve post", call("PUT", "/api/Admin/RentalPost/SetStatus", admin, {"Id": 2, "PostId": post_id}), 200)
-results = expect("search street (case-insensitive)", call("GET", "/api/RentalPosts/Search?street=ngõ hoa&provinceId=1&_limit=1000"), 200)
-found = [p for p in results["simplePostDtos"] if p["id"] == post_id]
-check("search returns approved post", len(found) == 1, results)
+results = paged("search street (case-insensitive)", "/api/RentalPosts/Search?street=ngõ hoa&provinceId=1", "simplePostDtos")
+found = [p for p in results if p["id"] == post_id]
+check("search returns approved post", len(found) == 1, len(results))
 if found:
     check("search item shape", found[0]["accommodationProvince"] and "đ/Tháng" in found[0]["accommodationPrice"]
           and found[0]["roomArea"] == "20-30m2" and len(found[0]["pictures"]) == 3, found[0])
-check("search with facility filter", any(p["id"] == post_id for p in call(
-    "GET", "/api/RentalPosts/Search?haveAirConditioner=1&haveBalcony=-1&paymentTypeId=1&minPrice=1000000&maxPrice=5000000&_limit=1000")[1]["simplePostDtos"]))
+check("search with facility filter", any(p["id"] == post_id for p in paged(
+    "search with facility filter",
+    "/api/RentalPosts/Search?haveAirConditioner=1&haveBalcony=-1&paymentTypeId=1&minPrice=1000000&maxPrice=5000000", "simplePostDtos")))
 check("search excludes by facility filter", all(p["id"] != post_id for p in call(
     "GET", "/api/RentalPosts/Search?haveBalcony=1")[1].get("simplePostDtos", [])) if call("GET", "/api/RentalPosts/Search?haveBalcony=1")[0] == 200 else True)
 check("search rejects invalid tri-state", call("GET", "/api/RentalPosts/Search?haveBalcony=5")[0] == 400)
@@ -139,8 +179,12 @@ check("detail has lookups", acc["paymentType"]["name"] == "Tháng" and acc["kitc
 check("detail hides owner private fields", acc["owner"]["identification"] is None and acc["owner"]["address"] is None and acc["owner"]["accountId"] is None, acc["owner"])
 check("detail has pictures and status", len(detail["accommodationPictures"]) == 3 and detail["status"]["name"] == "Được duyệt", detail)
 views_before = call("GET", "/api/RentalPosts/%d/Views" % post_id)[1]
+check("first anonymous view was counted (owner and admin views are not)", views_before == 1, views_before)
 call("GET", "/api/RentalPosts/Get/%d" % post_id)
-check("view counter increments", call("GET", "/api/RentalPosts/%d/Views" % post_id)[1] == views_before + 1)
+check("repeat view by the same client is not counted again",
+      call("GET", "/api/RentalPosts/%d/Views" % post_id)[1] == views_before)
+call("GET", "/api/RentalPosts/Get/%d" % post_id, renter)
+check("view by another viewer is counted", call("GET", "/api/RentalPosts/%d/Views" % post_id)[1] == views_before + 1)
 check("fee endpoint", call("GET", "/api/RentalPosts/Fee?timeDisplayed=10", owner)[1] == 50000)
 
 print("renter interactions")
@@ -167,7 +211,7 @@ check("pending comment listed with renter name", len(mine) == 1 and mine[0]["ren
 expect("approve comment", call("POST", "/api/Admin/ApproveComment", admin, {"Id": mine[0]["id"]}), 200)
 comments = expect("public comments", call("GET", "/api/RentalPosts/%d/Comments" % post_id), 200)
 check("public comment visible", comments["maxPage"] == 1 and comments["listCommentDtos"][0]["content"] == "Tốt", comments)
-rated = call("GET", "/api/RentalPosts/Search?street=ngõ hoa&_limit=1000")[1]["simplePostDtos"]
+rated = paged("search for ratings", "/api/RentalPosts/Search?street=ngõ hoa", "simplePostDtos")
 check("rating averaged on search", any(p["id"] == post_id and p["rate"] == 4 for p in rated), rated)
 reports = expect("unsolved reports", call("GET", "/api/Admin/RentalPost/Reports?isSolved=false", admin), 200)
 mine = [r for r in reports if r["accommodationRentalPostId"] == post_id]
@@ -178,8 +222,8 @@ check("report now solved", any(r["accommodationRentalPostId"] == post_id
 check("dislike toggles", call("POST", "/api/Renter/RentalPost/Like", renter, {"AccommodationRentalPostId": post_id})[1] == "Dislike")
 
 print("owner dashboard, extension and notifications")
-mine_posts = expect("owner posts", call("GET", "/api/Owner/RentalPosts?_limit=1000", owner), 200)
-entry = [p for p in mine_posts["ownerSimplePostDtos"] if p["id"] == post_id]
+mine_posts = paged("owner posts", "/api/Owner/RentalPosts", "ownerSimplePostDtos", owner)
+entry = [p for p in mine_posts if p["id"] == post_id]
 check("owner post entry", len(entry) == 1 and entry[0]["status"] == "Được duyệt" and entry[0]["views"] >= 1
       and entry[0]["address"]["ward"]["district"]["province"], entry)
 accommodation_id = entry[0]["accommodationId"]
@@ -298,12 +342,44 @@ expect("re-approve owner", call("POST", "/api/Admin/SetOwner", admin, {"AccountI
 check("owner restored", login("Owner1", "Owner1234.")[1].get("role") == "Owner")
 check("old token works again once the role is restored", call("GET", "/api/Owner/RentalPosts", owner)[0] in (200, 404))
 
+print("refresh token")
+token_request = urllib.request.Request(
+    BASE + "/api/account/token", data=json.dumps({"username": "Renter1", "password": "Renter1234."}).encode(),
+    headers={"Content-Type": "application/json"}, method="POST")
+with urllib.request.urlopen(token_request) as token_response:
+    first, first_header = refresh_cookie(token_response.headers.get_all("Set-Cookie") or [])
+check("login sets an HttpOnly refresh cookie scoped to /api/Account",
+      first and "httponly" in first_header.lower() and "path=/api/account" in first_header.lower(), first_header)
+refreshed = call_with_cookie("/api/Account/Refresh", first)
+check("refresh with the cookie succeeds", refreshed[0] == 200, refreshed)
+second, _ = refresh_cookie(refreshed[1])
+check("refresh rotates the cookie", second and second != first)
+check("refresh returns a usable access token",
+      call("GET", "/api/account/info", refreshed[2]["access_token"])[0] == 200 and refreshed[2].get("role") == "Renter")
+check("refresh without a cookie is 401", call_with_cookie("/api/Account/Refresh")[0] == 401)
+check("refresh with a garbage cookie is 401", call_with_cookie("/api/Account/Refresh", "garbage")[0] == 401)
+# The reuse grace (Auth:RefreshReuseGraceSeconds, default 10) forgives a replay right after a rotation.
+time.sleep(11)
+check("replaying a rotated cookie after the grace is 401", call_with_cookie("/api/Account/Refresh", first)[0] == 401)
+check("the replay also revoked the new cookie", call_with_cookie("/api/Account/Refresh", second)[0] == 401)
+with urllib.request.urlopen(token_request) as token_response:
+    third, _ = refresh_cookie(token_response.headers.get_all("Set-Cookie") or [])
+logout = call_with_cookie("/api/Account/Logout", third)
+check("logout works without an access token", logout[0] == 200, logout)
+check("logout clears the cookie", refresh_cookie(logout[1])[0] == "")
+check("refresh after logout is 401", call_with_cookie("/api/Account/Refresh", third)[0] == 401)
+check("logout without a cookie is still 200", call_with_cookie("/api/Account/Logout")[0] == 200)
+
 print("login rate limit")
 # Development allows 100 logins per 10 seconds per address (see appsettings.Development.json).
 statuses = [login("nobody" + run, "wrong")[0] for _ in range(130)]
 check("too many logins from one address get 429", 429 in statuses, sorted(set(statuses)))
+# ...and 30 refreshes per 10 seconds.
+statuses = [call_with_cookie("/api/Account/Refresh", "garbage")[0] for _ in range(45)]
+check("too many refreshes from one address get 429", 429 in statuses, sorted(set(statuses)))
 time.sleep(11)
 check("logins work again after the window", login("Admin", "Admin1234.")[0] == 200)
+check("refreshes are answered again after the window", call_with_cookie("/api/Account/Refresh", "garbage")[0] == 401)
 
 print("\n%d checks, %d failed" % (checks, len(failures)))
 for name in failures:

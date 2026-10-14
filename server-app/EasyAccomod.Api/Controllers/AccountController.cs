@@ -17,15 +17,18 @@ public class AccountController : ApiControllerBase
     private readonly ApplicationDbContext _context;
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly JwtTokenService _tokenService;
+    private readonly RefreshTokenService _refreshTokens;
 
     public AccountController(
         ApplicationDbContext context,
         UserManager<ApplicationUser> userManager,
-        JwtTokenService tokenService)
+        JwtTokenService tokenService,
+        RefreshTokenService refreshTokens)
     {
         _context = context;
         _userManager = userManager;
         _tokenService = tokenService;
+        _refreshTokens = refreshTokens;
     }
 
     // POST api/Account/Token
@@ -51,23 +54,56 @@ public class AccountController : ApiControllerBase
 
         await _userManager.ResetAccessFailedCountAsync(user);
 
+        var refreshToken = await _refreshTokens.StartSessionAsync(user.Id);
+        SetRefreshCookie(refreshToken);
+        return Ok(await CreateTokenResponseAsync(user));
+    }
+
+    // POST api/Account/Refresh
+    // Trades the refresh cookie for a new access token and a rotated cookie.
+    [AllowAnonymous]
+    [EnableRateLimiting("refresh")]
+    [HttpPost("Refresh")]
+    public async Task<IActionResult> Refresh()
+    {
+        var rawToken = Request.Cookies[RefreshTokenService.CookieName];
+        var refreshToken = string.IsNullOrEmpty(rawToken) ? null : await _refreshTokens.RotateAsync(rawToken);
+        if (refreshToken == null)
+        {
+            DeleteRefreshCookie();
+            return Unauthorized();
+        }
+
+        SetRefreshCookie(refreshToken);
+        return Ok(await CreateTokenResponseAsync(refreshToken.User));
+    }
+
+    private async Task<CreateTokenViewModel> CreateTokenResponseAsync(ApplicationUser user)
+    {
         var roles = await _userManager.GetRolesAsync(user);
         var role = roles.FirstOrDefault();
         var profile = await GetProfileAsync(user.Id, role);
         var (token, expiresIn) = _tokenService.Create(user, roles);
 
-        return Ok(new CreateTokenViewModel
+        return new CreateTokenViewModel
         {
             AccessToken = token,
             TokenType = "bearer",
             ExpiresIn = expiresIn,
-            UserName = model.UserName,
+            UserName = user.UserName,
             Name = profile.Name,
             AccountId = user.Id,
             UserId = profile.UserId,
             Role = role,
-        });
+        };
     }
+
+    private void SetRefreshCookie(IssuedRefreshToken refreshToken) =>
+        Response.Cookies.Append(
+            RefreshTokenService.CookieName, refreshToken.RawToken, _refreshTokens.CookieOptionsFor(refreshToken.ExpiresAt));
+
+    private void DeleteRefreshCookie() =>
+        Response.Cookies.Delete(RefreshTokenService.CookieName, _refreshTokens.CookieOptionsFor(null));
 
     // GET api/Account/Info
     [HttpGet("Info")]
@@ -94,10 +130,17 @@ public class AccountController : ApiControllerBase
     }
 
     // POST api/Account/Logout
+    // Open to anonymous callers so it still works once the access token has expired; the refresh
+    // cookie is what identifies the session to end.
+    [AllowAnonymous]
     [HttpPost("Logout")]
-    public IActionResult Logout()
+    public async Task<IActionResult> Logout()
     {
-        // Tokens are stateless; the client discards its token.
+        var rawToken = Request.Cookies[RefreshTokenService.CookieName];
+        if (!string.IsNullOrEmpty(rawToken))
+            await _refreshTokens.RevokeAsync(rawToken);
+
+        DeleteRefreshCookie();
         return Ok();
     }
 

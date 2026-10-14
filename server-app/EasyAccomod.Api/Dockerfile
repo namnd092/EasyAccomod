@@ -10,4 +10,6 @@ WORKDIR /app
 COPY --from=build /app ./
 ENV ASPNETCORE_URLS=http://+:8080
 EXPOSE 8080
+# The aspnet image ships a non-root "app" user; port 8080 needs no privileges.
+USER app
 ENTRYPOINT ["dotnet", "EasyAccomod.Api.dll"]

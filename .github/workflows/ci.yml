@@ -20,6 +20,7 @@ jobs:
           cache-dependency-path: client-app/package-lock.json
       - run: npm ci
       - run: npm audit --audit-level=high
+      - run: npm run lint
       - run: npm test
       - run: npm run build
         env:
@@ -52,6 +53,9 @@ jobs:
         with:
           dotnet-version: 10.0.x
       - run: dotnet build server-app/EasyAccomod.slnx -c Release
+      - name: API tests
+        # Each run creates and drops its own database on the postgres service.
+        run: dotnet test server-app/EasyAccomod.slnx -c Release --no-build
       - name: Start the API
         # Run from the output folder so the app finds its appsettings and data files.
         working-directory: server-app/EasyAccomod.Api/bin/Release/net10.0

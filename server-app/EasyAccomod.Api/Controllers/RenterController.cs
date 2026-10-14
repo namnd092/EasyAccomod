@@ -22,8 +22,8 @@ public class RenterController : ApiControllerBase
     [HttpGet("RentalPost/Likes")]
     public async Task<IActionResult> GetLikedPost(int _page = 1, int _limit = 15)
     {
-        if (_page < 1)
-            return BadRequest("Page must be at least 1.");
+        if (ValidatePaging(_page, _limit) is { } invalidPaging)
+            return invalidPaging;
 
         var renterId = await GetRenterIdAsync();
         var now = DateTime.UtcNow;
@@ -44,7 +44,7 @@ public class RenterController : ApiControllerBase
 
         var page = await likedPosts
             .OrderBy(p => p.Id)
-            .Skip(_limit * (_page - 1))
+            .Skip(Offset(_page, _limit))
             .Take(_limit)
             .ToListAsync();
 

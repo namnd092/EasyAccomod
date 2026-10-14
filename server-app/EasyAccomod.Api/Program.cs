@@ -24,6 +24,9 @@ if (string.IsNullOrWhiteSpace(jwtOptions.Key) || jwtOptions.Key.Length < 32)
 
 builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("Jwt"));
 builder.Services.AddSingleton<JwtTokenService>();
+builder.Services.AddSingleton(TimeProvider.System);
+builder.Services.AddSingleton(RefreshTokenSettings.Load(builder.Configuration, builder.Environment.IsDevelopment()));
+builder.Services.AddScoped<RefreshTokenService>();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -88,8 +91,20 @@ builder.Services
 builder.Services.AddAuthorization();
 
 var corsOrigins = builder.Configuration.GetSection("Cors:Origins").Get<string[]>() ?? Array.Empty<string>();
-builder.Services.AddCors(options =>
-    options.AddDefaultPolicy(policy => policy.WithOrigins(corsOrigins).AllowAnyHeader().AllowAnyMethod()));
+if (corsOrigins.Contains("*"))
+{
+    throw new InvalidOperationException(
+        "Cors:Origins must list exact origins; '*' cannot be combined with the credentials the refresh cookie needs.");
+}
+
+builder.Services.AddCors(options => options.AddDefaultPolicy(policy =>
+{
+    policy.WithOrigins(corsOrigins).AllowAnyHeader().AllowAnyMethod();
+    // The refresh cookie is sent cross-origin only to the exact origins listed above. With no
+    // origins configured nothing is allowed, so credentials are not enabled either.
+    if (corsOrigins.Length > 0)
+        policy.AllowCredentials();
+}));
 
 builder.Services.AddScoped<DbSeeder>();
 
@@ -119,12 +134,18 @@ if (useForwardedHeaders)
 // accounts or parallel guesses against one. Clients behind one NAT or proxy address share the budget.
 var loginPermitLimit = builder.Configuration.GetValue("RateLimiting:LoginPermitLimit", 10);
 var loginWindowSeconds = builder.Configuration.GetValue("RateLimiting:LoginWindowSeconds", 60);
+// Refreshing is cheaper than a login and happens in the background, so its limit is more generous.
+var refreshPermitLimit = builder.Configuration.GetValue("RateLimiting:RefreshPermitLimit", 30);
+var refreshWindowSeconds = builder.Configuration.GetValue("RateLimiting:RefreshWindowSeconds", 60);
 builder.Services.AddRateLimiter(options =>
 {
     options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
     options.OnRejected = (context, _) =>
     {
-        context.HttpContext.Response.Headers.RetryAfter = loginWindowSeconds.ToString();
+        var retryAfterSeconds = context.Lease.TryGetMetadata(MetadataName.RetryAfter, out var retryAfter)
+            ? (int)Math.Ceiling(retryAfter.TotalSeconds)
+            : loginWindowSeconds;
+        context.HttpContext.Response.Headers.RetryAfter = retryAfterSeconds.ToString();
         return ValueTask.CompletedTask;
     };
     options.AddPolicy("login", httpContext => RateLimitPartition.GetFixedWindowLimiter(
@@ -133,6 +154,14 @@ builder.Services.AddRateLimiter(options =>
         {
             PermitLimit = loginPermitLimit,
             Window = TimeSpan.FromSeconds(loginWindowSeconds),
+            QueueLimit = 0,
+        }));
+    options.AddPolicy("refresh", httpContext => RateLimitPartition.GetFixedWindowLimiter(
+        ClientAddress.PartitionKey(httpContext.Connection.RemoteIpAddress),
+        _ => new FixedWindowRateLimiterOptions
+        {
+            PermitLimit = refreshPermitLimit,
+            Window = TimeSpan.FromSeconds(refreshWindowSeconds),
             QueueLimit = 0,
         }));
 });
@@ -171,3 +200,6 @@ app.MapControllers();
 app.MapHealthChecks("/health");
 
 app.Run();
+
+// Lets the integration tests host the app through WebApplicationFactory<Program>.
+public partial class Program { }

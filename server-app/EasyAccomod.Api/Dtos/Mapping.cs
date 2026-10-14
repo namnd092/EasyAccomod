@@ -210,5 +210,5 @@ public static class Mapping
             IsSolved = report.IsSolved,
         };
 
-    public static int MaxPage(int count, int limit) => (int)Math.Ceiling(1.0 * count / limit);
+    public static int MaxPage(int count, int limit) => limit < 1 ? 0 : (int)Math.Ceiling(1.0 * count / limit);
 }

@@ -26,8 +26,8 @@ public class OwnerController : ApiControllerBase
     public async Task<IActionResult> GetRentalPost(
         int _page = 1, int _limit = 15, byte statusId = 0, int isExpired = 0, int wasRented = 0)
     {
-        if (_page < 1)
-            return BadRequest("Page must be at least 1.");
+        if (ValidatePaging(_page, _limit) is { } invalidPaging)
+            return invalidPaging;
 
         var accountId = AccountId;
         var now = DateTime.UtcNow;
@@ -73,7 +73,7 @@ public class OwnerController : ApiControllerBase
 
         var page = await posts
             .OrderBy(p => p.Id)
-            .Skip(_limit * (_page - 1))
+            .Skip(Offset(_page, _limit))
             .Take(_limit)
             .ToListAsync();
 

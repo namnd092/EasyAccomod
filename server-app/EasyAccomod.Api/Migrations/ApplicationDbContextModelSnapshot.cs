@@ -619,6 +619,52 @@ namespace EasyAccomod.Api.Migrations
                     b.ToTable("Provinces");
                 });
 
+            modelBuilder.Entity("EasyAccomod.Api.Models.RefreshToken", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("ExpiresAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("FamilyId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int?>("ReplacedByTokenId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("RevokedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("RotatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("TokenHash")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FamilyId");
+
+                    b.HasIndex("TokenHash")
+                        .IsUnique();
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("RefreshTokens");
+                });
+
             modelBuilder.Entity("EasyAccomod.Api.Models.RentalPostStatus", b =>
                 {
                     b.Property<byte>("Id")
@@ -769,9 +815,13 @@ namespace EasyAccomod.Api.Migrations
                     b.Property<DateTime>("Time")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("ViewerKey")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("AccommodationRentalPostId");
+                    b.HasIndex("AccommodationRentalPostId", "ViewerKey", "Time");
 
                     b.ToTable("Views");
                 });
@@ -1112,6 +1162,17 @@ namespace EasyAccomod.Api.Migrations
                     b.Navigation("AccommodationRentalPost");
 
                     b.Navigation("Renter");
+                });
+
+            modelBuilder.Entity("EasyAccomod.Api.Models.RefreshToken", b =>
+                {
+                    b.HasOne("EasyAccomod.Api.Models.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("EasyAccomod.Api.Models.Report", b =>

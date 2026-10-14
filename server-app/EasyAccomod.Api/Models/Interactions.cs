@@ -48,6 +48,11 @@ public class View
 
     public int AccommodationRentalPostId { get; set; }
 
+    // Who looked: "u:<account id>" for a signed-in user, "ip:<client address>" otherwise.
+    // Null on views recorded before viewers were tracked.
+    [MaxLength(64)]
+    public string ViewerKey { get; set; }
+
     public DateTime Time { get; set; }
 }
 

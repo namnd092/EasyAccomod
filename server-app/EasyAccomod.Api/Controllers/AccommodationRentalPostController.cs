@@ -1,3 +1,4 @@
+using EasyAccomod.Api.Auth;
 using EasyAccomod.Api.Data;
 using EasyAccomod.Api.Dtos;
 using EasyAccomod.Api.Models;
@@ -11,10 +12,13 @@ namespace EasyAccomod.Api.Controllers;
 public class AccommodationRentalPostController : ApiControllerBase
 {
     private readonly ApplicationDbContext _context;
+    private readonly TimeSpan _viewWindow;
 
-    public AccommodationRentalPostController(ApplicationDbContext context)
+    public AccommodationRentalPostController(ApplicationDbContext context, IConfiguration configuration)
     {
         _context = context;
+        // A client's repeat views of one post inside this window count once.
+        _viewWindow = TimeSpan.FromMinutes(Math.Max(0, configuration.GetValue("Views:DedupeWindowMinutes", 60)));
     }
 
     // GET /api/RentalPosts/Search
@@ -28,8 +32,8 @@ public class AccommodationRentalPostController : ApiControllerBase
         int liveWithOwner = 0, int haveClosedBathroom = 0, int haveWaterHeater = 0,
         byte kitchenTypeId = 0, int haveAirConditioner = 0, int haveBalcony = 0)
     {
-        if (_page < 1)
-            return BadRequest("Page must be at least 1.");
+        if (ValidatePaging(_page, _limit) is { } invalidPaging)
+            return invalidPaging;
 
         var now = DateTime.UtcNow;
         var posts = _context.AccommodationRentalPosts
@@ -101,7 +105,7 @@ public class AccommodationRentalPostController : ApiControllerBase
 
         var pagePosts = await posts
             .OrderBy(p => p.Id)
-            .Skip(_limit * (_page - 1))
+            .Skip(Offset(_page, _limit))
             .Take(_limit)
             .ToListAsync();
 
@@ -153,8 +157,9 @@ public class AccommodationRentalPostController : ApiControllerBase
         rentalPostDto.Accommodation.Owner.AccountId = null;
         rentalPostDto.Rate = (await GetRatesAsync(new List<int> { id })).GetValueOrDefault(id);
 
-        _context.Views.Add(new View { AccommodationRentalPostId = id, Time = DateTime.UtcNow });
-        await _context.SaveChangesAsync();
+        var isPostOwner = User.IsInRole(RoleName.Owner) && rentalPost.Accommodation.Owner.AccountId == AccountId;
+        if (!isPostOwner && !User.IsInRole(RoleName.Admin))
+            await RecordViewAsync(id);
 
         return Ok(rentalPostDto);
     }
@@ -331,8 +336,8 @@ public class AccommodationRentalPostController : ApiControllerBase
     [HttpGet("{id}/Comments")]
     public async Task<IActionResult> GetComments(int id, int _page = 1, int _limit = 10)
     {
-        if (_page < 1)
-            return BadRequest("Page must be at least 1.");
+        if (ValidatePaging(_page, _limit) is { } invalidPaging)
+            return invalidPaging;
 
         if (!await _context.AccommodationRentalPosts.AnyAsync(p => p.Id == id))
             return BadRequest("Post does not exist.");
@@ -348,7 +353,7 @@ public class AccommodationRentalPostController : ApiControllerBase
 
         var page = await comments
             .OrderBy(c => c.Id)
-            .Skip(_limit * (_page - 1))
+            .Skip(Offset(_page, _limit))
             .Take(_limit)
             .ToListAsync();
 
@@ -360,6 +365,24 @@ public class AccommodationRentalPostController : ApiControllerBase
     [HttpGet("Statuses")]
     public async Task<IActionResult> GetPostStatuses() =>
         Ok(await _context.RentalPostStatuses.AsNoTracking().ToListAsync());
+
+    // Counts a view unless the same client already viewed the post inside the dedupe window.
+    private async Task RecordViewAsync(int postId)
+    {
+        var viewerKey = AccountId != null
+            ? "u:" + AccountId
+            : "ip:" + ClientAddress.PartitionKey(HttpContext.Connection.RemoteIpAddress);
+
+        var now = DateTime.UtcNow;
+        var since = now - _viewWindow;
+        var alreadyCounted = await _context.Views.AnyAsync(v =>
+            v.AccommodationRentalPostId == postId && v.ViewerKey == viewerKey && v.Time > since);
+        if (alreadyCounted)
+            return;
+
+        _context.Views.Add(new View { AccommodationRentalPostId = postId, ViewerKey = viewerKey, Time = now });
+        await _context.SaveChangesAsync();
+    }
 
     private static bool IsTriState(int value) => value is -1 or 0 or 1;
 

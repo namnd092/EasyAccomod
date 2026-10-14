@@ -28,7 +28,11 @@ services:
       ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT:-Production}
       ConnectionStrings__DefaultConnection: Host=db;Port=5432;Database=easyaccomod;Username=easyaccomod;Password=easyaccomod
       Jwt__Key: ${JWT_KEY:-}
+      AllowedHosts: ${ALLOWED_HOSTS:-localhost}
       Cors__Origins__0: ${CORS_ORIGIN:-http://localhost:3000}
+      # Refresh cookie: Secure by default outside Development; set REFRESH_COOKIE_SECURE=false for plain http.
+      Auth__RefreshCookieSameSite: ${REFRESH_COOKIE_SAMESITE:-Strict}
+      Auth__RefreshCookieSecure: ${REFRESH_COOKIE_SECURE:-}
     ports:
       - "5100:8080"
 
