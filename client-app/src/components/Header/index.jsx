@@ -2,10 +2,10 @@ import React from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import logo from '../../assets/img/logo.png';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { removeUser } from '../../redux/slice/userSlice';
+import { logout } from '../../redux/session';
 import { useDispatch, useSelector } from 'react-redux';
-import authApi from '../../api/authApi';
 import { isDisplayByRole } from '../../helper/auth';
+import { notifyError } from '../../helper/notify';
 import Role from '../../models/data/role';
 
 const navItem = 'ml-2.5 border-b-2 border-transparent text-[1.2rem] hover:border-white';
@@ -13,13 +13,12 @@ const navLink = 'block px-2 py-2 text-neutral-400 hover:text-white';
 const dropdownItem =
     'my-[5px] block px-5 py-[5px] text-[1.1rem] text-neutral-400 hover:font-bold hover:text-white';
 
-const Header = (props) => {
-    const { role } = props;
+const Header = () => {
     const pathname = useLocation().pathname;
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const user = useSelector((state) => state.user);
-    const auth = !!localStorage.getItem('token');
+    const auth = !!useSelector((state) => state.auth.token);
     const authRole = useSelector((state) => state.user.role);
     const [menuOpen, setMenuOpen] = React.useState(false);
     const [accountOpen, setAccountOpen] = React.useState(false);
@@ -40,17 +39,14 @@ const Header = (props) => {
     };
     const handleLogout = async () => {
         try {
-            const response = await authApi.logout();
-            console.log(response);
-            await localStorage.removeItem('token');
-            await localStorage.removeItem('role');
-            dispatch(removeUser());
-            navigate('/login');
+            await dispatch(logout());
         } catch (error) {
-            console.log(error);
+            // The local session has ended either way; only a real server failure is worth telling the user.
+            if (error.response?.status !== 401) notifyError(error, 'Không thể đăng xuất trên máy chủ');
+        } finally {
+            navigate('/login');
         }
     };
-    console.log(isDisplayByRole([Role.ADMIN, Role.OWNER], role));
     return (
         <header className="bg-[var(--bg-color)] py-[5px]">
             <div className="mx-auto flex w-[95%] max-w-[1100px] justify-between">
@@ -226,7 +222,5 @@ const Header = (props) => {
         </header>
     );
 };
-
-Header.propTypes = {};
 
 export default Header;

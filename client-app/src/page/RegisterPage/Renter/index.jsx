@@ -4,6 +4,7 @@ import authApi from '../../../api/authApi';
 import { renterRegisterInitialValue } from '../../../models/InitialValueForm/register';
 import { renterRegisterValidationSchema } from '../../../models/ValidateForm/register';
 import RegisterForm from '../RegisterForm';
+import { notifyError } from '../../../helper/notify';
 
 const fields = [
     { name: 'username', label: 'Tên đăng nhập' },
@@ -16,13 +17,11 @@ const fields = [
 export default function RenterRegister() {
     const navigate = useNavigate();
     const handleSubmit = async (values) => {
-        console.log(values);
         try {
-            const response = await authApi.renterRegister(values);
-            console.log(response);
+            await authApi.renterRegister(values);
             navigate('/login');
         } catch (error) {
-            console.log(error);
+            notifyError(error);
         }
     };
     return (

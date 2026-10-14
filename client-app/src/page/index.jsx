@@ -1,5 +1,5 @@
 import React, { Suspense, lazy, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Routes, Route } from 'react-router-dom';
 import { HomePage } from './HomePage';
 import Header from '../components/Header';
@@ -9,11 +9,9 @@ import PrivateRoute from '../components/PrivateRoute';
 import AuthRoute from '../components/AuthRoute';
 import './style.css';
 
-import { setUser } from '../redux/slice/userSlice';
+import { fetchAccountInfo, restoreSession } from '../redux/session';
 
 import Role from '../models/data/role';
-import ApiUrl from '../constants/ApiUrl';
-import Axios from 'axios';
 import { LinearProgress } from '../ui';
 
 // Pages other than the home page load on demand to keep the initial bundle small.
@@ -29,29 +27,19 @@ const EditPostPage = lazy(() => import('./EditPostPage'));
 
 export const Page = () => {
     const dispatch = useDispatch();
-    const [role, setRole] = React.useState('');
-    const token = localStorage.getItem('token') || '';
+    const token = useSelector((state) => state.auth.token);
     useEffect(() => {
-        async function effectGetInfo() {
-            Axios.get(`${import.meta.env.VITE_API_URL}/` + ApiUrl.GET_ACCOUNT_INFO, {
-                headers: {
-                    'content-type': 'application/json',
-                    Authorization: `Bearer ${token}`,
-                },
-            })
-                .then(async (response) => {
-                    const infoResponse = await response.data;
-                    await dispatch(setUser({ ...infoResponse }));
-                })
-                .catch((error) => console.log(error));
-        }
-
-        effectGetInfo();
-    }, [token]);
+        dispatch(restoreSession());
+    }, [dispatch]);
+    useEffect(() => {
+        if (!token) return;
+        // A 401 is handled globally (the session ends); other failures leave the user logged out of the UI only.
+        dispatch(fetchAccountInfo()).catch(() => {});
+    }, [token, dispatch]);
 
     return (
         <>
-            <Header role={role} />
+            <Header />
             <main>
                 <div className="mx-auto w-[95%] max-w-[1100px]">
                     <Suspense fallback={<LinearProgress />}>

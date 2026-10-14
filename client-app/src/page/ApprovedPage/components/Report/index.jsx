@@ -4,18 +4,18 @@ import Card from '../../../../share/components/card';
 import ReportItem from './ReportItem';
 import { useNavigate } from 'react-router-dom';
 import { tableClass } from '../../../../ui';
+import { notifyError } from '../../../../helper/notify';
 
 const Report = () => {
     const navigate = useNavigate();
     const [reportList, setReportList] = React.useState([]);
-    React.useState(() => {
+    React.useEffect(() => {
         async function getReportList() {
             try {
                 const response = await rentalPost.getReportPost();
                 setReportList([...response]);
-                console.log(response);
             } catch (error) {
-                console.log(error);
+                notifyError(error);
             }
         }
         getReportList();
@@ -23,15 +23,12 @@ const Report = () => {
     const handleClick = (postId) => {
         navigate(`/post/${postId}`);
     };
-    const handleResolve = async (id, index) => {
+    const handleResolve = async (id) => {
         try {
-            const response = await rentalPost.postResolveReport(id);
-            console.log(response);
+            await rentalPost.postResolveReport(id);
+            setReportList((list) => list.filter((report) => report.id !== id));
         } catch (error) {
-            console.log(error);
-        } finally {
-            reportList.splice(index, 1);
-            setReportList([...reportList]);
+            notifyError(error);
         }
     };
     return (

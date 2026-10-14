@@ -4,99 +4,86 @@ import { useSelector } from 'react-redux';
 import { isDisplayByRole } from '../../../helper/auth';
 import Role from '../../../models/data/role';
 import { Button, Textarea, Rating, Modal, inputClass, cardClass, cardHeaderClass, cardBodyClass } from '../../../ui';
-
+import { notifyError, notifySuccess } from '../../../helper/notify';
 
 function ShareInfo(props) {
-    const { shareInfo, postId, rate } = props;
+    const { postId, rate } = props;
     const role = useSelector((state) => state.user.role);
     const [isFavorite, setIsFavorite] = React.useState(false);
     const [isReported, setIsReported] = React.useState(false);
     const [numberOfLike, setNumberOfLike] = React.useState(0);
     const [numberOfView, setNumberOfView] = React.useState(0);
     const [openModal, setOpenModal] = React.useState(false);
-    const [star, setStar] = React.useState(3.5);
     const [reportContent, setReportContent] = React.useState('');
     const handleChangeFavorite = async () => {
         try {
-            if (isFavorite) {
-                setNumberOfLike(numberOfLike - 1);
-            } else {
-                setNumberOfLike(numberOfLike + 1);
-            }
-            const response = await rentalPost.postRenterLikeRentalPost(postId);
-            console.log(response);
-        } catch (error) {}
-        setIsFavorite(!isFavorite);
+            await rentalPost.postRenterLikeRentalPost(postId);
+            setNumberOfLike(numberOfLike + (isFavorite ? -1 : 1));
+            setIsFavorite(!isFavorite);
+        } catch (error) {
+            notifyError(error);
+        }
     };
     const handleChangeReport = (value) => {
         setReportContent(value.target.value);
     };
     const handleSubmitReport = async () => {
-        console.log(reportContent);
         try {
             const params = {
                 AccommodationRentalPostId: Number(postId),
                 content: reportContent,
             };
-            const response = await rentalPost.postReport(params);
-            console.log(response);
-        } catch (error) {
-            console.log(error);
-        } finally {
+            await rentalPost.postReport(params);
             setIsReported(true);
             setOpenModal(false);
+            notifySuccess('Đã gửi báo cáo');
+        } catch (error) {
+            notifyError(error);
         }
     };
+    const isRenter = role?.toLowerCase() === Role.RENTER;
+    // Only a renter can like or report, and those endpoints reject everyone else.
     React.useEffect(() => {
+        if (!isRenter) return;
         async function isLiked() {
             try {
                 const response = await rentalPost.isLiked(postId);
-                console.log(response);
                 setIsFavorite(response.result);
             } catch (error) {
-                console.log(error);
+                notifyError(error);
             }
         }
         isLiked();
         async function isReported() {
             try {
                 const response = await rentalPost.isReported(postId);
-                console.log(response);
                 setIsReported(response.result);
-            } catch (error) {}
+            } catch (error) {
+                notifyError(error);
+            }
         }
         isReported();
+    }, [postId, isRenter]);
+    React.useEffect(() => {
         async function getNumberOfLike() {
             try {
                 const response = await rentalPost.getLikes(postId);
-                console.log(response);
                 setNumberOfLike(Number.isInteger(response) ? response : 0);
             } catch (error) {
-                console.log(error);
+                notifyError(error);
             }
         }
         getNumberOfLike();
         async function getNumberOfView() {
             try {
                 const response = await rentalPost.getViews(postId);
-                console.log(response);
                 setNumberOfView(response);
             } catch (error) {
-                console.log(error);
+                notifyError(error);
             }
         }
         getNumberOfView();
-        async function getStar() {
-            rentalPost
-                .getRentalPostInfo(postId)
-                .then((response) => {
-                    console.log(response);
-                    setStar(response.rate);
-                })
-                .catch((error) => console.log(error));
-        }
-        getStar();
-    }, []);
+    }, [postId]);
     return (
         <div className="shareInfo" style={{ marginTop: '30px' }}>
             <div className={`${cardClass} mt-2`}>

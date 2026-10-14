@@ -1,17 +1,14 @@
 import React, { useState } from 'react';
-import './style.css';
-import PropTypes from 'prop-types';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
 import { useNavigate } from 'react-router-dom';
 import './style.css';
 import authApi from '../../api/authApi';
-import { setUser } from '../../redux/slice/userSlice';
+import { startSession } from '../../redux/session';
 import { useDispatch } from 'react-redux';
-import Axios from 'axios';
-import ApiUrl from '../../constants/ApiUrl';
-import { Button, FormGroup, FormLabel, FieldError, Spinner, Backdrop, inputClass } from '../../ui';
+import { errorMessage } from '../../helper/notify';
+import { Button, FormGroup, FormLabel, FieldError, Backdrop, inputClass } from '../../ui';
 
 const initialValues = {
     username: '',
@@ -29,14 +26,10 @@ const validationSchema = Yup.object().shape({
         ),
 });
 
-LoginPage.propTypes = {
-    handle: PropTypes.func,
-};
-function LoginPage(props) {
+function LoginPage() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const [message, setMessage] = useState('');
-    const [role, setRole] = useState('');
     const [isLoading, setIsLoading] = React.useState(false);
     const {
         register,
@@ -47,33 +40,17 @@ function LoginPage(props) {
         resolver: yupResolver(validationSchema),
         mode: 'onTouched',
     });
-    const handleSubmit = async (value) => {
-        console.log('Submit Login', value);
-        const { username, password } = value;
+    const handleSubmit = async ({ username, password }) => {
+        setMessage('');
         try {
             setIsLoading(true);
-            const loginResponse = await authApi.postLogin(username, password);
-            const { access_token } = await loginResponse;
-            localStorage.setItem('token', access_token);
-            console.log(localStorage.getItem('token'));
-            Axios.get(`${import.meta.env.VITE_API_URL}/` + ApiUrl.GET_ACCOUNT_INFO, {
-                headers: {
-                    'content-type': 'application/json',
-                    Authorization: `Bearer ${access_token}`,
-                },
-            })
-                .then(async (response) => {
-                    const infoResponse = await response.data;
-                    await dispatch(setUser({ ...infoResponse }));
-                    setMessage('Bạn đã đăng nhập thành công');
-                    navigate('/');
-                })
-                .catch((error) => console.log(error));
-            // const infoResponse = await authApi.getAccountInfoByToken();
-            // console.log(infoResponse);
+            const { access_token } = await authApi.postLogin(username, password);
+            // The session starts here; Page then loads the account info and AuthRoute leaves this page.
+            dispatch(startSession(access_token));
+            navigate('/');
         } catch (error) {
-            console.log(error);
-            setMessage('Bạn đã nhập sai tên đăng nhập hoặc mật khẩu');
+            if (error.response?.status === 401) setMessage('Bạn đã nhập sai tên đăng nhập hoặc mật khẩu');
+            else setMessage(errorMessage(error, 'Không thể đăng nhập, vui lòng thử lại'));
         } finally {
             setIsLoading(false);
         }
@@ -134,15 +111,7 @@ function LoginPage(props) {
                     </form>
                 </div>
             </div>
-            {isLoading && (
-                <Backdrop
-                    sx={{ zIndex: (theme) => theme.zIndex.drawer + 1, color: '#fff' }}
-                    open
-                    onClick={() => setIsLoading(false)}
-                >
-                    <Spinner color="inherit" />
-                </Backdrop>
-            )}
+            <Backdrop open={isLoading} />
         </div>
     );
 }

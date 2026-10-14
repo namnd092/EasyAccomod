@@ -3,20 +3,20 @@ import ExtendDuration from '../extend';
 import rentalPost from '../../../api/rentalPost';
 import { getTime } from '../../../helper/time';
 import { Button } from '../../../ui';
+import { notifyError } from '../../../helper/notify';
 function SuccessItem(props) {
     const { index, item, handleClick } = props;
     const [isRented, setRented] = React.useState(item.accommodationWasRented);
     const [openExtend, setOpenExtend] = React.useState(false);
     const hanldeChangeIsRented = async () => {
-        setRented(!isRented);
         try {
-            const response = await rentalPost.putOwnerSetRentalStatus(
+            await rentalPost.putOwnerSetRentalStatus(
                 !isRented,
                 item.accommodationId
             );
-            console.log(response);
+            setRented(!isRented);
         } catch (error) {
-            console.log(error);
+            notifyError(error);
         }
     };
     return (

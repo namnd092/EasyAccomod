@@ -1,7 +1,8 @@
-import date from 'date-and-time';
+const pad = (value) => String(value).padStart(2, '0');
 
-function getDistanceTime(time) {
-    const distanceTime = Date.now() - Date.parse(new Date(`${time}`));
+// "3 giờ trước" style distance between `time` and now (never negative).
+function getDistanceTime(time, now = Date.now()) {
+    const distanceTime = Math.max(0, now - new Date(time).getTime());
 
     if (distanceTime < 60000)
         return `${Math.floor(distanceTime / 1000)} giây trước`;
@@ -12,8 +13,10 @@ function getDistanceTime(time) {
     return `${Math.floor(distanceTime / (3600 * 24 * 1000))} ngày trước`;
 }
 
+// DD-MM-YYYY in the viewer's time zone.
 function getTime(time) {
-    const newTime = new Date(time);
-    return date.format(newTime, 'DD-MM-YYYY');
+    const date = new Date(time);
+    return `${pad(date.getDate())}-${pad(date.getMonth() + 1)}-${date.getFullYear()}`;
 }
+
 export { getDistanceTime, getTime };

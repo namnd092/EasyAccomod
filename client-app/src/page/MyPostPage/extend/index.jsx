@@ -2,19 +2,18 @@ import React from 'react';
 import Select from 'react-select';
 import rentalPost from '../../../api/rentalPost';
 import { Button, FormGroup, FormLabel, Modal, inputClass, tableClass } from '../../../ui';
+import { notifyError } from '../../../helper/notify';
 export default function ExtendDuration(props) {
     const { postId, open, onClose } = props;
     const handleSubmit = async () => {
         const numberOfDay = packageType.day * numberOfTime;
-        console.log(numberOfDay);
         try {
-            const response = await rentalPost.postExtendPeriod(
+            await rentalPost.postExtendPeriod(
                 postId,
                 numberOfDay
             );
-            console.log(response);
         } catch (error) {
-            console.log(error);
+            notifyError(error);
         } finally {
             onClose();
         }
@@ -61,7 +60,6 @@ export default function ExtendDuration(props) {
         setNumberOfTime(value.target.value);
     };
     const handlePackageChange = (value) => {
-        console.log(value);
         setPackageType({ ...value });
     };
     return (

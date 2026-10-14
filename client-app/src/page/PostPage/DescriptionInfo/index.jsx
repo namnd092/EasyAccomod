@@ -1,8 +1,6 @@
 import React from 'react';
 import Card from '../../../share/components/card';
 
-DescriptionInfo.propTypes = {};
-
 function DescriptionInfo(props) {
     const { descriptionInfo } = props;
     return (

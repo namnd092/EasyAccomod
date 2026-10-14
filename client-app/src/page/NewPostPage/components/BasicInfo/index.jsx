@@ -4,6 +4,7 @@ import roomApi from '../../../../api/roomApi';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { InputField, SelectField, CheckboxField } from '../../../../share/components/form-fields';
 import { FormGroup, FormLabel, Radio, cardClass, cardHeaderClass, cardBodyClass } from '../../../../ui';
+import { notifyError } from '../../../../helper/notify';
 
 function BasicInfo() {
     const { register, setValue } = useFormContext();
@@ -25,7 +26,7 @@ function BasicInfo() {
                     [...response].map((e) => ({ value: e.id, label: e.name }))
                 );
             } catch (error) {
-                console.log(error);
+                notifyError(error);
             }
         }
         effectGetAllProvince();
@@ -37,7 +38,7 @@ function BasicInfo() {
                     [...response].map((e) => ({ value: e.id, label: e.name }))
                 );
             } catch (error) {
-                console.log(error);
+                notifyError(error);
             }
         }
         effectGetRoomType();
@@ -49,7 +50,7 @@ function BasicInfo() {
                     [...response].map((e) => ({ value: e.id, label: e.name }))
                 );
             } catch (error) {
-                console.log(error);
+                notifyError(error);
             }
         }
         effectGetKitchenType();
@@ -61,7 +62,7 @@ function BasicInfo() {
                     [...response].map((e) => ({ value: e.id, label: e.range }))
                 );
             } catch (error) {
-                console.log(error);
+                notifyError(error);
             }
         }
         effectGetRoomAreaRange();
@@ -73,7 +74,7 @@ function BasicInfo() {
                     [...response].map((e) => ({ value: e.id, label: e.name }))
                 );
             } catch (error) {
-                console.log(error);
+                notifyError(error);
             }
         }
         effectGetRoomPaymentType();
@@ -90,7 +91,7 @@ function BasicInfo() {
                     [...response].map((e) => ({ value: e.id, label: e.name }))
                 );
             } catch (error) {
-                console.log(error);
+                notifyError(error);
             }
         }
         handleProvinceChange();
@@ -107,7 +108,7 @@ function BasicInfo() {
                     [...response].map((e) => ({ value: e.id, label: e.name }))
                 );
             } catch (error) {
-                console.log(error);
+                notifyError(error);
             }
         }
         handleDistrictChange();

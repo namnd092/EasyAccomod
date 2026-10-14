@@ -7,15 +7,17 @@ import RentalPostItemReject from './RentalPostItemReject';
 import RentalPostItemPending from './RentalPostItemPending';
 import Select from 'react-select';
 import { tableClass } from '../../../../ui';
+import { notifyError } from '../../../../helper/notify';
 
-const RenterPost = (props) => {
+const defaultOptions = [
+    {
+        value: 0,
+        label: 'Tất cả',
+    },
+];
+
+const RenterPost = () => {
     const navigate = useNavigate();
-    const defaultOptions = [
-        {
-            value: 0,
-            label: 'Tất cả',
-        },
-    ];
     const [options, setOptions] = React.useState(defaultOptions);
     const [optionValue, setOptionValue] = React.useState(0);
     const [postListSuccess, setPostListSuccess] = React.useState([]);
@@ -28,11 +30,11 @@ const RenterPost = (props) => {
                 const postListSuccessResponse = await rentalPost.getRentalPost(
                     1,
                     100,
-                    options[0].value
+                    defaultOptions[0].value
                 );
                 setAllPost([...postListSuccessResponse.simplePostDtos]);
             } catch (error) {
-                console.log(error);
+                notifyError(error);
                 setAllPost([]);
             }
         }
@@ -47,7 +49,7 @@ const RenterPost = (props) => {
                 );
                 setPostListSuccess([...postListSuccessResponse.simplePostDtos]);
             } catch (error) {
-                console.log(error);
+                notifyError(error);
                 setPostListSuccess([]);
             }
         }
@@ -62,7 +64,7 @@ const RenterPost = (props) => {
                 );
                 setPostListReject([...postListRejectResponse.simplePostDtos]);
             } catch (error) {
-                console.log(error);
+                notifyError(error);
                 setPostListReject([]);
             }
         }
@@ -77,7 +79,7 @@ const RenterPost = (props) => {
                 );
                 setPostListPending([...postListPendingResponse.simplePostDtos]);
             } catch (error) {
-                console.log(error);
+                notifyError(error);
                 setPostListPending([]);
             }
         }
@@ -94,61 +96,46 @@ const RenterPost = (props) => {
                     )
                 );
             } catch (error) {
-                console.log(error);
+                notifyError(error);
             }
         }
         getOptions();
     }, []);
     const handleOptionChange = (value) => {
-        console.log(value.value);
         setOptionValue(Number(value.value));
     };
     const handleClickPost = (postId) => {
         navigate(`/post/${postId}`);
     };
-    const handleResolve = async (postId, index) => {
+    // Moves a post between the lists once the server has accepted the new status.
+    const handleResolve = async (postId) => {
         try {
-            const response = await rentalPost.setStatusRentalPost(
-                options[2].value,
-                postId
-            );
-            console.log(response);
+            await rentalPost.setStatusRentalPost(options[2].value, postId);
+            const post = postListReject.find((item) => item.id === postId);
+            setPostListReject((list) => list.filter((item) => item.id !== postId));
+            if (post) setPostListSuccess((list) => [...list, post]);
         } catch (error) {
-            console.log(error);
-        } finally {
-            setPostListSuccess(
-                postListSuccess.concat(postListReject.splice(index, 1))
-            );
-            setPostListPending([...postListReject]);
+            notifyError(error);
         }
     };
-    const handleConfirm = async (postId, index) => {
+    const handleConfirm = async (postId) => {
         try {
-            const response = await rentalPost.setStatusRentalPost(
-                options[2].value,
-                postId
-            );
-            console.log(response);
+            await rentalPost.setStatusRentalPost(options[2].value, postId);
+            const post = postListPending.find((item) => item.id === postId);
+            setPostListPending((list) => list.filter((item) => item.id !== postId));
+            if (post) setPostListSuccess((list) => [...list, post]);
         } catch (error) {
-            console.log(error);
-        } finally {
-            setPostListSuccess(
-                postListSuccess.concat(postListPending.splice(index, 1))
-            );
-            setPostListPending([...postListPending]);
+            notifyError(error);
         }
     };
-    const handleReject = async (postId, index) => {
+    const handleReject = async (postId) => {
         try {
-            const response = await rentalPost.setStatusRentalPost(3, postId);
-            console.log(response);
+            await rentalPost.setStatusRentalPost(3, postId);
+            const post = postListPending.find((item) => item.id === postId);
+            setPostListPending((list) => list.filter((item) => item.id !== postId));
+            if (post) setPostListReject((list) => [...list, post]);
         } catch (error) {
-            console.log(error);
-        } finally {
-            setPostListReject(
-                postListReject.concat(postListPending.splice(index, 1))
-            );
-            setPostListPending([...postListPending]);
+            notifyError(error);
         }
     };
     return (

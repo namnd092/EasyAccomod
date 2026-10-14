@@ -1,7 +1,7 @@
 import React from 'react';
 
 export default function AccItemSuccess(props) {
-    const { account, index, onConfirm, onRefuse } = props;
+    const { account, index } = props;
     return (
         <tr>
             <th scope="row">{index + 1}</th>

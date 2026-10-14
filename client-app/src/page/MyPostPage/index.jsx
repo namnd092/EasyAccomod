@@ -4,58 +4,48 @@ import Card from '../../share/components/card';
 import SuccessItem from './successItem';
 import { useNavigate } from 'react-router-dom';
 import PendingItem from './pendingItem';
-import { Button, tableClass } from '../../ui';
+import { Pagination, tableClass } from '../../ui';
+import { notifyError } from '../../helper/notify';
+
+const PAGE_SIZE = 15;
+const STATUS_PENDING = 1;
+const STATUS_APPROVED = 2;
+
+// Loads one page of the owner's posts with the given status.
+function useOwnerPosts(statusId) {
+    const [page, setPage] = React.useState(1);
+    const [posts, setPosts] = React.useState([]);
+    const [maxPage, setMaxPage] = React.useState(1);
+    React.useEffect(() => {
+        let ignore = false;
+        async function load() {
+            try {
+                const response = await rentalPost.getOwnerRentalPost(page, PAGE_SIZE, statusId);
+                if (ignore) return;
+                setPosts([...response.ownerSimplePostDtos]);
+                setMaxPage(response.maxPage);
+            } catch (error) {
+                if (!ignore) notifyError(error);
+            }
+        }
+        load();
+        return () => {
+            ignore = true;
+        };
+    }, [page, statusId]);
+    return { posts, page, setPage, maxPage };
+}
 
 export default function MyPostPage() {
     const navigate = useNavigate();
-    const defaultOptions = [{ value: 0, label: 'Tất cả' }];
-    const [postListSuccess, setPostListSuccess] = React.useState([]);
-    const [postListPending, setPostListPending] = React.useState([]);
-    const [statusList, setStatusList] = React.useState(defaultOptions);
+    const approved = useOwnerPosts(STATUS_APPROVED);
+    const pending = useOwnerPosts(STATUS_PENDING);
     const handleClick = (postId) => {
         navigate(`/post/${postId}`);
     };
     const handleEditPost = (postId) => {
-        navigate(`post/${postId}/edit`);
+        navigate(`/post/${postId}/edit`);
     };
-    React.useEffect(() => {
-        async function getStatusList() {
-            try {
-                const response = await rentalPost.getStatusOptions();
-                setStatusList(
-                    defaultOptions.concat(
-                        [...response].slice(0, 2).map((e) => ({
-                            value: e.id,
-                            label: e.name,
-                        }))
-                    )
-                );
-            } catch (error) {
-                console.log(error);
-            }
-        }
-        getStatusList();
-        async function getSuccessList() {
-            try {
-                const response = await rentalPost.getOwnerRentalPost(1, 15, 2);
-                console.log(response);
-                setPostListSuccess([...response.ownerSimplePostDtos]);
-            } catch (error) {
-                console.log(error);
-            }
-        }
-        getSuccessList();
-        async function getPendingList() {
-            try {
-                const response = await rentalPost.getOwnerRentalPost(1, 15, 1);
-                console.log(response);
-                setPostListPending([...response.ownerSimplePostDtos]);
-            } catch (error) {
-                console.log(error);
-            }
-        }
-        getPendingList();
-    }, []);
     return (
         <div className="myPostPage" style={{ paddingBottom: '30px' }}>
             <div style={{ paddingTop: '30px' }}>
@@ -80,15 +70,15 @@ export default function MyPostPage() {
                             </tr>
                         </thead>
                         <tbody>
-                            {postListSuccess.length === 0 ? (
+                            {approved.posts.length === 0 ? (
                                 <tr>
                                     <td colSpan={8}>Không có bài viết nào</td>
                                 </tr>
                             ) : (
-                                postListSuccess.map((item, index) => (
+                                approved.posts.map((item, index) => (
                                     <SuccessItem
-                                        index={index}
-                                        key={index}
+                                        index={(approved.page - 1) * PAGE_SIZE + index}
+                                        key={item.id}
                                         item={item}
                                         handleClick={handleClick}
                                     />
@@ -96,6 +86,12 @@ export default function MyPostPage() {
                             )}
                         </tbody>
                     </table>
+                    <Pagination
+                        className="mt-3 justify-center"
+                        page={approved.page}
+                        count={approved.maxPage}
+                        onChange={approved.setPage}
+                    />
                 </Card>
             </div>
             <div style={{ marginTop: '30px' }}>
@@ -113,16 +109,16 @@ export default function MyPostPage() {
                             </tr>
                         </thead>
                         <tbody>
-                            {postListPending.length === 0 ? (
+                            {pending.posts.length === 0 ? (
                                 <tr>
                                     <td colSpan={5}>Không tìm thấy bài viết nào</td>
                                 </tr>
                             ) : (
-                                postListPending.map((item, index) => (
+                                pending.posts.map((item, index) => (
                                     <PendingItem
-                                        index={index}
+                                        index={(pending.page - 1) * PAGE_SIZE + index}
                                         item={item}
-                                        key={index}
+                                        key={item.id}
                                         handleClick={handleClick}
                                         handleEditPost={handleEditPost}
                                     />
@@ -130,42 +126,14 @@ export default function MyPostPage() {
                             )}
                         </tbody>
                     </table>
+                    <Pagination
+                        className="mt-3 justify-center"
+                        page={pending.page}
+                        count={pending.maxPage}
+                        onChange={pending.setPage}
+                    />
                 </Card>
             </div>
-            {/* <Card title="Bài đăng đã bị từ chối">
-                <table className={tableClass}>
-                    <thead>
-                        <tr>
-                            <th scope="col" style={{ minWidth: '10%' }}>
-                                Số thứ tự
-                            </th>
-                            <th scope="col">Bài đăng</th>
-                            <th scope="col">Hành động</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <th scope="row">1</th>
-                            <td></td>
-                            <td>
-                                <Button variant="danger">
-                                    <i className="fas fa-trash-alt"></i> Xóa
-                                </Button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th scope="row">2</th>
-                            <td></td>
-                            <td>@fat</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">3</th>
-                            <td></td>
-                            <td>@twitter</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </Card> */}
         </div>
     );
 }

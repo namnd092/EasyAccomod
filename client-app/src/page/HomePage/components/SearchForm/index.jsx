@@ -1,21 +1,17 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { useForm } from 'react-hook-form';
 import Select from 'react-select';
 import { useState } from 'react';
 import addressApi from '../../../../api/addressApi';
 import roomApi from '../../../../api/roomApi';
 import { Button, Collapsible, FormGroup, FormLabel, inputClass } from '../../../../ui';
-
-SearchFrom.propTypes = {
-    onSubmit: PropTypes.func,
-    isLoading: PropTypes.bool,
-};
+import { notifyError } from '../../../../helper/notify';
 
 // On phones the filters would push the results far down, so start collapsed there.
+const defaultData = [{ value: 0, label: 'Tất cả' }];
 const isDesktop = typeof window.matchMedia === 'function' && window.matchMedia('(min-width: 1024px)').matches;
 
-function SearchFrom(props) {
+function SearchForm(props) {
     const { isLoading } = props;
     const initialValues = {
         provinceId: 0,
@@ -52,14 +48,13 @@ function SearchFrom(props) {
         { value: 1, label: 'Có' },
         { value: -1, label: 'Không' },
     ];
-    const defaultData = [{ value: 0, label: 'Tất cả' }];
     const [filterValues, setFilterValues] = useState(initialValues);
-    const [provinceData, setProvinceData] = useState([defaultData]);
-    const [districtData, setDistrictData] = useState([defaultData]);
-    const [wardData, setWardData] = useState([defaultData]);
-    const [roomTypeData, setRoomTypeData] = useState([defaultData]);
-    const [roomAreaData, setRoomAreaData] = useState([defaultData]);
-    const [kitchenTypeData, setKitchenTypeData] = useState([defaultData]);
+    const [provinceData, setProvinceData] = useState(defaultData);
+    const [districtData, setDistrictData] = useState(defaultData);
+    const [wardData, setWardData] = useState(defaultData);
+    const [roomTypeData, setRoomTypeData] = useState(defaultData);
+    const [roomAreaData, setRoomAreaData] = useState(defaultData);
+    const [kitchenTypeData, setKitchenTypeData] = useState(defaultData);
 
     React.useEffect(() => {
         async function effectGetRoomAreaData() {
@@ -74,7 +69,7 @@ function SearchFrom(props) {
                     )
                 );
             } catch (error) {
-                console.log(error);
+                notifyError(error);
             }
         }
         effectGetRoomAreaData();
@@ -91,7 +86,7 @@ function SearchFrom(props) {
                     )
                 );
             } catch (error) {
-                console.log(error);
+                notifyError(error);
             }
         }
         effectGetRoomType();
@@ -108,7 +103,7 @@ function SearchFrom(props) {
                     )
                 );
             } catch (error) {
-                console.log(error);
+                notifyError(error);
             }
         }
         effectGetProvinceData();
@@ -125,7 +120,7 @@ function SearchFrom(props) {
                     )
                 );
             } catch (error) {
-                console.log(error);
+                notifyError(error);
             }
         }
         effectGetKitchenType();
@@ -157,7 +152,7 @@ function SearchFrom(props) {
             }
             setWardData(defaultData);
         } catch (error) {
-            console.log(error);
+            notifyError(error);
         }
     };
 
@@ -185,7 +180,7 @@ function SearchFrom(props) {
                 );
             }
         } catch (error) {
-            console.log(error);
+            notifyError(error);
         }
     };
 
@@ -471,4 +466,4 @@ function SearchFrom(props) {
     );
 }
 
-export default SearchFrom;
+export default SearchForm;

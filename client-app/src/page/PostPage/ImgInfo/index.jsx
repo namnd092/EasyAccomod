@@ -3,8 +3,6 @@ import SimpleImageSlider from 'react-simple-image-slider';
 import Card from '../../../share/components/card';
 import './style.css';
 
-ImgInfo.propTypes = {};
-
 function ImgInfo(props) {
     const { imgInfo } = props;
     const image1 = [

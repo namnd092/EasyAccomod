@@ -5,11 +5,10 @@ import { useSelector } from 'react-redux';
 import { isDisplayByRole } from '../../../helper/auth';
 import Role from '../../../models/data/role';
 import { Button, FormGroup, Textarea, Rating, inputClass, cardClass, cardHeaderClass, cardBodyClass } from '../../../ui';
-
+import { notifyError, notifySuccess } from '../../../helper/notify';
 
 function CommentInfo(props) {
     const { postId } = props;
-    const renterName = useSelector((state) => state.user.name);
     const role = useSelector((state) => state.user.role);
     const [starValue, setStarValue] = React.useState(5);
     const [commentContent, setCommentContent] = React.useState('');
@@ -30,14 +29,13 @@ function CommentInfo(props) {
             content: commentContent,
         };
         try {
-            const response = await rentalPost.postComment(params);
-            console.log(response);
-        } catch (error) {
-            console.log(error);
-        } finally {
+            await rentalPost.postComment(params);
             setCommentContent('');
             setStarValue(5);
             setIsCommented(true);
+            notifySuccess('Đã gửi bình luận, đang chờ quản trị viên duyệt');
+        } catch (error) {
+            notifyError(error);
         }
     };
     React.useEffect(() => {
@@ -48,26 +46,26 @@ function CommentInfo(props) {
                     10,
                     1
                 );
-                console.log(response);
                 setCommentList([...response.listCommentDtos]);
             } catch (error) {
-                console.log(error);
+                notifyError(error);
             }
         }
         getCommentListEffect();
-    }, []);
+    }, [postId]);
+    const isRenter = role?.toLowerCase() === Role.RENTER;
     React.useEffect(() => {
+        if (!isRenter) return;
         async function isCommented() {
             try {
                 const response = await rentalPost.isCommented(postId);
-                console.log(response);
                 setIsCommented(response.result);
             } catch (error) {
-                console.log(error);
+                notifyError(error);
             }
         }
         isCommented();
-    }, []);
+    }, [postId, isRenter]);
     return (
         <div style={{ marginTop: '30px' }}>
             <div className={cardClass}>
@@ -78,8 +76,8 @@ function CommentInfo(props) {
                             {commentList.length === 0 ? (
                                 <p>Chưa có bình luận nào</p>
                             ) : (
-                                commentList.map((item, index) => (
-                                    <CommentItem key={index} item={item} />
+                                commentList.map((item) => (
+                                    <CommentItem key={item.id} item={item} />
                                 ))
                             )}
                         </div>

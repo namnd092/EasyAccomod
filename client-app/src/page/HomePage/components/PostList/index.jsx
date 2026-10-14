@@ -1,10 +1,6 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import PostItem from './PostItem';
 
-PostList.propTypes = {
-    postList: PropTypes.array,
-};
 function PostList(props) {
     const { postList } = props;
     if (postList.length === 0) {

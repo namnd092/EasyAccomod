@@ -1,10 +1,7 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { cardClass, cardHeaderClass, cardBodyClass } from '../../../../ui';
 
-PostingTutorial.propTypes = {};
-
-function PostingTutorial(props) {
+function PostingTutorial() {
     return (
         <div className={`${cardClass} mt-6`}>
             <h5 className={cardHeaderClass}>Hướng dẫn đăng tin</h5>

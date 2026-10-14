@@ -1,12 +1,19 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { Navigate, useLocation } from 'react-router-dom';
-import Authorization from '../Authauthorization';
+import { LinearProgress } from '../../ui';
+import Authorization from '../Authorization';
 
 function PrivateRoute({ children, roles }) {
     const role = useSelector((state) => state.user.role);
     const location = useLocation();
-    const auth = !!localStorage.getItem('token');
+    const auth = !!useSelector((state) => state.auth.token);
+    const restoring = useSelector((state) => state.auth.restoring);
+
+    // A returning visitor's session is still being restored from the refresh cookie.
+    if (restoring) {
+        return <LinearProgress />;
+    }
 
     if (!auth) {
         return <Navigate to="/login" state={{ from: location }} replace />;

@@ -4,6 +4,7 @@ const ApiUrl = {
     OWNER_REGISTER: 'api/Account/OwnerRegister',
     RENTER_REGISTER: 'api/Account/RenterRegister',
     LOG_OUT: 'api/Account/Logout',
+    REFRESH: 'api/Account/Refresh',
     GET_OWNERS: 'api/Admin/Owners',
 
     GET_ALL_PROVINCE: 'api/Provinces',

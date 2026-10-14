@@ -4,6 +4,7 @@ import Card from '../../../../share/components/card';
 import ExtendItem from './ExtendItem';
 import { useNavigate } from 'react-router-dom';
 import { tableClass } from '../../../../ui';
+import { notifyError } from '../../../../helper/notify';
 
 const Extend = () => {
     const navigate = useNavigate();
@@ -11,34 +12,31 @@ const Extend = () => {
     const handleClick = (postId) => {
         navigate(`/post/${postId}`);
     };
-    const handleApprove = async (extendId, index) => {
+    const removeRequest = (extendId) =>
+        setPostList((list) => list.filter((item) => item.extendId !== extendId));
+    const handleApprove = async (extendId) => {
         try {
-            const response = await rentalPost.postApproveExtend(extendId);
-            console.log(response);
-            postList.splice(index, 1);
-            setPostList([...postList]);
+            await rentalPost.postApproveExtend(extendId);
+            removeRequest(extendId);
         } catch (error) {
-            console.log(error);
+            notifyError(error);
         }
     };
-    const handleReject = async (extendId, index) => {
+    const handleReject = async (extendId) => {
         try {
-            const response = await rentalPost.postRejectExtend(extendId);
-            console.log(response);
-            postList.splice(index, 1);
-            setPostList([...postList]);
+            await rentalPost.postRejectExtend(extendId);
+            removeRequest(extendId);
         } catch (error) {
-            console.log(error);
+            notifyError(error);
         }
     };
-    React.useState(() => {
+    React.useEffect(() => {
         async function getPostList() {
             try {
                 const response = await rentalPost.getExtendRentalPost(1, 100);
-                console.log(response);
                 setPostList([...response.listPost]);
             } catch (error) {
-                console.log(error);
+                notifyError(error);
                 setPostList([]);
             }
         }
