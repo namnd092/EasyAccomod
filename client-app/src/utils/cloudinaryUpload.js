@@ -1,36 +1,30 @@
 import Axios from 'axios';
-import ApiUrl from '../constants/ApiUrl';
 
+const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
+const uploadPreset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
+
+// Uploads each file with an unsigned preset and resolves to the secure URLs.
+// Rejects if Cloudinary is not configured or any upload fails, so callers never
+// submit a post with a partial (or empty) picture list.
 async function uploadMultipleFile(files) {
-    const resultImages = [];
-    const uploader = files.map((file) => {
-        // Initial FormData
-        const formData = new FormData();
-        formData.append('file', file);
-        formData.append('tags', `codeinfuse, medium, gist`);
-        formData.append('upload_preset', 'sc14evw3'); // Replace the preset name with your own
-        formData.append('api_key', '511129783159453'); // Replace API key with your own Cloudinary key
-        formData.append('timestamp', (Date.now() / 1000) | 0);
+    if (!cloudName || !uploadPreset) {
+        throw new Error(
+            'Cloudinary is not configured: set VITE_CLOUDINARY_CLOUD_NAME and VITE_CLOUDINARY_UPLOAD_PRESET.'
+        );
+    }
 
-        // Make an AJAX upload request using Axios (replace Cloudinary URL below with your own)
-        return Axios.post(ApiUrl.CLOUDINARY_UPLOAD_URL, formData, {
-            headers: { 'X-Requested-With': 'XMLHttpRequest' },
+    const uploadUrl = `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`;
+
+    return Promise.all(
+        files.map(async (file) => {
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('upload_preset', uploadPreset);
+
+            const response = await Axios.post(uploadUrl, formData);
+            return response.data.secure_url;
         })
-            .then((response) => {
-                const data = response.data;
-                const fileURL = data.secure_url; // You should store this URL for future references in your app
-                resultImages.push(fileURL);
-            })
-            .catch((err) => {
-                console.log(err);
-            });
-    });
-
-    // Once all the files are uploaded
-    await Axios.all(uploader).then((result) => {
-        // ... perform after upload is successful operation
-    });
-    return resultImages;
+    );
 }
 
 export default uploadMultipleFile;
