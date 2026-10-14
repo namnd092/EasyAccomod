@@ -1,4 +1,5 @@
 import React from 'react';
+import { Button } from '../../../ui';
 
 export default function FavoriteItem(props) {
     const { gotoPost, handleDislike, item, index } = props;
@@ -10,9 +11,9 @@ export default function FavoriteItem(props) {
             <td onClick={() => gotoPost(item.id)}>{item && item.title}</td>
             <td onClick={() => gotoPost(item.id)}>Chưa cho thuê</td>
             <td>
-                <button className="btn btn-danger" onClick={handleDislike}>
+                <Button variant="danger" onClick={handleDislike}>
                     <i className="fas fa-heart-broken"></i> Bỏ thích
-                </button>
+                </Button>
             </td>
         </tr>
     );

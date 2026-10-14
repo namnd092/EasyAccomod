@@ -1,10 +1,10 @@
-import { Button, FormGroup, FormLabel } from '@mui/material';
 import { Field, Form, Formik } from 'formik';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import authApi from '../../../api/authApi';
 import { renterRegisterInitialValue } from '../../../models/InitialValueForm/register';
 import { renterRegisterValidationSchema } from '../../../models/ValidateForm/register';
+import { Button, FormGroup, FormLabel, inputClass } from '../../../ui';
 
 export default function RenterRegister(props) {
     const navigate = useNavigate();
@@ -33,11 +33,11 @@ export default function RenterRegister(props) {
                                 type="text"
                                 value={values.username}
                                 onChange={handleChange}
-                                className="form-control"
+                                className={inputClass}
                                 name="username"
                             />
                             {errors && errors.username && touched.username ? (
-                                <span className="error">{errors.username}</span>
+                                <span className="mt-1 text-sm text-red-600">{errors.username}</span>
                             ) : null}
                         </FormGroup>
                         <FormGroup>
@@ -46,11 +46,11 @@ export default function RenterRegister(props) {
                                 type="password"
                                 value={values.password}
                                 name="password"
-                                className="form-control"
+                                className={inputClass}
                                 onChange={handleChange}
                             />
                             {errors && errors.password && touched.password ? (
-                                <span className="error">{errors.password}</span>
+                                <span className="mt-1 text-sm text-red-600">{errors.password}</span>
                             ) : null}
                         </FormGroup>
                         <FormGroup>
@@ -59,13 +59,13 @@ export default function RenterRegister(props) {
                                 type="password"
                                 value={values.confirmPassword}
                                 name="confirmPassword"
-                                className="form-control"
+                                className={inputClass}
                                 onChange={handleChange}
                             />
                             {errors &&
                             errors.confirmPassword &&
                             touched.confirmPassword ? (
-                                <span className="error">
+                                <span className="mt-1 text-sm text-red-600">
                                     {errors.confirmPassword}
                                 </span>
                             ) : null}
@@ -76,11 +76,11 @@ export default function RenterRegister(props) {
                                 type="text"
                                 value={values.name}
                                 name="name"
-                                className="form-control"
+                                className={inputClass}
                                 onChange={handleChange}
                             />
                             {errors && errors.name && touched.name ? (
-                                <span className="error">{errors.name}</span>
+                                <span className="mt-1 text-sm text-red-600">{errors.name}</span>
                             ) : null}
                         </FormGroup>
                         <FormGroup>
@@ -89,48 +89,39 @@ export default function RenterRegister(props) {
                                 type="email"
                                 value={values.email}
                                 name="email"
-                                className="form-control"
+                                className={inputClass}
                                 onChange={handleChange}
                             />
                             {errors && errors.email && touched.email ? (
-                                <span className="error">{errors.email}</span>
+                                <span className="mt-1 text-sm text-red-600">{errors.email}</span>
                             ) : null}
                         </FormGroup>
                         {/* <FormGroup>
                             <Button
-                                type="submit"
-                                color="primary"
-                                size="large"
-                                variant="contained"
+                                type="submit" size="lg"
                                 style={{ margin: '20px' }}
                                 disabled={!isValid}
                             >
                                 Đăng ký
                             </Button>
                         </FormGroup> */}
-                        <div className="group-btn">
-                            <div className="btn-group">
-                                <Button
+                        <div className="mt-5 flex justify-between px-5">
+                            <Button
+ className="h-10 w-[150px]"
                                     onClick={(e) => {
                                         e.preventDefault();
                                         navigate('/login');
-                                    }}
-                                    variant="contained"
-                                    color="secondary"
+                                    }} variant="secondary"
                                 >
                                     Đăng nhập
                                 </Button>
-                            </div>
-                            <div className="btn-group">
-                                <Button
+                            <Button
+ className="h-10 w-[150px]"
                                     type="submit"
                                     disabled={!isValid}
-                                    variant="contained"
-                                    color="primary"
                                 >
                                     Đăng ký
                                 </Button>
-                            </div>
                         </div>
                     </Form>
                 )}

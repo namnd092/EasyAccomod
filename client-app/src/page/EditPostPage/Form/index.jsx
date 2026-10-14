@@ -15,9 +15,9 @@ import { Form, Formik } from 'formik';
 import PostingTutorial from '../../NewPostPage/components/PostingTutorial';
 import BasicInfo from '../../NewPostPage/components/BasicInfo';
 import DescriptionInfo from '../../NewPostPage/components/DescriptionInfo';
-import { Button } from '@mui/material';
 import Card from '../../../share/components/card';
 import newPostValidationSchema from '../../../models/ValidateForm/newPost';
+import { Button } from '../../../ui';
 
 registerPlugin(FilePondPluginImageExifOrientation, FilePondPluginImagePreview);
 export default function EditPostForm(props) {
@@ -66,11 +66,11 @@ export default function EditPostForm(props) {
         defaultValue,
     } = props;
     return (
-        <div className="row">
-            <div className="col-12 col-lg-4">
+        <div className="grid grid-cols-12 gap-x-4">
+            <div className="col-span-12 lg:col-span-4">
                 <PostingTutorial />
             </div>
-            <div className="col-12 col-lg-8">
+            <div className="col-span-12 lg:col-span-8">
                 <Formik
                     enableReinitialize={true}
                     initialValues={initialValue}
@@ -120,10 +120,7 @@ export default function EditPostForm(props) {
                                 }}
                             >
                                 <Button
-                                    type="submit"
-                                    color="primary"
-                                    size="large"
-                                    variant="contained"
+                                    type="submit" size="lg"
                                     style={{ margin: '20px' }}
                                 >
                                     Xác nhận

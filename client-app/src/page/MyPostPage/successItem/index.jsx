@@ -1,14 +1,12 @@
 import React from 'react';
-import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
 import ExtendDuration from '../extend';
-import CheckBoxIcon from '@mui/icons-material/CheckBox';
-import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
-import { Button } from '@mui/material';
 import rentalPost from '../../../api/rentalPost';
 import { getTime } from '../../../helper/time';
+import { Button } from '../../../ui';
 function SuccessItem(props) {
     const { index, item, handleClick } = props;
     const [isRented, setRented] = React.useState(item.accommodationWasRented);
+    const [openExtend, setOpenExtend] = React.useState(false);
     const hanldeChangeIsRented = async () => {
         setRented(!isRented);
         try {
@@ -48,42 +46,30 @@ function SuccessItem(props) {
             </td>
             <td>
                 {isRented ? (
-                    <button
-                        className="btn btn-primary"
+                    <Button
                         onClick={hanldeChangeIsRented}
                     >
-                        <CheckBoxIcon
-                            style={{
-                                position: 'relative',
-                                top: '6px',
-                            }}
-                        />{' '}
+                        <i className="fas fa-check-square"></i>
                         Đã cho thuê
-                    </button>
+                    </Button>
                 ) : (
-                    <button
-                        className="btn btn-primary"
+                    <Button
                         onClick={hanldeChangeIsRented}
                     >
-                        <CheckBoxOutlineBlankIcon
-                            style={{
-                                position: 'relative',
-                                top: '6px',
-                            }}
-                        />{' '}
+                        <i className="far fa-square"></i>
                         Chưa cho thuê
-                    </button>
+                    </Button>
                 )}
             </td>
             <td>
-                <button
-                    className="btn btn-danger"
-                    data-toggle="modal"
-                    data-target="#exampleModalCenter"
-                >
+                <Button variant="danger" onClick={() => setOpenExtend(true)}>
                     <i className="fas fa-money-check-alt"></i> Gia hạn
-                </button>
-                <ExtendDuration postId={item.id} />
+                </Button>
+                <ExtendDuration
+                    postId={item.id}
+                    open={openExtend}
+                    onClose={() => setOpenExtend(false)}
+                />
             </td>
         </tr>
     );

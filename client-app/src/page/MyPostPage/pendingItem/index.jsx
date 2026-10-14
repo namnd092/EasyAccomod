@@ -1,5 +1,6 @@
 import React from 'react';
 import { getTime } from '../../../helper/time';
+import { Button } from '../../../ui';
 
 export default function PendingItem(props) {
     const { index, item, handleClick, handleEditPost } = props;
@@ -16,13 +17,12 @@ export default function PendingItem(props) {
                 {getTime(item.dateExpired)}
             </td>
             <td>
-                <button
-                    className="btn btn-primary"
+                <Button
                     onClick={() => handleEditPost(item.id)}
                 >
                     {' '}
                     <i className="far fa-edit"></i> Chỉnh sửa
-                </button>
+                </Button>
             </td>
         </tr>
     );

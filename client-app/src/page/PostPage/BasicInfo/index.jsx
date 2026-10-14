@@ -1,5 +1,6 @@
 import React from 'react';
 import './style.css';
+import { cardClass, cardHeaderClass, cardBodyClass } from '../../../ui';
 
 const yesOrNo = (bool) => {
     return bool ? 'Có' : 'Không';
@@ -9,9 +10,9 @@ function BasicInfo(props) {
     const { accommodation, dateAdded, dateExpired, title, owner } = basicInfo;
     return (
         <div style={{ paddingTop: '30px' }}>
-            <div className="card">
-                <h5 className="card-header">Thông tin</h5>
-                <div className="card-body">
+            <div className={cardClass}>
+                <h5 className={cardHeaderClass}>Thông tin</h5>
+                <div className={cardBodyClass}>
                     <table className="tablePostPage">
                         <tbody>
                             <tr>

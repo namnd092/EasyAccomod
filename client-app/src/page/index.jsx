@@ -14,7 +14,7 @@ import { setUser } from '../redux/slice/userSlice';
 import Role from '../models/data/role';
 import ApiUrl from '../constants/ApiUrl';
 import Axios from 'axios';
-import LinearProgress from '@mui/material/LinearProgress';
+import { LinearProgress } from '../ui';
 
 // Pages other than the home page load on demand to keep the initial bundle small.
 const PostPage = lazy(() => import('./PostPage'));
@@ -53,7 +53,7 @@ export const Page = () => {
         <>
             <Header role={role} />
             <main>
-                <div className="width_box">
+                <div className="mx-auto w-[95%] max-w-[1100px]">
                     <Suspense fallback={<LinearProgress />}>
                         <Routes>
                             <Route path="/" element={<HomePage />} />

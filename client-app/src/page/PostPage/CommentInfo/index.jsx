@@ -1,17 +1,10 @@
 import React from 'react';
-import Rating from '@mui/material/Rating';
-import {
-    Button,
-    FormGroup,
-    Box,
-    TextareaAutosize,
-} from '@mui/material';
 import CommentItem from './CommentItem';
 import rentalPost from '../../../api/rentalPost';
 import { useSelector } from 'react-redux';
 import { isDisplayByRole } from '../../../helper/auth';
 import Role from '../../../models/data/role';
-import TelegramIcon from '@mui/icons-material/Telegram';
+import { Button, FormGroup, Textarea, Rating, inputClass, cardClass, cardHeaderClass, cardBodyClass } from '../../../ui';
 
 
 function CommentInfo(props) {
@@ -77,10 +70,10 @@ function CommentInfo(props) {
     }, []);
     return (
         <div style={{ marginTop: '30px' }}>
-            <div className="card">
-                <h5 className="card-header">Bình luận</h5>
-                <div className="card-body">
-                    <Box sx={{ display: 'flex', flexDirection: 'column', '& > * + *': { marginTop: 1 } }}>
+            <div className={cardClass}>
+                <h5 className={cardHeaderClass}>Bình luận</h5>
+                <div className={cardBodyClass}>
+                    <div className="flex flex-col gap-2">
                         <div>
                             {commentList.length === 0 ? (
                                 <p>Chưa có bình luận nào</p>
@@ -110,11 +103,11 @@ function CommentInfo(props) {
                                         size="large"
                                     />
                                 </FormGroup>
-                                <div className="row">
-                                    <FormGroup className="col-10">
-                                        <TextareaAutosize
-                                            className="form-control"
-                                            minRows="3"
+                                <div className="grid grid-cols-12 gap-x-4">
+                                    <FormGroup className="col-span-10">
+                                        <Textarea
+                                            className={inputClass}
+                                            rows={3}
                                             placeholder="Viết bình luận của bạn (Tối đa 1000 ký tự)"
                                             maxLength={1000}
                                             value={commentContent}
@@ -125,22 +118,17 @@ function CommentInfo(props) {
                                     </FormGroup>
                                     <FormGroup>
                                         <Button
-                                            variant="contained"
-                                            className="btn btn-primary"
-                                            color="primary"
                                             type="submit"
                                             disabled={isCommented}
                                         >
                                             Gửi
-                                            <TelegramIcon
-                                                style={{ marginLeft: '10px' }}
-                                            />
+                                            <i className="fas fa-paper-plane ml-2.5"></i>
                                         </Button>
                                     </FormGroup>
                                 </div>
                             </div>
                         </form>
-                    </Box>
+                    </div>
                 </div>
             </div>
         </div>

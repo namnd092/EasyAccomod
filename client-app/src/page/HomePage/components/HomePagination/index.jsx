@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Pagination } from '../../../../ui';
 // import Pagination from "react-js-pagination";
-import Pagination from '@mui/material/Pagination';
 
 HomePagination.propTypes = {
     activePage: PropTypes.number,
@@ -13,20 +13,12 @@ HomePagination.propTypes = {
 function HomePagination(props) {
     const { maxPage, activePage } = props;
 
-    const handlePageChange = (page) => {
-        props.onPageChange(page);
-    };
-
     return (
-        <div style={{ display: 'flex', marginTop: '20px' }}>
+        <div className="mt-5 flex justify-center">
             <Pagination
                 page={activePage}
-                showFirstButton={true}
-                showLastButton={true}
                 count={maxPage}
-                size={'large'}
-                onChange={(event, page) => handlePageChange(page)}
-                style={{ margin: 'auto' }}
+                onChange={props.onPageChange}
             />
         </div>
     );

@@ -1,11 +1,5 @@
 import React from 'react';
-import './style.css';
 import { Form, Formik } from 'formik';
-import {
-    Backdrop,
-    Button,
-    CircularProgress,
-} from '@mui/material';
 import BasicInfo from './components/BasicInfo';
 import DescriptionInfo from './components/DescriptionInfo';
 import ImgInfo from './components/ImgInfo';
@@ -17,7 +11,7 @@ import newPostValidationSchema from '../../models/ValidateForm/newPost';
 import rentalPost from '../../api/rentalPost';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import TelegramIcon from '@mui/icons-material/Telegram';
+import { Button, Spinner, Backdrop } from '../../ui';
 
 NewPostPage.propTypes = {};
 
@@ -54,11 +48,11 @@ function NewPostPage(props) {
     };
     return (
         <div className="newPostPage">
-            <div className="row">
-                <div className="col-12 col-lg-4">
+            <div className="grid grid-cols-12 gap-x-4">
+                <div className="col-span-12 lg:col-span-4">
                     <PostingTutorial />
                 </div>
-                <div className="col-12 col-lg-8">
+                <div className="col-span-12 lg:col-span-8">
                     <Formik
                         initialValues={newPostInitialValue}
                         onSubmit={(value) => handleSubmit(value)}
@@ -113,15 +107,10 @@ function NewPostPage(props) {
                                     }}
                                 >
                                     <Button
-                                        type="submit"
-                                        color="primary"
-                                        size="large"
-                                        variant="contained"
+                                        type="submit" size="lg"
                                         style={{ margin: '20px' }}
                                     >
-                                        <TelegramIcon
-                                            style={{ marginRight: '10px' }}
-                                        />
+                                        <i className="fas fa-paper-plane mr-2.5"></i>
                                         Đăng Tin
                                     </Button>
                                 </div>
@@ -136,7 +125,7 @@ function NewPostPage(props) {
                     open
                     onClick={() => setIsLoading(false)}
                 >
-                    <CircularProgress color="inherit" />
+                    <Spinner color="inherit" />
                 </Backdrop>
             )}
         </div>

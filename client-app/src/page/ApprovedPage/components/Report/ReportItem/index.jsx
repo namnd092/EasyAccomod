@@ -1,4 +1,5 @@
 import React from 'react';
+import { Button } from '../../../../../ui';
 
 export default function ReportItem(props) {
     const { rentalPost, index, handleClick, handleResolve } = props;
@@ -41,12 +42,11 @@ export default function ReportItem(props) {
                 {rentalPost && rentalPost.time}
             </td>
             <td>
-                <button
-                    className="btn btn-danger"
+                <Button variant="danger"
                     onClick={() => handleResolve(rentalPost.id, index)}
                 >
                     <i className="fas fa-trash"></i> Xóa
-                </button>
+                </Button>
             </td>
         </tr>
     );

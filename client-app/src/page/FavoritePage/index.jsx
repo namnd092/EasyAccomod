@@ -4,8 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import rentalPost from '../../api/rentalPost';
 import Card from '../../share/components/card';
 import PostItem from '../HomePage/components/PostList/PostItem';
-import { Button } from '@mui/material';
-import ThumbDownAltIcon from '@mui/icons-material/ThumbDownAlt';
+import { Button, tableClass } from '../../ui';
 
 export default function FavoritePage() {
     const navigate = useNavigate();
@@ -46,7 +45,7 @@ export default function FavoritePage() {
     return (
         <div className="favorite">
             <Card title="Bài đăng yêu thích">
-                <table className="table table-hover">
+                <table className={tableClass}>
                     <thead>
                         <tr>
                             <th scope="col" style={{ minWidth: '10%' }}>
@@ -75,26 +74,20 @@ export default function FavoritePage() {
                                         />
                                     </td>
                                     <td>
-                                        {/* <button
-                                            className="btn btn-danger"
+                                        {/* <Button variant="danger"
                                             onClick={() =>
                                                 handleDislike(item.id, index)
                                             }
                                         >
                                             <i className="fas fa-heart-broken"></i>{' '}
                                             Bỏ thích
-                                        </button> */}
+                                        </Button> */}
                                         <Button
                                             onClick={() =>
                                                 handleDislike(item.id, index)
                                             }
-                                            className="btn btn-primary"
-                                            variant="contained"
-                                            color="primary"
                                         >
-                                            <ThumbDownAltIcon
-                                                style={{ marginRight: '10px' }}
-                                            />
+                                            <i className="fas fa-thumbs-down mr-2.5"></i>
                                             Bỏ thích
                                         </Button>
                                     </td>

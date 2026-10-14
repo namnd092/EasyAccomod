@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { FormGroup, FormLabel, TextareaAutosize } from '@mui/material';
+import { FormGroup, FormLabel, Textarea, inputClass, cardClass, cardHeaderClass, cardBodyClass } from '../../../../ui';
 // import JoditEditor from 'jodit-react';
 
 DescriptionInfo.propTypes = {
@@ -19,12 +19,12 @@ function DescriptionInfo(props) {
         handleBlur,
     } = props;
     return (
-        <div className="card mt-4">
-            <h5 className="card-header">Thông tin mô tả</h5>
-            <div className="card-body">
+        <div className={`${cardClass} mt-6`}>
+            <h5 className={cardHeaderClass}>Thông tin mô tả</h5>
+            <div className={cardBodyClass}>
                 <FormGroup>
                     <FormLabel required>Nội dung</FormLabel>
-                    <TextareaAutosize
+                    <Textarea
                         name={name}
                         onChange={handleChange}
                         value={
@@ -32,7 +32,7 @@ function DescriptionInfo(props) {
                                 ? (values.description = defaultValue.content)
                                 : values.description
                         }
-                        className="form-control"
+                        className={inputClass}
                         minRows={10}
                         placeholder="Viết mô tả về phòng trọ (Tối thiểu 30 ký tự)"
                     />
@@ -46,7 +46,7 @@ function DescriptionInfo(props) {
                         value={values.description}
                     /> */}
                     {errors.description && touched.description && (
-                        <span className="error">{errors.description}</span>
+                        <span className="mt-1 text-sm text-red-600">{errors.description}</span>
                     )}
                 </FormGroup>
             </div>

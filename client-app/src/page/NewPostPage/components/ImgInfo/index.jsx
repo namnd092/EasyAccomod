@@ -1,4 +1,5 @@
 import React from 'react';
+import { cardClass, cardHeaderClass, cardBodyClass } from '../../../../ui';
 
 ImgInfo.propTypes = {};
 
@@ -31,9 +32,9 @@ function ImgInfo(props) {
     };
 
     return (
-        <div className="card mt-4">
-            <h5 className="card-header">Hình Ảnh</h5>
-            <div className="card-body">
+        <div className={`${cardClass} mt-6`}>
+            <h5 className={cardHeaderClass}>Hình Ảnh</h5>
+            <div className={cardBodyClass}>
                 <p>Chọn tối thiểu 3 ảnh, mỗi ảnh không quá 6MB</p>
                 <input
                     type="file"
@@ -68,7 +69,7 @@ function ImgInfo(props) {
                     ))}
                 </div>
                 {errors.roomImageArr && touched.roomImageArr && (
-                    <span className="error">{errors.roomImageArr}</span>
+                    <span className="mt-1 text-sm text-red-600">{errors.roomImageArr}</span>
                 )}
             </div>
         </div>

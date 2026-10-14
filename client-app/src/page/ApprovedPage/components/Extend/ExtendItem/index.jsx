@@ -1,5 +1,6 @@
 import React from 'react';
 import { getTime } from '../../../../../helper/time';
+import { Button } from '../../../../../ui';
 
 export default function ExtendItem(props) {
     const { index, item, handleClick, handleApprove, handleReject } = props;
@@ -19,18 +20,16 @@ export default function ExtendItem(props) {
                 {item && item.extendPeriod}
             </td>
             <td>
-                <button
-                    className="btn btn-primary"
+                <Button
                     onClick={() => handleApprove(item.extendId)}
                 >
                     <i className="fas fa-check-circle"></i> Chấp nhận
-                </button>
-                <button
-                    className="btn btn-danger"
+                </Button>
+                <Button variant="danger"
                     onClick={() => handleReject(item.extendId)}
                 >
                     <i className="fas fa-ban"></i> Từ chối
-                </button>
+                </Button>
             </td>
         </tr>
     );

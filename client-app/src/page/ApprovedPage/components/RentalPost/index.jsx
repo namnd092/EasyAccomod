@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import RentalPostItemReject from './RentalPostItemReject';
 import RentalPostItemPending from './RentalPostItemPending';
 import Select from 'react-select';
+import { tableClass } from '../../../../ui';
 
 const RenterPost = (props) => {
     const navigate = useNavigate();
@@ -153,7 +154,7 @@ const RenterPost = (props) => {
     return (
         <div>
             <Card title="Bài đăng">
-                <table className="table table-hover">
+                <table className={tableClass}>
                     <thead>
                         <tr>
                             <th scope="col">STT</th>
@@ -245,7 +246,7 @@ const RenterPost = (props) => {
                 </table>
             </Card>
             {/* <Card title="Bài đăng bị từ chối">
-                <table className="table table-hover">
+                <table className={tableClass}>
                     <thead>
                         <tr>
                             <th scope="col">STT</th>
@@ -276,7 +277,7 @@ const RenterPost = (props) => {
                 </table>
             </Card>
             <Card title="Bài đăng đã duyệt">
-                <table className="table table-hover">
+                <table className={tableClass}>
                     <thead>
                         <tr>
                             <th scope="col">STT</th>

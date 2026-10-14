@@ -2,6 +2,7 @@ import React from 'react';
 import rentalPost from '../../../../api/rentalPost';
 import Card from '../../../../share/components/card';
 import CommentItem from './CommentItem';
+import { tableClass } from '../../../../ui';
 
 const Comment = () => {
     const [commentList, setCommentList] = React.useState([]);
@@ -41,7 +42,7 @@ const Comment = () => {
     return (
         <div>
             <Card title="Comment đang chờ xác nhận">
-                <table className="table table-hover">
+                <table className={tableClass}>
                     <thead>
                         <tr>
                             <th scope="col">STT</th>

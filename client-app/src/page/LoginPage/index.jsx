@@ -3,13 +3,6 @@ import './style.css';
 import PropTypes from 'prop-types';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
-import {
-    Button,
-    FormGroup,
-    InputLabel,
-    Backdrop,
-    CircularProgress,
-} from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import './style.css';
 import authApi from '../../api/authApi';
@@ -17,6 +10,7 @@ import { setUser } from '../../redux/slice/userSlice';
 import { useDispatch } from 'react-redux';
 import Axios from 'axios';
 import ApiUrl from '../../constants/ApiUrl';
+import { Button, FormGroup, FormLabel, Spinner, Backdrop, inputClass } from '../../ui';
 
 LoginPage.propTypes = {
     handle: PropTypes.func,
@@ -92,7 +86,7 @@ function LoginPage(props) {
                             isValid,
                             handleChange,
                         }) => (
-                            <Form className={'from'}>
+                            <Form className="from">
                                 {message && (
                                     <span
                                         style={{
@@ -103,66 +97,60 @@ function LoginPage(props) {
                                         {message}
                                     </span>
                                 )}
-                                <FormGroup className={'form__group'}>
-                                    <InputLabel>Tên đăng nhập</InputLabel>
+                                <FormGroup className="form__group">
+                                    <FormLabel>Tên đăng nhập</FormLabel>
                                     <input
                                         id="username"
                                         label="Tên Đăng Nhập"
                                         name="username"
-                                        className="form-control"
+                                        className={inputClass}
                                         value={values.username}
                                         onChange={handleChange}
                                     />
                                     {errors &&
                                     errors.username &&
                                     touched.username ? (
-                                        <span className="error">
+                                        <span className="mt-1 text-sm text-red-600">
                                             {errors.username}
                                         </span>
                                     ) : null}
                                 </FormGroup>
-                                <FormGroup className={'form__group'}>
-                                    <InputLabel>Mật khẩu</InputLabel>
+                                <FormGroup className="form__group">
+                                    <FormLabel>Mật khẩu</FormLabel>
                                     <input
                                         id="password"
                                         label="Mật khẩu"
                                         name="password"
                                         type="password"
-                                        className="form-control"
+                                        className={inputClass}
                                         value={values.password}
                                         onChange={handleChange}
                                     />
                                     {errors &&
                                     errors.password &&
                                     touched.password ? (
-                                        <span className="error">
+                                        <span className="mt-1 text-sm text-red-600">
                                             {errors.password}
                                         </span>
                                     ) : null}
                                 </FormGroup>
-                                <div className="group-btn">
-                                    <div className="btn-group">
-                                        <Button
+                                <div className="mt-5 flex justify-between px-5">
+                                    <Button
+ className="h-[50px] w-[150px]"
                                             onClick={(e) => {
                                                 e.preventDefault();
                                                 navigate('/register');
-                                            }}
-                                            variant="contained"
-                                            color="secondary"
+                                            }} variant="secondary"
                                         >
                                             Đăng ký
                                         </Button>
-                                    </div>
-                                    <div className="btn-group">
-                                        <Button
+                                    <Button
+ className="h-[50px] w-[150px]"
                                             type="submit"
                                             disabled={!isValid}
-                                            variant="contained"
-                                            color="primary"
                                         >
                                             Đăng nhập
                                         </Button>
-                                    </div>
                                 </div>
                             </Form>
                         )}
@@ -175,7 +163,7 @@ function LoginPage(props) {
                     open
                     onClick={() => setIsLoading(false)}
                 >
-                    <CircularProgress color="inherit" />
+                    <Spinner color="inherit" />
                 </Backdrop>
             )}
         </div>

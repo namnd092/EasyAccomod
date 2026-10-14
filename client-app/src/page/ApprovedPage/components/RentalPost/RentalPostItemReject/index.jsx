@@ -1,4 +1,5 @@
 import React from 'react';
+import { Button } from '../../../../../ui';
 
 export default function RentalPostItemReject(props) {
     const { rentalPost, index, handleClick, handleResolve } = props;
@@ -12,12 +13,11 @@ export default function RentalPostItemReject(props) {
             <td onClick={handleClick}>{rentalPost && rentalPost.ownerEmail}</td>
             <td onClick={handleClick}>{rentalPost && rentalPost.dateAdded}</td>
             <td>
-                <button
-                    className="btn btn-primary"
+                <Button
                     onClick={() => handleResolve(rentalPost.id, index)}
                 >
                     <i className="fas fa-chevron-circle-up"></i> Khôi phục
-                </button>
+                </Button>
             </td>
         </tr>
     );
