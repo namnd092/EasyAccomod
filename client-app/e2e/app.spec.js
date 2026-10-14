@@ -199,4 +199,20 @@ test.describe('renter', () => {
             })
             .toBe(true);
     });
+
+    test('steps back from a favorites page that does not exist and leaves a clean URL', async ({ page, request }) => {
+        const post = await createPost(request, { approved: true });
+        const token = await apiLogin(request, accounts.renter);
+        const liked = await request.post(`${API}/api/Renter/RentalPost/Like`, {
+            headers: { Authorization: `Bearer ${token}` },
+            data: { AccommodationRentalPostId: post.id },
+        });
+        expect(liked.ok()).toBe(true);
+
+        await loginViaUi(page, accounts.renter);
+        await page.goto('/favorite?page=9999');
+        await expect(page).toHaveURL(/\/favorite$/);
+        await expect(page.getByRole('row').nth(1)).toBeVisible();
+        await expect(page.getByRole('alert')).toHaveCount(0);
+    });
 });
