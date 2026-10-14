@@ -4,7 +4,6 @@ import Card from '../../share/components/card';
 import Axios from 'axios';
 import ApiUrl from '../../constants/ApiUrl';
 import authApi from '../../api/authApi';
-import { numberOrEmpty } from '../../utils/formHelpers';
 import { useNavigate } from 'react-router-dom';
 import { Button, FormGroup, FormLabel, inputClass } from '../../ui';
 
@@ -120,7 +119,7 @@ function ProfilePage(props) {
                                 className={inputClass}
                                 type="number"
                                 readOnly={haveEditing !== 1}
-                                {...register('phone', { setValueAs: numberOrEmpty })}
+                                {...register('phone')}
                             />
                         </FormGroup>
                         <FormGroup className="col-span-6">
@@ -130,7 +129,7 @@ function ProfilePage(props) {
                                 className={inputClass}
                                 type="number"
                                 readOnly={haveEditing !== 1}
-                                {...register('identification', { setValueAs: numberOrEmpty })}
+                                {...register('identification')}
                             />
                         </FormGroup>
                     </div>
