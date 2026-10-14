@@ -54,6 +54,28 @@ builder.Services
             NameClaimType = ClaimTypes.Name,
             RoleClaimType = ClaimTypes.Role,
         };
+        options.Events = new JwtBearerEvents
+        {
+            // A token outlives role changes (owner info edits, approvals) and account removal,
+            // so trust the database for the user's current roles instead of the token's claims.
+            OnTokenValidated = async context =>
+            {
+                var userManager = context.HttpContext.RequestServices.GetRequiredService<UserManager<ApplicationUser>>();
+                var userId = context.Principal?.FindFirstValue(ClaimTypes.NameIdentifier);
+                var user = userId == null ? null : await userManager.FindByIdAsync(userId);
+                if (user == null)
+                {
+                    context.Fail("The account no longer exists.");
+                    return;
+                }
+
+                var identity = (ClaimsIdentity)context.Principal.Identity;
+                foreach (var claim in identity.FindAll(ClaimTypes.Role).ToList())
+                    identity.RemoveClaim(claim);
+                foreach (var role in await userManager.GetRolesAsync(user))
+                    identity.AddClaim(new Claim(ClaimTypes.Role, role));
+            },
+        };
     });
 builder.Services.AddAuthorization();
 
