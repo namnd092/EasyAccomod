@@ -99,7 +99,9 @@ check("ward carries district and province", wards[0]["district"]["province"]["id
 for lookup in ("Types", "PaymentTypes", "KitchenTypes", "RoomAreaRanges", "Statuses"):
     check("lookup " + lookup, len(expect(lookup, call("GET", "/api/Accommodations/" + lookup), 200)) > 0)
 check("post statuses", len(expect("post statuses", call("GET", "/api/RentalPosts/Statuses"), 200)) == 5)
-check("search on empty result is 404 (legacy behaviour)", call("GET", "/api/RentalPosts/Search?street=zzzzzz" + run)[0] == 404)
+empty = call("GET", "/api/RentalPosts/Search?street=zzzzzz" + run)
+check("search with no matches is an empty 200", empty[0] == 200 and empty[1]["simplePostDtos"] == [] and empty[1]["maxPage"] == 0, empty)
+check("search past the last page is 404", call("GET", "/api/RentalPosts/Search?_page=999")[0] == 404)
 
 print("owner creates a post")
 check("fewer than 3 pictures rejected",
@@ -114,7 +116,7 @@ check("renter cannot create post", call("POST", "/api/RentalPosts", renter, post
 check("pending post hidden from anonymous", call("GET", "/api/RentalPosts/Get/%d" % post_id)[0] == 404)
 check("pending post visible to its owner", call("GET", "/api/RentalPosts/Get/%d" % post_id, owner)[0] == 200)
 check("pending post visible to admin", call("GET", "/api/RentalPosts/Get/%d" % post_id, admin)[0] == 200)
-pending_list = expect("admin lists pending posts", call("GET", "/api/Admin/RentalPosts?statusId=1", admin), 200)
+pending_list = expect("admin lists pending posts", call("GET", "/api/Admin/RentalPosts?statusId=1&_limit=1000", admin), 200)
 check("admin list contains post", any(p["id"] == post_id for p in pending_list["simplePostDtos"]), pending_list)
 
 print("admin approves, search and view")
