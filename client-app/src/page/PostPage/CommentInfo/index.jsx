@@ -1,27 +1,19 @@
 import React from 'react';
-import Rating from '@material-ui/lab/Rating';
+import Rating from '@mui/material/Rating';
 import {
     Button,
     FormGroup,
-    makeStyles,
+    Box,
     TextareaAutosize,
-} from '@material-ui/core';
+} from '@mui/material';
 import CommentItem from './CommentItem';
 import rentalPost from '../../../api/rentalPost';
 import { useSelector } from 'react-redux';
 import { isDisplayByRole } from '../../../helper/auth';
 import Role from '../../../models/data/role';
-import TelegramIcon from '@material-ui/icons/Telegram';
+import TelegramIcon from '@mui/icons-material/Telegram';
 
-const useStyles = makeStyles((theme) => ({
-    root: {
-        display: 'flex',
-        flexDirection: 'column',
-        '& > * + *': {
-            marginTop: theme.spacing(1),
-        },
-    },
-}));
+
 function CommentInfo(props) {
     const { postId } = props;
     const renterName = useSelector((state) => state.user.name);
@@ -30,7 +22,6 @@ function CommentInfo(props) {
     const [commentContent, setCommentContent] = React.useState('');
     const [commentList, setCommentList] = React.useState([]);
     const [isCommented, setIsCommented] = React.useState(false);
-    const classes = useStyles();
     const _handleChangeStar = (value) => {
         const star = Number(value.target.value);
         setStarValue(star);
@@ -89,7 +80,7 @@ function CommentInfo(props) {
             <div class="card">
                 <h5 class="card-header">Bình luận</h5>
                 <div class="card-body">
-                    <div className={classes.root}>
+                    <Box sx={{ display: 'flex', flexDirection: 'column', '& > * + *': { marginTop: 1 } }}>
                         <div>
                             {commentList.length === 0 ? (
                                 <p>Chưa có bình luận nào</p>
@@ -123,7 +114,7 @@ function CommentInfo(props) {
                                     <FormGroup className="col-10">
                                         <TextareaAutosize
                                             className="form-control"
-                                            rowsMin="3"
+                                            minRows="3"
                                             placeholder="Viết bình luận của bạn (Tối đa 1000 ký tự)"
                                             maxLength={1000}
                                             value={commentContent}
@@ -149,7 +140,7 @@ function CommentInfo(props) {
                                 </div>
                             </div>
                         </form>
-                    </div>
+                    </Box>
                 </div>
             </div>
         </div>

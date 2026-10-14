@@ -1,26 +1,72 @@
 import React from 'react';
-import ImageUploader from 'react-images-upload';
 
 ImgInfo.propTypes = {};
 
+const ACCEPTED_TYPES = ['image/jpeg', 'image/png', 'image/gif'];
+
 function ImgInfo(props) {
-    const { errors, touched, defaultValue, setFieldValue, name } = props;
-    const handleImageChange = async (imgArr) => {
-        setFieldValue(name, imgArr);
+    const { errors, touched, setFieldValue, name } = props;
+    // Each item keeps its preview URL next to the file so both always change together.
+    const [items, setItems] = React.useState([]);
+
+    const update = (next) => {
+        setItems(next);
+        setFieldValue(
+            name,
+            next.map((item) => item.file)
+        );
     };
+
+    const handleImageChange = (event) => {
+        const picked = Array.from(event.target.files)
+            .filter((file) => ACCEPTED_TYPES.includes(file.type))
+            .map((file) => ({ file, url: URL.createObjectURL(file) }));
+        update([...items, ...picked]);
+        event.target.value = '';
+    };
+
+    const handleRemove = (index) => {
+        URL.revokeObjectURL(items[index].url);
+        update(items.filter((_, i) => i !== index));
+    };
+
     return (
-        <div class="card mt-4">
-            <h5 class="card-header">Hình Ảnh</h5>
-            <div class="card-body">
-                <ImageUploader
-                    onChange={handleImageChange}
-                    imgExtension={['.jpg', '.gif', '.png', '.gif']}
-                    withIcon={true}
-                    withPreview={true}
-                    label={'Chọn tối thiểu 3 ảnh, mỗi ảnh không quá 6MB'}
-                    buttonText={'Chọn ảnh'}
+        <div className="card mt-4">
+            <h5 className="card-header">Hình Ảnh</h5>
+            <div className="card-body">
+                <p>Chọn tối thiểu 3 ảnh, mỗi ảnh không quá 6MB</p>
+                <input
+                    type="file"
                     name={name}
+                    accept={ACCEPTED_TYPES.join(',')}
+                    multiple
+                    onChange={handleImageChange}
                 />
+                <div
+                    style={{
+                        display: 'flex',
+                        flexWrap: 'wrap',
+                        gap: '10px',
+                        marginTop: '10px',
+                    }}
+                >
+                    {items.map((item, index) => (
+                        <div key={item.url} style={{ position: 'relative' }}>
+                            <img
+                                src={item.url}
+                                alt={item.file.name}
+                                style={{ height: '120px', borderRadius: '4px' }}
+                            />
+                            <button
+                                type="button"
+                                onClick={() => handleRemove(index)}
+                                style={{ position: 'absolute', top: 0, right: 0 }}
+                            >
+                                X
+                            </button>
+                        </div>
+                    ))}
+                </div>
                 {errors.roomImageArr && touched.roomImageArr && (
                     <span className="error">{errors.roomImageArr}</span>
                 )}

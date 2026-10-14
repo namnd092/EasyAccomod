@@ -1,15 +1,21 @@
 import axios from 'axios';
 import queryString from 'query-string';
 
-const token = localStorage.getItem('token') || '';
-
 const axiosClient = axios.create({
-    baseURL: process.env.REACT_APP_API_URL,
+    baseURL: import.meta.env.VITE_API_URL,
     headers: {
         'content-type': 'application/json',
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
     },
     paramsSerializer: (params) => queryString.stringify(params),
+});
+
+// Read the token on every request so a login takes effect without reloading the page.
+axiosClient.interceptors.request.use((config) => {
+    const token = localStorage.getItem('token');
+    if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
 });
 
 axiosClient.interceptors.response.use(

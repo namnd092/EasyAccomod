@@ -1,31 +1,18 @@
 import React from 'react';
-import Rating from '@material-ui/lab/Rating';
-import ReportProblemIcon from '@material-ui/icons/ReportProblem';
-import { Button, makeStyles, TextareaAutosize } from '@material-ui/core';
+import Rating from '@mui/material/Rating';
+import ReportProblemIcon from '@mui/icons-material/ReportProblem';
+import { Button, TextareaAutosize } from '@mui/material';
 import rentalPost from '../../../api/rentalPost';
 import { useSelector } from 'react-redux';
 import { isDisplayByRole } from '../../../helper/auth';
 import Role from '../../../models/data/role';
-import ThumbUpAltIcon from '@material-ui/icons/ThumbUpAlt';
-import ThumbDownAltIcon from '@material-ui/icons/ThumbDownAlt';
-const useStyles = makeStyles((theme) => ({
-    modal: {
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    paper: {
-        backgroundColor: theme.palette.background.paper,
-        border: '2px solid #000',
-        boxShadow: theme.shadows[5],
-        padding: theme.spacing(2, 4, 3),
-    },
-}));
+import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
+import ThumbDownAltIcon from '@mui/icons-material/ThumbDownAlt';
+
 
 function ShareInfo(props) {
     const { shareInfo, postId, rate } = props;
     const role = useSelector((state) => state.user.role);
-    const classes = useStyles();
     const [isFavorite, setIsFavorite] = React.useState(false);
     const [isReported, setIsReported] = React.useState(false);
     const [numberOfLike, setNumberOfLike] = React.useState(0);
@@ -220,7 +207,7 @@ function ShareInfo(props) {
                             </div>
                             <div class="modal-body">
                                 <TextareaAutosize
-                                    rowsMin={5}
+                                    minRows={5}
                                     maxLength={1000}
                                     placeholder="Viết phản hồi của bạn (tối đa 1000 ký tự)"
                                     className="form-control"

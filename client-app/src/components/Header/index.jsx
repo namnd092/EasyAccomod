@@ -2,26 +2,26 @@ import React from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import './style.css';
 import logo from '../../assets/img/logo.png';
-import { useLocation, useHistory } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { removeUser } from '../../redux/slice/userSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import authApi from '../../api/authApi';
 import { isDisplayByRole } from '../../helper/auth';
 import Role from '../../models/data/role';
-import { Badge } from '@material-ui/core';
-import NotificationsIcon from '@material-ui/icons/Notifications';
+import { Badge } from '@mui/material';
+import NotificationsIcon from '@mui/icons-material/Notifications';
 
 const Header = (props) => {
     const { role } = props;
     const pathname = useLocation().pathname;
-    const history = useHistory();
+    const navigate = useNavigate();
     const dispatch = useDispatch();
     const user = useSelector((state) => state.user);
     const auth = !!localStorage.getItem('token');
     const authRole = useSelector((state) => state.user.role);
 
     const gotoHome = () => {
-        history.push('/');
+        navigate('/');
     };
     const handleLogout = async () => {
         try {
@@ -30,7 +30,7 @@ const Header = (props) => {
             await localStorage.removeItem('token');
             await localStorage.removeItem('role');
             dispatch(removeUser());
-            history.push('/login');
+            navigate('/login');
         } catch (error) {
             console.log(error);
         }

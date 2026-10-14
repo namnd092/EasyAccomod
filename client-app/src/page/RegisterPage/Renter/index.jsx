@@ -1,19 +1,19 @@
-import { Button, FormGroup, FormLabel } from '@material-ui/core';
+import { Button, FormGroup, FormLabel } from '@mui/material';
 import { Field, Form, Formik } from 'formik';
 import React from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import authApi from '../../../api/authApi';
 import { renterRegisterInitialValue } from '../../../models/InitialValueForm/register';
 import { renterRegisterValidationSchema } from '../../../models/ValidateForm/register';
 
 export default function RenterRegister(props) {
-    const history = useHistory();
+    const navigate = useNavigate();
     const handleSubmit = async (values) => {
         console.log(values);
         try {
             const response = await authApi.renterRegister(values);
             console.log(response);
-            history.push('/login');
+            navigate('/login');
         } catch (error) {
             console.log(error);
         }
@@ -113,7 +113,7 @@ export default function RenterRegister(props) {
                                 <Button
                                     onClick={(e) => {
                                         e.preventDefault();
-                                        history.push('/login');
+                                        navigate('/login');
                                     }}
                                     variant="contained"
                                     color="secondary"

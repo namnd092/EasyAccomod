@@ -6,8 +6,8 @@ import SearchFrom from './components/SearchFrom';
 import PostList from './components/PostList';
 import HomePagination from './components/HomePagination';
 import rentalPostApi from '../../api/rentalPost';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import LinearProgress from '@material-ui/core/LinearProgress';
+import CircularProgress from '@mui/material/CircularProgress';
+import LinearProgress from '@mui/material/LinearProgress';
 
 export const HomePage = () => {
     const [maxPage, setMaxPage] = React.useState(0);

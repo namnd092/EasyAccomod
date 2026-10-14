@@ -2,10 +2,10 @@ import React from 'react';
 import rentalPost from '../../../../api/rentalPost';
 import Card from '../../../../share/components/card';
 import ReportItem from './ReportItem';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const Report = () => {
-    const history = useHistory();
+    const navigate = useNavigate();
     const [reportList, setReportList] = React.useState([]);
     React.useState(() => {
         async function getReportList() {
@@ -20,7 +20,7 @@ const Report = () => {
         getReportList();
     }, []);
     const handleClick = (postId) => {
-        history.push(`/post/${postId}`);
+        navigate(`/post/${postId}`);
     };
     const handleResolve = async (id, index) => {
         try {

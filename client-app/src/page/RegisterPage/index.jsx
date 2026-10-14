@@ -1,30 +1,18 @@
-import { AppBar, makeStyles, Tab, Tabs, useTheme } from '@material-ui/core';
+import { AppBar, Tab, Tabs } from '@mui/material';
 import './style.css';
 import React from 'react';
-import SwipeableViews from 'react-swipeable-views';
 import TabPanel from '../../share/components/tab-panel';
 import OwnerRegister from './Owner';
 import RenterRegister from './Renter';
 
 RegisterPage.propTypes = {};
-const useStyles = makeStyles((theme) => ({
-    root: {
-        backgroundColor: theme.palette.background.paper,
-        width: 500,
-    },
-}));
 function RegisterPage(props) {
-    const classes = useStyles();
-    const theme = useTheme();
     const [value, setValue] = React.useState(0);
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
 
-    const handleChangeIndex = (index) => {
-        setValue(index);
-    };
     function a11yProps(index) {
         return {
             id: `full-width-tab-${index}`,
@@ -52,26 +40,12 @@ function RegisterPage(props) {
                                 <Tab label="Người Thuê Trọ" {...a11yProps(1)} />
                             </Tabs>
                         </AppBar>
-                        <SwipeableViews
-                            axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
-                            index={value}
-                            onChangeIndex={handleChangeIndex}
-                        >
-                            <TabPanel
-                                value={value}
-                                index={0}
-                                dir={theme.direction}
-                            >
-                                <OwnerRegister />
-                            </TabPanel>
-                            <TabPanel
-                                value={value}
-                                index={1}
-                                dir={theme.direction}
-                            >
-                                <RenterRegister />
-                            </TabPanel>
-                        </SwipeableViews>
+                        <TabPanel value={value} index={0}>
+                            <OwnerRegister />
+                        </TabPanel>
+                        <TabPanel value={value} index={1}>
+                            <RenterRegister />
+                        </TabPanel>
                     </div>
                 </div>
             </div>

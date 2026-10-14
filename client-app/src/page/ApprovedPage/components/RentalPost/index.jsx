@@ -2,13 +2,13 @@ import React from 'react';
 import rentalPost from '../../../../api/rentalPost';
 import Card from '../../../../share/components/card';
 import RentalPostItem from './RentalPostItem';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import RentalPostItemReject from './RentalPostItemReject';
 import RentalPostItemPending from './RentalPostItemPending';
 import Select from 'react-select';
 
 const RenterPost = (props) => {
-    const history = useHistory();
+    const navigate = useNavigate();
     const defaultOptions = [
         {
             value: 0,
@@ -103,7 +103,7 @@ const RenterPost = (props) => {
         setOptionValue(Number(value.value));
     };
     const handleClickPost = (postId) => {
-        history.push(`/post/${postId}`);
+        navigate(`/post/${postId}`);
     };
     const handleResolve = async (postId, index) => {
         try {

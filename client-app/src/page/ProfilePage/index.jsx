@@ -1,19 +1,19 @@
 import React from 'react';
 import './style.css';
 import { Form, Formik } from 'formik';
-import { Button, FormGroup, FormLabel } from '@material-ui/core';
+import { Button, FormGroup, FormLabel } from '@mui/material';
 import Card from '../../share/components/card';
 import Axios from 'axios';
 import ApiUrl from '../../constants/ApiUrl';
 import authApi from '../../api/authApi';
 import ownerRegisterValidationSchema from '../../models/ValidateForm/profile';
-import TelegramIcon from '@material-ui/icons/Telegram';
-import { useHistory } from 'react-router-dom';
+import TelegramIcon from '@mui/icons-material/Telegram';
+import { useNavigate } from 'react-router-dom';
 
 ProfilePage.propTypes = {};
 
 function ProfilePage(props) {
-    const history = useHistory();
+    const navigate = useNavigate();
     const token = localStorage.getItem('token');
     const [haveEditing, setHaveEditing] = React.useState(-1);
     const [isPending, setIsPending] = React.useState(true);
@@ -26,7 +26,7 @@ function ProfilePage(props) {
     });
     React.useEffect(() => {
         async function effectGetInfo() {
-            Axios.get('https://localhost:44360/' + ApiUrl.GET_ACCOUNT_INFO, {
+            Axios.get(`${import.meta.env.VITE_API_URL}/` + ApiUrl.GET_ACCOUNT_INFO, {
                 headers: {
                     'content-type': 'application/json',
                     Authorization: `Bearer ${token}`,
@@ -68,7 +68,7 @@ function ProfilePage(props) {
         } catch (error) {
             console.log(error);
         } finally {
-            history.push('/');
+            navigate('/');
         }
     };
     const handleRequireEditInfo = async () => {

@@ -7,7 +7,7 @@ import {
     FormLabel,
     Radio,
     RadioGroup,
-} from '@material-ui/core';
+} from '@mui/material';
 import addressApi from '../../../../api/addressApi';
 import roomApi from '../../../../api/roomApi';
 import { DebounceInput } from 'react-debounce-input';

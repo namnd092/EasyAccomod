@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { Switch, Route, BrowserRouter as Router } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import { HomePage } from './HomePage';
 import PostPage from './PostPage';
 import LoginPage from './LoginPage';
@@ -30,7 +30,7 @@ export const Page = () => {
     const token = localStorage.getItem('token') || '';
     useEffect(() => {
         async function effectGetInfo() {
-            Axios.get('https://localhost:44360/' + ApiUrl.GET_ACCOUNT_INFO, {
+            Axios.get(`${import.meta.env.VITE_API_URL}/` + ApiUrl.GET_ACCOUNT_INFO, {
                 headers: {
                     'content-type': 'application/json',
                     Authorization: `Bearer ${token}`,
@@ -44,79 +44,85 @@ export const Page = () => {
         }
 
         effectGetInfo();
-
-        return () => {};
-    });
+    }, [token]);
 
     return (
-        <Router>
+        <>
             <Header role={role} />
             <main>
                 <div className="width_box">
-                    <Switch>
-                        <Route exact path="/">
-                            <HomePage />
-                        </Route>
-                        <Route path="/post/:id" exact>
-                            <PostPage />
-                        </Route>
-                        {/* <Route path="/login" role={role}>
-                            <LoginPage handle={handle}/>
-                        </Route>
-                        <Route path="/register" role={role}>
-                            <RegisterPage />
-                        </Route>
-                        <Route path="/profile">
-                            <ProfilePage />
-                        </Route> */}
-                        {/* <Route path="/approved">
-                            <ApprovedPage />
-                        </Route> */}
-                        <PrivateRoute
-                            path="/approved"
-                            component={ApprovedPage}
-                            roles={[Role.ADMIN]}
+                    <Routes>
+                        <Route path="/" element={<HomePage />} />
+                        <Route path="/post/:id" element={<PostPage />} />
+                        <Route
+                            path="/approved/*"
+                            element={
+                                <PrivateRoute roles={[Role.ADMIN]}>
+                                    <ApprovedPage />
+                                </PrivateRoute>
+                            }
                         />
-                        <PrivateRoute
-                            path="/newpost"
-                            component={NewPostPage}
-                            roles={[Role.ADMIN, Role.OWNER]}
+                        <Route
+                            path="/newpost/*"
+                            element={
+                                <PrivateRoute roles={[Role.ADMIN, Role.OWNER]}>
+                                    <NewPostPage />
+                                </PrivateRoute>
+                            }
                         />
-                        {/* <PrivateRoute path="/newpost">
-                            <NewPostPage />
-                        </PrivateRoute> */}
-                        <PrivateRoute
-                            component={FavoritePage}
-                            roles={[Role.RENTER]}
-                            path="/favorite"
+                        <Route
+                            path="/favorite/*"
+                            element={
+                                <PrivateRoute roles={[Role.RENTER]}>
+                                    <FavoritePage />
+                                </PrivateRoute>
+                            }
                         />
-                        <PrivateRoute
-                            component={MyPostPage}
-                            roles={[Role.OWNER]}
-                            path="/my-post"
+                        <Route
+                            path="/my-post/*"
+                            element={
+                                <PrivateRoute roles={[Role.OWNER]}>
+                                    <MyPostPage />
+                                </PrivateRoute>
+                            }
                         />
-                        <AuthRoute component={LoginPage} path="/login" />
-                        <AuthRoute component={RegisterPage} path="/register" />
-                        <PrivateRoute
-                            component={ProfilePage}
-                            roles={[Role.OWNER, Role.OWNER_PENDING]}
-                            path="/profile"
+                        <Route
+                            path="/login/*"
+                            element={
+                                <AuthRoute>
+                                    <LoginPage />
+                                </AuthRoute>
+                            }
                         />
-                        <PrivateRoute
-                            component={EditPostPage}
-                            roles={[Role.ADMIN, Role.OWNER]}
+                        <Route
+                            path="/register/*"
+                            element={
+                                <AuthRoute>
+                                    <RegisterPage />
+                                </AuthRoute>
+                            }
+                        />
+                        <Route
+                            path="/profile/*"
+                            element={
+                                <PrivateRoute roles={[Role.OWNER, Role.OWNER_PENDING]}>
+                                    <ProfilePage />
+                                </PrivateRoute>
+                            }
+                        />
+                        <Route
                             path="/post/:id/edit"
+                            element={
+                                <PrivateRoute roles={[Role.ADMIN, Role.OWNER]}>
+                                    <EditPostPage />
+                                </PrivateRoute>
+                            }
                         />
-                        <Route component={NotFound} path="/notfound" />
-                        <Route component={NotFound} />
-                    </Switch>
+                        <Route path="*" element={<NotFound />} />
+                    </Routes>
                 </div>
             </main>
             <Footer />
-        </Router>
+        </>
     );
 };
-
-// Page.propTypes = {
-//     prop: PropTypes
-// }
