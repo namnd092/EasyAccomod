@@ -63,7 +63,14 @@ npm run dev
 
 ## Continuous integration
 
-`.github/workflows/ci.yml` builds the client (including `npm audit`), builds the API and runs the smoke test against a PostgreSQL service for every pull request.
+`.github/workflows/ci.yml` builds the client (including `npm audit` and the Vitest suite), builds the API and runs the smoke test against a PostgreSQL service for every pull request.
+
+## Client tests
+
+```bash
+cd client-app
+npm test
+```
 
 ## Smoke test
 
