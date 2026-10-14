@@ -71,8 +71,9 @@ public class RefreshTokenService
         }
 
         // Anyone who knows a user name can lock that account, so a lockout must not destroy the
-        // session: the token is left untouched and works again once the lockout ends.
-        if (await _userManager.IsLockedOutAsync(user))
+        // session: a usable token is left untouched and works again once the lockout ends. A token that
+        // was already rotated or revoked still goes through the reuse check below.
+        if (token.RevokedAt == null && await _userManager.IsLockedOutAsync(user))
             return RotateResult.Locked;
 
         if (token.RevokedAt == null)

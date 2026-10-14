@@ -302,6 +302,44 @@ public class RefreshTokenTests
     }
 
     [Fact]
+    public async Task A_replayed_old_cookie_is_still_treated_as_reuse_while_the_user_is_locked_out()
+    {
+        using var client = NewClient();
+        var userName = "refresh" + Guid.NewGuid().ToString("N")[..10];
+        (await client.PostAsJsonAsync("/api/Account/RenterRegister", new
+        {
+            Name = "Refresh Tester",
+            UserName = userName,
+            Email = userName + "@test.com",
+            Password = "Abcdef1!",
+            ConfirmPassword = "Abcdef1!",
+        })).EnsureSuccessStatusCode();
+        var first = CookieValue(await LoginAsync(client, userName, "Abcdef1!"));
+        var second = CookieValue(await RefreshAsync(client, first));
+        _factory.Clock.Advance(TimeSpan.FromSeconds(11));
+
+        using (var scope = _factory.Services.CreateScope())
+        {
+            var users = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+            var user = await users.FindByNameAsync(userName);
+            await users.SetLockoutEndDateAsync(user, DateTimeOffset.UtcNow.AddMinutes(5));
+        }
+
+        // The old cookie is not "locked", it is stolen: 401, and the whole session is revoked.
+        var replay = await RefreshAsync(client, first);
+        Assert.Equal(HttpStatusCode.Unauthorized, replay.StatusCode);
+        AssertCookieDeleted(replay);
+
+        using (var scope = _factory.Services.CreateScope())
+        {
+            var users = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+            var user = await users.FindByNameAsync(userName);
+            await users.SetLockoutEndDateAsync(user, null);
+        }
+        Assert.Equal(HttpStatusCode.Unauthorized, (await RefreshAsync(client, second)).StatusCode);
+    }
+
+    [Fact]
     public async Task The_access_token_lives_for_the_configured_minutes()
     {
         using var client = NewClient();
