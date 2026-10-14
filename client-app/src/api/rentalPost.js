@@ -102,8 +102,11 @@ const rentalPost = {
         const url = ApiUrl.POST_LIKE_RENTAL_POST;
         return axiosClient.post(url, { AccommodationRentalPostId: postId });
     },
-    getAllFavoriteRentalPost() {
-        const url = ApiUrl.GET_ALL_FAVORITE_RENTAL_POST;
+    getAllFavoriteRentalPost(_page, _limit) {
+        const url =
+            ApiUrl.GET_ALL_FAVORITE_RENTAL_POST +
+            '?' +
+            queryString.stringify({ _page, _limit });
         return axiosClient.get(url);
     },
     postReport(params) {

@@ -59,7 +59,7 @@ const Header = () => {
                         type="button"
                         aria-controls="navbarSupportedContent"
                         aria-expanded={menuOpen}
-                        aria-label="Toggle navigation"
+                        aria-label="Mở menu"
                         onClick={() => setMenuOpen(!menuOpen)}
                     >
                         <i className="fas fa-bars" style={{ color: 'white' }}></i>
