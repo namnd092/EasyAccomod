@@ -7,7 +7,7 @@ A rental-accommodation website with three roles: Renter, Owner and Admin.
 ## Stack
 
 - Server: ASP.NET Core (net10.0), EF Core, PostgreSQL, ASP.NET Core Identity, JWT bearer
-- Client: React, Material-UI, Redux Toolkit, Vite
+- Client: React 19, MUI 9, Redux Toolkit, Vite
 
 ## Prerequisites
 
