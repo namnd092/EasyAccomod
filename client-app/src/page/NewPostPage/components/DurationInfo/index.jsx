@@ -7,10 +7,10 @@ import {
     TableBody,
     TableCell,
     TableHead,
+    TableRow,
 } from '@mui/material';
 import Select from 'react-select';
 import MySelect from '../../../../share/components/select';
-import { DebounceInput } from 'react-debounce-input';
 import authApi from '../../../../api/authApi';
 import { useSelector } from 'react-redux';
 import { isDisplayByRole } from '../../../../helper/auth';
@@ -117,9 +117,8 @@ function DurationInfo(props) {
                     <input
                         type={'number'}
                         onChange={handleChange}
-                        value={values.numberOfTime}
+                        value={values.numberOfTime ?? 1}
                         name="numberOfTime"
-                        defaultValue={1}
                         className="form-control"
                     />
                     {errors.numberOfTime && touched.numberOfTime && (
@@ -128,14 +127,18 @@ function DurationInfo(props) {
                 </FormGroup>
                 <Table>
                     <TableHead>
-                        <TableCell>Đơn giá</TableCell>
-                        <TableCell>Số {type}</TableCell>
-                        <TableCell>Thành tiền</TableCell>
+                        <TableRow>
+                            <TableCell>Đơn giá</TableCell>
+                            <TableCell>Số {type}</TableCell>
+                            <TableCell>Thành tiền</TableCell>
+                        </TableRow>
                     </TableHead>
                     <TableBody>
-                        <TableCell>{price}</TableCell>
-                        <TableCell>{time}</TableCell>
-                        <TableCell>{time * Number(price)}</TableCell>
+                        <TableRow>
+                            <TableCell>{price}</TableCell>
+                            <TableCell>{time}</TableCell>
+                            <TableCell>{time * Number(price)}</TableCell>
+                        </TableRow>
                     </TableBody>
                 </Table>
             </div>

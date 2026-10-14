@@ -10,7 +10,7 @@ import {
 } from '@mui/material';
 import addressApi from '../../../../api/addressApi';
 import roomApi from '../../../../api/roomApi';
-import { DebounceInput } from 'react-debounce-input';
+import DebouncedInput from '../../../../components/DebouncedInput';
 import MySelect from '../../../../share/components/select';
 
 BasicInfo.propTypes = {
@@ -140,7 +140,7 @@ function BasicInfo(props) {
             <div className="card-body">
                 <FormGroup>
                     <FormLabel>Tiêu đề</FormLabel>
-                    <DebounceInput
+                    <DebouncedInput
                         type="text"
                         name="title"
                         className="form-control"
@@ -158,7 +158,7 @@ function BasicInfo(props) {
                 <div className="row">
                     <FormGroup className="col-3">
                         <FormLabel>Số lượng phòng</FormLabel>
-                        <DebounceInput
+                        <DebouncedInput
                             type="number"
                             name="roomQuantity"
                             className="form-control"
@@ -190,7 +190,7 @@ function BasicInfo(props) {
                     </FormGroup>
                     <FormGroup className="col-5">
                         <FormLabel>Số nhà, Đường</FormLabel>
-                        <DebounceInput
+                        <DebouncedInput
                             type="text"
                             name="street"
                             className="form-control"
@@ -209,7 +209,7 @@ function BasicInfo(props) {
                 </div>
                 <FormGroup>
                     <FormLabel>Gần địa điểm công cộng</FormLabel>
-                    <DebounceInput
+                    <DebouncedInput
                         type="text"
                         className="form-control"
                         name="publicLocationNearby"
@@ -273,7 +273,7 @@ function BasicInfo(props) {
                 <div className="row">
                     <FormGroup className="col-8">
                         <FormLabel>Giá tiền(vnd)</FormLabel>
-                        <DebounceInput
+                        <DebouncedInput
                             type={'number'}
                             className="form-control"
                             name="roomPrice"
@@ -366,18 +366,12 @@ function BasicInfo(props) {
                     <div className="row">
                         <FormGroup className="col-6">
                             <FormLabel>Giá điện</FormLabel>
-                            <DebounceInput
+                            <DebouncedInput
                                 type="number"
                                 name="electricityPrice"
                                 className="form-control"
                                 defaultValue={0}
                                 onChange={handleChange}
-                                values={
-                                    defaultValue
-                                        ? defaultValue.accommodation
-                                              .electricityPrice
-                                        : values.electricityPrice
-                                }
                             />
                             {errors.electricityPrice &&
                                 touched.electricityPrice && (
@@ -388,17 +382,12 @@ function BasicInfo(props) {
                         </FormGroup>
                         <FormGroup className="col-6">
                             <FormLabel>Giá nước</FormLabel>
-                            <DebounceInput
+                            <DebouncedInput
                                 type="number"
                                 name="waterPrice"
                                 className="form-control"
                                 defaultValue={0}
                                 onChange={handleChange}
-                                values={
-                                    defaultValue
-                                        ? defaultValue.accommodation.waterPrice
-                                        : values.waterPrice
-                                }
                             />
                             {errors.waterPrice && touched.waterPrice && (
                                 <span className="error">
@@ -413,7 +402,6 @@ function BasicInfo(props) {
                     <Checkbox
                         name="liveWithOwner"
                         onChange={handleChange}
-                        values={values.liveWithOwner}
                     />
                 </FormGroup>
                 <FormGroup>
@@ -421,7 +409,6 @@ function BasicInfo(props) {
                     <Checkbox
                         name="closeBathroom"
                         onChange={handleChange}
-                        values={values.closeBathroom}
                     />
                 </FormGroup>
                 <FormGroup>
@@ -429,7 +416,6 @@ function BasicInfo(props) {
                     <Checkbox
                         name="haveWaterHeader"
                         onChange={handleChange}
-                        values={values.haveWaterHeader}
                     />
                 </FormGroup>
                 <FormGroup>
@@ -437,7 +423,6 @@ function BasicInfo(props) {
                     <Checkbox
                         name="haveAirCondition"
                         onChange={handleChange}
-                        values={values.haveAirCondition}
                     />
                 </FormGroup>
                 <FormGroup>
@@ -445,13 +430,12 @@ function BasicInfo(props) {
                     <Checkbox
                         name="haveBalcony"
                         onChange={handleChange}
-                        values={values.haveBalcony}
                     />
                 </FormGroup>
 
                 <FormGroup>
                     <FormLabel>Tiện ích khác</FormLabel>
-                    <DebounceInput
+                    <DebouncedInput
                         type="text"
                         className="form-control"
                         name="roomOption"

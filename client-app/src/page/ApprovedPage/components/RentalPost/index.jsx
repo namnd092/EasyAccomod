@@ -175,7 +175,9 @@ const RenterPost = (props) => {
                     <tbody>
                         {optionValue === 1 ? (
                             postListPending.length === 0 ? (
-                                <p>Không có bài viết nào</p>
+                                <tr>
+                                    <td colSpan={6}>Không có bài viết nào</td>
+                                </tr>
                             ) : (
                                 postListPending.map((item, index) => (
                                     <RentalPostItemPending
@@ -192,7 +194,9 @@ const RenterPost = (props) => {
                             )
                         ) : optionValue === 2 ? (
                             postListSuccess.length === 0 ? (
-                                <p>Không có bài viết nào</p>
+                                <tr>
+                                    <td colSpan={6}>Không có bài viết nào</td>
+                                </tr>
                             ) : (
                                 postListSuccess.map((item, index) => (
                                     <RentalPostItem
@@ -207,7 +211,9 @@ const RenterPost = (props) => {
                             )
                         ) : optionValue === 3 ? (
                             postListReject.length === 0 ? (
-                                <p>Không có bài viết nào</p>
+                                <tr>
+                                    <td colSpan={6}>Không có bài viết nào</td>
+                                </tr>
                             ) : (
                                 postListReject.map((item, index) => (
                                     <RentalPostItemReject
@@ -222,7 +228,9 @@ const RenterPost = (props) => {
                                 ))
                             )
                         ) : allPost.length === 0 ? (
-                            <p>Không có bài viết nào</p>
+                            <tr>
+                                    <td colSpan={6}>Không có bài viết nào</td>
+                                </tr>
                         ) : (
                             allPost.map((item, index) => (
                                 <RentalPostItem
@@ -250,7 +258,9 @@ const RenterPost = (props) => {
                     </thead>
                     <tbody>
                         {postListReject.length === 0 ? (
-                            <p>Không có bài viết nào</p>
+                            <tr>
+                                    <td colSpan={6}>Không có bài viết nào</td>
+                                </tr>
                         ) : (
                             postListReject.map((item, index) => (
                                 <RentalPostItemReject
@@ -278,7 +288,9 @@ const RenterPost = (props) => {
                     </thead>
                     <tbody>
                         {postListSuccess.length === 0 ? (
-                            <p>Không có bài viết nào</p>
+                            <tr>
+                                    <td colSpan={6}>Không có bài viết nào</td>
+                                </tr>
                         ) : (
                             postListSuccess.map((item, index) => (
                                 <RentalPostItem

@@ -42,6 +42,21 @@ test.describe('owner', () => {
         await expect(row).toContainText('Thành phố Hà Nội');
     });
 
+    test('new post form validates what was typed into the debounced inputs', async ({ page }) => {
+        await loginViaUi(page, accounts.owner);
+        await page.goto('/newpost');
+        const title = page.locator('input[name="title"]');
+        await title.fill('too short');
+        await page.getByRole('button', { name: /Đăng Tin/ }).click();
+        // The "min length" message (not "required") proves the typed text reached the form state.
+        await expect(page.getByText('Tiêu đề phải dài ít nhất 30 ký tự')).toBeVisible();
+
+        await title.fill('A title that is comfortably longer than thirty characters');
+        await page.getByRole('button', { name: /Đăng Tin/ }).click();
+        await expect(page.getByText('Tiêu đề phải dài ít nhất 30 ký tự')).toHaveCount(0);
+        await expect(title).toHaveValue('A title that is comfortably longer than thirty characters');
+    });
+
     test('is blocked from the admin page', async ({ page }) => {
         await loginViaUi(page, accounts.owner);
         await page.goto('/approved');
