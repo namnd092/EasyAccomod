@@ -21,6 +21,7 @@ vi.mock('../../api/roomApi', () => ({
         getAllRoomAreaType: vi.fn(),
         getAllRoomType: vi.fn(),
         getAllKitchenType: vi.fn(),
+        getAllPaymentType: vi.fn(),
     },
 }));
 
@@ -37,6 +38,11 @@ beforeEach(() => {
     roomApi.getAllRoomAreaType.mockResolvedValue([]);
     roomApi.getAllRoomType.mockResolvedValue([]);
     roomApi.getAllKitchenType.mockResolvedValue([]);
+    roomApi.getAllPaymentType.mockResolvedValue([
+        { id: 1, name: 'Tháng' },
+        { id: 2, name: 'Quý' },
+    ]);
+    window.scrollTo = vi.fn();
 });
 
 describe('HomePage', () => {
@@ -175,5 +181,44 @@ describe('HomePage', () => {
         await waitFor(() => expect(lastQuery().get('maxPrice')).toBe('0'));
         expect(lastQuery().get('minPrice')).toBe('0');
         expect(screen.getByRole('button', { name: '1 triệu - 2 triệu' })).toHaveAttribute('aria-pressed', 'false');
+    });
+
+    it('filters by the payment type that was chosen', async () => {
+        renderWithProviders(<HomePage />);
+        await searchButtonReady();
+        await userEvent.click(screen.getByRole('button', { name: 'Tìm kiếm cơ bản' }));
+        await userEvent.click(screen.getByLabelText('Hình thức thanh toán'));
+        await userEvent.click(await screen.findByText('Quý'));
+        await userEvent.click(searchButton());
+        await waitFor(() => expect(lastQuery().get('paymentTypeId')).toBe('2'));
+    });
+
+    it('shows the payment type that came from the URL', async () => {
+        renderWithProviders(<HomePage />, { route: '/?paymentTypeId=2' });
+        await searchButtonReady();
+        expect(await screen.findByText('Quý')).toBeInTheDocument();
+        expect(lastQuery().get('paymentTypeId')).toBe('2');
+    });
+
+    it('scrolls back to the top when the page changes', async () => {
+        renderWithProviders(<HomePage />);
+        await searchButtonReady();
+        await userEvent.click(screen.getByRole('button', { name: '2' }));
+        await waitFor(() => expect(lastQuery().get('_page')).toBe('2'));
+        expect(window.scrollTo).toHaveBeenCalledWith(expect.objectContaining({ top: 0 }));
+    });
+
+    it('does not scroll when the page is first shown', async () => {
+        renderWithProviders(<HomePage />, { route: '/?page=2' });
+        await searchButtonReady();
+        expect(window.scrollTo).not.toHaveBeenCalled();
+    });
+
+    it('searches again when the same filters are searched once more', async () => {
+        renderWithProviders(<HomePage />, { route: '/?provinceId=1' });
+        await searchButtonReady();
+        const before = rentalPostApi.getPostBySearch.mock.calls.length;
+        await userEvent.click(searchButton());
+        await waitFor(() => expect(rentalPostApi.getPostBySearch.mock.calls.length).toBe(before + 1));
     });
 });

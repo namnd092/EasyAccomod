@@ -24,6 +24,7 @@ const BASIC_FIELDS = [
     'districtId',
     'wardId',
     'accommodationTypeId',
+    'paymentTypeId',
     'minPrice',
     'maxPrice',
     'roomAreaRangeId',
@@ -36,6 +37,7 @@ const loadDistricts = (provinceId) => addressApi.getDistrictByProvinceId(provinc
 const loadWards = (districtId) => addressApi.getWardByDistrictID(districtId);
 const loadRoomTypes = () => roomApi.getAllRoomType();
 const loadRoomAreas = () => roomApi.getAllRoomAreaType();
+const loadPaymentTypes = () => roomApi.getAllPaymentType();
 const loadKitchenTypes = () => roomApi.getAllKitchenType();
 const nameOption = ({ id, name }) => ({ value: id, label: name });
 const rangeOption = ({ id, range }) => ({ value: id, label: range });
@@ -81,7 +83,7 @@ function FilterSelect({ label, value, options, onChange, searchable = false, cla
 function TextFilter({ label, value, onChange }) {
     const id = React.useId();
     return (
-        <FormGroup className="col-span-12 lg:col-span-6">
+        <FormGroup className="col-span-12 md:col-span-6 xl:col-span-4">
             <FormLabel htmlFor={id}>{label}</FormLabel>
             <input id={id} className={inputClass} value={value} onChange={(e) => onChange(e.target.value)} />
         </FormGroup>
@@ -105,6 +107,7 @@ function SearchForm({ filters, activeCount, onSubmit, onClear, isLoading }) {
     const wards = useOptions(loadWards, nameOption, draft.districtId);
     const roomTypes = useOptions(loadRoomTypes, nameOption);
     const roomAreas = useOptions(loadRoomAreas, rangeOption);
+    const paymentTypes = useOptions(loadPaymentTypes, nameOption);
     const kitchenTypes = useOptions(loadKitchenTypes, nameOption);
 
     const changeProvince = (provinceId) => setDraft((current) => ({ ...current, provinceId, districtId: 0, wardId: 0 }));
@@ -136,6 +139,7 @@ function SearchForm({ filters, activeCount, onSubmit, onClear, isLoading }) {
                         <FilterSelect label="Xã/Phường" value={draft.wardId} options={wards} onChange={setField('wardId')} searchable />
                         <FilterSelect label="Loại phòng" value={draft.accommodationTypeId} options={roomTypes} onChange={setField('accommodationTypeId')} searchable />
                         <FilterSelect label="Mức giá" value={priceRangeValue(draft)} options={PRICE_RANGES} onChange={changePrice} />
+                        <FilterSelect label="Hình thức thanh toán" value={draft.paymentTypeId} options={paymentTypes} onChange={setField('paymentTypeId')} />
                         <FilterSelect label="Diện tích" value={draft.roomAreaRangeId} options={roomAreas} onChange={setField('roomAreaRangeId')} />
                         <TextFilter label="Đường/Số nhà" value={draft.street} onChange={setField('street')} />
                         <TextFilter label="Gần địa điểm nào" value={draft.publicLocationNearby} onChange={setField('publicLocationNearby')} />

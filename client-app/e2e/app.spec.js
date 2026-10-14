@@ -39,6 +39,16 @@ test.describe('visitor', () => {
         await expect(page.getByText(post.title)).toHaveCount(0);
     });
 
+    test('narrows the search by payment type', async ({ page, request }) => {
+        // The post is paid monthly (payment type 1).
+        const post = await createPost(request, { approved: true });
+        await page.goto('/?paymentTypeId=1&sort=newest');
+        await expect(page.getByText(post.title).first()).toBeVisible();
+        await page.goto('/?paymentTypeId=2&sort=newest');
+        await expect(page.getByText('Đang áp dụng 1 bộ lọc')).toBeVisible();
+        await expect(page.getByText(post.title)).toHaveCount(0);
+    });
+
     test('falls back to the first page when the URL asks for a page that does not exist', async ({ page }) => {
         await page.goto('/?page=9999');
         await expect(page).toHaveURL(/\/$/);

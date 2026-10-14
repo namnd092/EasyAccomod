@@ -1,6 +1,6 @@
 import React from 'react';
 import queryString from 'query-string';
-import { useSearchParams } from 'react-router-dom';
+import { useLocation, useSearchParams } from 'react-router-dom';
 import SearchForm from './components/SearchForm';
 import PostList, { PostListSkeleton } from './components/PostList';
 import HomePagination from './components/HomePagination';
@@ -23,6 +23,8 @@ const DONG_PER_MILLION = 1_000_000;
 // The filters and the page live in the URL, so a refresh, the back button and a shared link keep the search.
 export const HomePage = () => {
     const [searchParams, setSearchParams] = useSearchParams();
+    // Every navigation gets a new key, even to the same URL, so searching again reloads the results.
+    const { key: navigationKey } = useLocation();
     const [maxPage, setMaxPage] = React.useState(0);
     const [totalCount, setTotalCount] = React.useState(0);
     const [postList, setPostList] = React.useState([]);
@@ -78,7 +80,7 @@ export const HomePage = () => {
         return () => {
             ignore = true;
         };
-    }, [search]);
+    }, [search, navigationKey]);
 
     // A new search or sort order always starts on the first page; the sort order outlives the filters.
     const handleFilterChange = (values) => {
@@ -86,6 +88,7 @@ export const HomePage = () => {
     };
     const handlePageChange = (nextPage) => {
         setSearchParams(filtersToParams(filters, nextPage, sort));
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     };
     const handleClear = () => {
         setSearchParams(filtersToParams(DEFAULT_FILTERS, 1, sort));
