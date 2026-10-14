@@ -67,7 +67,14 @@ public class AccountController : ApiControllerBase
     public async Task<IActionResult> Refresh()
     {
         var rawToken = Request.Cookies[RefreshTokenService.CookieName];
-        var refreshToken = string.IsNullOrEmpty(rawToken) ? null : await _refreshTokens.RotateAsync(rawToken);
+        var result = string.IsNullOrEmpty(rawToken) ? RotateResult.Rejected : await _refreshTokens.RotateAsync(rawToken);
+        if (result.IsLocked)
+        {
+            // The session is intact (the cookie is kept); the client should not log the user out.
+            return StatusCode(StatusCodes.Status423Locked);
+        }
+
+        var refreshToken = result.Token;
         if (refreshToken == null)
         {
             DeleteRefreshCookie();

@@ -54,21 +54,26 @@ public class RefreshTokenService
     // Starts a new family (a new login).
     public Task<IssuedRefreshToken> StartSessionAsync(string userId) => IssueAsync(userId, Guid.NewGuid());
 
-    // Exchanges a refresh token for a new one, or returns null when it cannot be used.
-    public async Task<IssuedRefreshToken> RotateAsync(string rawToken)
+    // Exchanges a refresh token for a new one.
+    public async Task<RotateResult> RotateAsync(string rawToken)
     {
         var now = Now();
         var hash = Hash(rawToken);
         var token = await _context.RefreshTokens.FirstOrDefaultAsync(t => t.TokenHash == hash);
         if (token == null || token.ExpiresAt <= now)
-            return null;
+            return RotateResult.Rejected;
 
         var user = await _userManager.FindByIdAsync(token.UserId);
-        if (user == null || await _userManager.IsLockedOutAsync(user))
+        if (user == null)
         {
             await RevokeFamilyAsync(token.FamilyId, now);
-            return null;
+            return RotateResult.Rejected;
         }
+
+        // Anyone who knows a user name can lock that account, so a lockout must not destroy the
+        // session: the token is left untouched and works again once the lockout ends.
+        if (await _userManager.IsLockedOutAsync(user))
+            return RotateResult.Locked;
 
         if (token.RevokedAt == null)
         {
@@ -82,7 +87,7 @@ public class RefreshTokenService
                 await _context.RefreshTokens
                     .Where(t => t.Id == token.Id)
                     .ExecuteUpdateAsync(s => s.SetProperty(t => t.ReplacedByTokenId, next.TokenId));
-                return next with { User = user };
+                return RotateResult.Issued(next with { User = user });
             }
 
             // Another request rotated it between the read and the update.
@@ -95,11 +100,11 @@ public class RefreshTokenService
             && now - rotatedAt < TimeSpan.FromSeconds(_settings.ReuseGraceSeconds)
             && await FamilyIsAliveAsync(token.FamilyId, now))
         {
-            return (await IssueAsync(token.UserId, token.FamilyId)) with { User = user };
+            return RotateResult.Issued((await IssueAsync(token.UserId, token.FamilyId)) with { User = user });
         }
 
         await RevokeFamilyAsync(token.FamilyId, now);
-        return null;
+        return RotateResult.Rejected;
     }
 
     // Ends the session the token belongs to. Unknown tokens are ignored.
@@ -152,3 +157,13 @@ public class RefreshTokenService
 }
 
 public record IssuedRefreshToken(string RawToken, DateTime ExpiresAt, int TokenId, ApplicationUser User);
+
+// Token is set when the refresh succeeded. Otherwise the token was unusable (Rejected) or its
+// owner is locked out for now (Locked).
+public record RotateResult(IssuedRefreshToken Token, bool IsLocked)
+{
+    public static readonly RotateResult Rejected = new(null, false);
+    public static readonly RotateResult Locked = new(null, true);
+
+    public static RotateResult Issued(IssuedRefreshToken token) => new(token, false);
+}

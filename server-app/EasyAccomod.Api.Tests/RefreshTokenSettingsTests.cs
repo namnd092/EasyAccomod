@@ -18,7 +18,7 @@ public class RefreshTokenSettingsTests
 
         Assert.Equal(SameSiteMode.Strict, settings.SameSite);
         Assert.True(settings.Secure);
-        Assert.Equal(10, settings.ReuseGraceSeconds);
+        Assert.Equal(0, settings.ReuseGraceSeconds);
     }
 
     [Fact]
@@ -33,11 +33,11 @@ public class RefreshTokenSettingsTests
         var settings = RefreshTokenSettings.Load(Config(
             ("Auth:RefreshCookieSameSite", "None"),
             ("Auth:RefreshCookieSecure", "true"),
-            ("Auth:RefreshReuseGraceSeconds", "0")), isDevelopment: true);
+            ("Auth:RefreshReuseGraceSeconds", "5")), isDevelopment: true);
 
         Assert.Equal(SameSiteMode.None, settings.SameSite);
         Assert.True(settings.Secure);
-        Assert.Equal(0, settings.ReuseGraceSeconds);
+        Assert.Equal(5, settings.ReuseGraceSeconds);
     }
 
     [Fact]

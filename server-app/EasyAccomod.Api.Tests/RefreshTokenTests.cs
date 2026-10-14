@@ -264,7 +264,7 @@ public class RefreshTokenTests
     }
 
     [Fact]
-    public async Task A_locked_out_user_cannot_refresh()
+    public async Task A_locked_out_user_cannot_refresh_but_keeps_the_session_for_after_the_lockout()
     {
         using var client = NewClient();
         var userName = "refresh" + Guid.NewGuid().ToString("N")[..10];
@@ -286,7 +286,19 @@ public class RefreshTokenTests
             await users.SetLockoutEndDateAsync(user, DateTimeOffset.UtcNow.AddMinutes(5));
         }
 
-        Assert.Equal(HttpStatusCode.Unauthorized, (await RefreshAsync(client, cookie)).StatusCode);
+        // Locked, not logged out: the cookie is not cleared and the token is not revoked.
+        var locked = await RefreshAsync(client, cookie);
+        Assert.Equal(HttpStatusCode.Locked, locked.StatusCode);
+        Assert.Null(SetCookieHeader(locked));
+
+        using (var scope = _factory.Services.CreateScope())
+        {
+            var users = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+            var user = await users.FindByNameAsync(userName);
+            await users.SetLockoutEndDateAsync(user, null);
+        }
+
+        Assert.Equal(HttpStatusCode.OK, (await RefreshAsync(client, cookie)).StatusCode);
     }
 
     [Fact]
