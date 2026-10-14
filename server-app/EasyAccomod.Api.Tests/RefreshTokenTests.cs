@@ -10,7 +10,9 @@ using EasyAccomod.Api.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.IdentityModel.Tokens;
 
 namespace EasyAccomod.Api.Tests;
@@ -337,6 +339,46 @@ public class RefreshTokenTests
             await users.SetLockoutEndDateAsync(user, null);
         }
         Assert.Equal(HttpStatusCode.Unauthorized, (await RefreshAsync(client, second)).StatusCode);
+    }
+
+    // Presents the same cookie from `parallel` requests at once, `rounds` times, with a new login each round.
+    private static async Task<List<HttpStatusCode[]>> RaceAsync(HttpClient client, int rounds, int parallel)
+    {
+        var results = new List<HttpStatusCode[]>();
+        for (var round = 0; round < rounds; round++)
+        {
+            var cookie = CookieValue(await LoginAsync(client));
+            var responses = await Task.WhenAll(Enumerable.Range(0, parallel).Select(_ => RefreshAsync(client, cookie)));
+            results.Add(responses.Select(r => r.StatusCode).ToArray());
+        }
+        return results;
+    }
+
+    [Fact]
+    public async Task Tabs_racing_with_the_same_cookie_inside_the_grace_all_get_a_session()
+    {
+        using var client = NewClient();
+
+        foreach (var statuses in await RaceAsync(client, rounds: 15, parallel: 6))
+            Assert.All(statuses, status => Assert.Equal(HttpStatusCode.OK, status));
+    }
+
+    [Fact]
+    public async Task With_no_grace_only_one_of_several_simultaneous_refreshes_wins()
+    {
+        using var strict = _factory.WithWebHostBuilder(builder => builder.ConfigureTestServices(services =>
+        {
+            services.RemoveAll<RefreshTokenSettings>();
+            services.AddSingleton(new RefreshTokenSettings { Secure = false, ReuseGraceSeconds = 0 });
+        }));
+        using var client = strict.CreateClient(new WebApplicationFactoryClientOptions { HandleCookies = false });
+        Assert.Equal(0, strict.Services.GetRequiredService<RefreshTokenSettings>().ReuseGraceSeconds);
+
+        foreach (var statuses in await RaceAsync(client, rounds: 15, parallel: 6))
+        {
+            Assert.True(statuses.Count(s => s == HttpStatusCode.OK) == 1, string.Join(",", statuses));
+            Assert.All(statuses.Where(s => s != HttpStatusCode.OK), s => Assert.Equal(HttpStatusCode.Unauthorized, s));
+        }
     }
 
     [Fact]

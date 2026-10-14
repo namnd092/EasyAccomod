@@ -16,7 +16,7 @@ function ApprovedPage() {
             <div>
                 <Tabs
                     className="approvedPage__appBar"
-                    tabs={['Bài Đăng', 'Tài Khoản', 'Comment', 'Gia hạn', 'Report']}
+                    tabs={['Bài Đăng', 'Tài Khoản', 'Bình luận', 'Gia hạn', 'Phản hồi']}
                     value={value}
                     onChange={setValue}
                 />

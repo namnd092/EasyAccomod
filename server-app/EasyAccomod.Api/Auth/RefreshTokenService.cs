@@ -79,16 +79,22 @@ public class RefreshTokenService
         if (token.RevokedAt == null)
         {
             // Claim the token with one conditional update so two concurrent requests cannot both rotate it.
-            var claimed = await _context.RefreshTokens
-                .Where(t => t.Id == token.Id && t.RevokedAt == null)
-                .ExecuteUpdateAsync(s => s.SetProperty(t => t.RevokedAt, now).SetProperty(t => t.RotatedAt, now));
-            if (claimed == 1)
+            // Claiming and issuing the replacement commit together: a request that loses the claim waits on
+            // the row lock, so by the time it runs the replacement exists and the session counts as alive.
+            await using (var transaction = await _context.Database.BeginTransactionAsync())
             {
-                var next = await IssueAsync(token.UserId, token.FamilyId);
-                await _context.RefreshTokens
-                    .Where(t => t.Id == token.Id)
-                    .ExecuteUpdateAsync(s => s.SetProperty(t => t.ReplacedByTokenId, next.TokenId));
-                return RotateResult.Issued(next with { User = user });
+                var claimed = await _context.RefreshTokens
+                    .Where(t => t.Id == token.Id && t.RevokedAt == null)
+                    .ExecuteUpdateAsync(s => s.SetProperty(t => t.RevokedAt, now).SetProperty(t => t.RotatedAt, now));
+                if (claimed == 1)
+                {
+                    var next = await IssueAsync(token.UserId, token.FamilyId);
+                    await _context.RefreshTokens
+                        .Where(t => t.Id == token.Id)
+                        .ExecuteUpdateAsync(s => s.SetProperty(t => t.ReplacedByTokenId, next.TokenId));
+                    await transaction.CommitAsync();
+                    return RotateResult.Issued(next with { User = user });
+                }
             }
 
             // Another request rotated it between the read and the update.
@@ -97,8 +103,11 @@ public class RefreshTokenService
 
         // Already rotated or revoked. Right after a rotation this is two tabs racing, so the
         // session stays alive; a token revoked by logout (no RotatedAt) or rotated longer ago is reuse.
-        if (token.RotatedAt is { } rotatedAt
-            && now - rotatedAt < TimeSpan.FromSeconds(_settings.ReuseGraceSeconds)
+        // Without a grace nothing qualifies (a request that started earlier than the rotation would otherwise
+        // measure a negative age, which is below any limit).
+        if (_settings.ReuseGraceSeconds > 0
+            && token.RotatedAt is { } rotatedAt
+            && Now() - rotatedAt < TimeSpan.FromSeconds(_settings.ReuseGraceSeconds)
             && await FamilyIsAliveAsync(token.FamilyId, now))
         {
             return RotateResult.Issued((await IssueAsync(token.UserId, token.FamilyId)) with { User = user });

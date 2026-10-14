@@ -37,7 +37,7 @@ const Comment = () => {
     };
     return (
         <div>
-            <Card title="Comment đang chờ xác nhận">
+            <Card title="Bình luận đang chờ xác nhận">
                 <table className={tableClass}>
                     <thead>
                         <tr>

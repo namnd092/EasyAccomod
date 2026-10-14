@@ -54,7 +54,7 @@ function DurationInfo() {
                 setOwnerArr(
                     [...owners].map((e) => ({
                         value: e.id,
-                        label: `Tên: ${e.name} - CMND: ${e.identification} - Phone: ${e.phone}`,
+                        label: `Tên: ${e.name} - CMND: ${e.identification} - SĐT: ${e.phone}`,
                         ...e,
                     }))
                 );

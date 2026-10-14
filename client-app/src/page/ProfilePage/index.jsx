@@ -84,7 +84,7 @@ function ProfilePage() {
                         </FormGroup>
                     </div>
                     <FormGroup>
-                        <FormLabel htmlFor="profile-address">Address</FormLabel>
+                        <FormLabel htmlFor="profile-address">Địa chỉ</FormLabel>
                         <input
                             id="profile-address"
                             className={inputClass}
@@ -94,7 +94,7 @@ function ProfilePage() {
                     </FormGroup>
                     <div className="grid grid-cols-12 gap-x-4">
                         <FormGroup className="col-span-6">
-                            <FormLabel htmlFor="profile-phone">Phone</FormLabel>
+                            <FormLabel htmlFor="profile-phone">Số điện thoại</FormLabel>
                             <input
                                 id="profile-phone"
                                 className={inputClass}
@@ -104,7 +104,7 @@ function ProfilePage() {
                             />
                         </FormGroup>
                         <FormGroup className="col-span-6">
-                            <FormLabel htmlFor="profile-identification">Identification</FormLabel>
+                            <FormLabel htmlFor="profile-identification">Số CMND/CCCD</FormLabel>
                             <input
                                 id="profile-identification"
                                 className={inputClass}
