@@ -38,9 +38,11 @@ public class NotificationController : ApiControllerBase
     [HttpPut("Check")]
     public async Task<IActionResult> CheckNotification(NotificationId notificationId)
     {
-        var notification = await _context.Notifications.SingleOrDefaultAsync(n => n.Id == notificationId.Id);
+        var accountId = AccountId;
+        var notification = await _context.Notifications
+            .SingleOrDefaultAsync(n => n.Id == notificationId.Id && n.AccountId == accountId);
         if (notification == null)
-            return BadRequest("Notification not found.");
+            return NotFound("Notification not found.");
 
         notification.HasBeenChecked = true;
         await _context.SaveChangesAsync();
