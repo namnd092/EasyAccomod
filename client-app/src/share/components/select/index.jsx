@@ -1,24 +1,30 @@
 import React from 'react';
 import Select from 'react-select';
-const MySelect = (props) => {
-    const { name, options, values, onChange, onBlur, defaultValue } = props;
-    const handleChange = (value) => {
-        onChange(name, value);
-    };
-    const handleBlur = (value) => {
-        onBlur(name, true);
-    };
+import { Controller, useFormContext } from 'react-hook-form';
+
+// A react-select bound to the surrounding react-hook-form field `name`.
+// `onChange` is called with the chosen option after the form value is updated.
+const MySelect = ({ name, options, onChange, inputId }) => {
+    const { control } = useFormContext();
     return (
-        <div>
-            <Select
-                options={options}
-                value={values}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                name={name}
-                defaultValue={defaultValue}
-            />
-        </div>
+        <Controller
+            name={name}
+            control={control}
+            render={({ field }) => (
+                <Select
+                    ref={field.ref}
+                    inputId={inputId}
+                    name={name}
+                    options={options}
+                    value={field.value}
+                    onChange={(option) => {
+                        field.onChange(option);
+                        onChange?.(option);
+                    }}
+                    onBlur={field.onBlur}
+                />
+            )}
+        />
     );
 };
 

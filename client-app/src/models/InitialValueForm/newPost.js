@@ -6,6 +6,7 @@ const newPostInitialValue = {
     ward: null,
     street: '',
     roomPrice: 0,
+    roomPaymentType: null,
     roomArea: {},
     roomQuantity: 0,
     liveWithOwner: false,

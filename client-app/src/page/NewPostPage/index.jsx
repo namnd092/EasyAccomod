@@ -1,5 +1,6 @@
 import React from 'react';
-import { Form, Formik } from 'formik';
+import { FormProvider, useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
 import BasicInfo from './components/BasicInfo';
 import DescriptionInfo from './components/DescriptionInfo';
 import ImgInfo from './components/ImgInfo';
@@ -21,6 +22,11 @@ function NewPostPage(props) {
     const { role } = user;
 
     const [isLoading, setIsLoading] = React.useState(false);
+    const methods = useForm({
+        defaultValues: newPostInitialValue,
+        resolver: yupResolver(newPostValidationSchema),
+        mode: 'onTouched',
+    });
     const handleSubmit = async (values) => {
         //event.preventDefault();
         console.log(values);
@@ -53,70 +59,20 @@ function NewPostPage(props) {
                     <PostingTutorial />
                 </div>
                 <div className="col-span-12 lg:col-span-8">
-                    <Formik
-                        initialValues={newPostInitialValue}
-                        onSubmit={(value) => handleSubmit(value)}
-                        validationSchema={newPostValidationSchema}
-                    >
-                        {({
-                            errors,
-                            touched,
-                            isValid,
-                            values,
-                            handleChange,
-                            handleBlur,
-                            setFieldTouched,
-                            setFieldValue,
-                        }) => (
-                            <Form>
-                                <BasicInfo
-                                    handleChange={handleChange}
-                                    errors={errors}
-                                    touched={touched}
-                                    values={values}
-                                    setFieldTouched={setFieldTouched}
-                                    setFieldValue={setFieldValue}
-                                />
-                                <DescriptionInfo
-                                    name="description"
-                                    errors={errors}
-                                    touched={touched}
-                                    values={values}
-                                    setFieldValue={setFieldValue}
-                                    handleChange={handleChange}
-                                    handleBlur={handleBlur}
-                                />
-                                <ImgInfo
-                                    errors={errors}
-                                    touched={touched}
-                                    setFieldValue={setFieldValue}
-                                    name="roomImageArr"
-                                />
-                                <DurationInfo
-                                    handleChange={handleChange}
-                                    errors={errors}
-                                    touched={touched}
-                                    values={values}
-                                    setFieldTouched={setFieldTouched}
-                                    setFieldValue={setFieldValue}
-                                />
-                                <div
-                                    style={{
-                                        display: 'flex',
-                                        justifyContent: 'center',
-                                    }}
-                                >
-                                    <Button
-                                        type="submit" size="lg"
-                                        style={{ margin: '20px' }}
-                                    >
-                                        <i className="fas fa-paper-plane mr-2.5"></i>
-                                        Đăng Tin
-                                    </Button>
-                                </div>
-                            </Form>
-                        )}
-                    </Formik>
+                    <FormProvider {...methods}>
+                        <form onSubmit={methods.handleSubmit(handleSubmit)}>
+                            <BasicInfo />
+                            <DescriptionInfo />
+                            <ImgInfo name="roomImageArr" />
+                            <DurationInfo />
+                            <div className="flex justify-center">
+                                <Button type="submit" size="lg" className="m-5">
+                                    <i className="fas fa-paper-plane mr-2.5"></i>
+                                    Đăng Tin
+                                </Button>
+                            </div>
+                        </form>
+                    </FormProvider>
                 </div>
             </div>
             {isLoading && (

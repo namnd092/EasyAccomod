@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Form, Formik } from 'formik';
+import { useForm } from 'react-hook-form';
 import Select from 'react-select';
 import { useState } from 'react';
 import addressApi from '../../../../api/addressApi';
@@ -200,303 +200,274 @@ function SearchFrom(props) {
         setFilterValues({ ...filterValues, minPrice, maxPrice });
     };
 
-    const handleSubmit = (value) => {
-        props.onSubmit(filterValues);
+    // The two text inputs are registered with react-hook-form; the selects keep living in filterValues.
+    const { register, handleSubmit } = useForm({
+        defaultValues: { street: '', publicLocationNearby: '' },
+    });
+    const submitFilters = (textValues) => {
+        props.onSubmit({ ...filterValues, ...textValues });
     };
 
     return (
-        <Formik
-            onSubmit={(value) => handleSubmit(value)}
-            initialValues={initialValues}
-        >
-            {({ handleChange, handleBlur, handleSubmit, values }) => (
-                <Form>
-                    <div className="flex flex-col gap-3">
-                            <Collapsible title="Tìm kiếm cơ bản" defaultOpen={isDesktop}>
-                                    <div style={{ width: '100%' }}>
-                                        <div className="grid grid-cols-12 gap-x-4">
-                                            <FormGroup className="col-span-12 md:col-span-6 xl:col-span-4">
-                                                <FormLabel>
-                                                    Tỉnh/Thành phố
-                                                </FormLabel>
-                                                <Select
-                                                    defaultValue={
-                                                        provinceData[0]
-                                                    }
-                                                    value={provinceData.find(
-                                                        (e) =>
-                                                            e.value ===
-                                                            filterValues.provinceId
-                                                    )}
-                                                    options={provinceData}
-                                                    name="provinceId"
-                                                    onChange={(value) =>
-                                                        handleProvinceChange(
-                                                            value
-                                                        )
-                                                    }
-                                                />
-                                            </FormGroup>
-                                            <FormGroup className="col-span-12 md:col-span-6 xl:col-span-4">
-                                                <FormLabel>
-                                                    Quận/Huyện
-                                                </FormLabel>
-                                                <Select
-                                                    defaultValue={
-                                                        filterValues.districtId
-                                                    }
-                                                    value={districtData.find(
-                                                        (e) =>
-                                                            e.value ===
-                                                            filterValues.districtId
-                                                    )}
-                                                    options={districtData}
-                                                    name="districtId"
-                                                    onChange={(value) =>
-                                                        handleDistrictChange(
-                                                            value
-                                                        )
-                                                    }
-                                                />
-                                            </FormGroup>
-                                            <FormGroup className="col-span-12 md:col-span-6 xl:col-span-4">
-                                                <FormLabel>Xã/Phường</FormLabel>
-                                                <Select
-                                                    defaultValue={
-                                                        filterValues.wardId
-                                                    }
-                                                    value={wardData.find(
-                                                        (e) =>
-                                                            e.value ===
-                                                            filterValues.wardId
-                                                    )}
-                                                    options={wardData}
-                                                    name="wardId"
-                                                    onChange={(value) =>
-                                                        setFilterValues({
-                                                            ...filterValues,
-                                                            wardId: value.value,
-                                                        })
-                                                    }
-                                                />
-                                            </FormGroup>
-                                            <FormGroup className="col-span-12 md:col-span-6 xl:col-span-4">
-                                                <FormLabel>
-                                                    Loại Phòng
-                                                </FormLabel>
-                                                <Select
-                                                    defaultValue={
-                                                        roomTypeData[0]
-                                                    }
-                                                    options={roomTypeData}
-                                                    name="accommodationTypeId"
-                                                    onChange={(value) =>
-                                                        setFilterValues({
-                                                            ...filterValues,
-                                                            accommodationTypeId:
-                                                                value.value,
-                                                        })
-                                                    }
-                                                />
-                                            </FormGroup>
-                                            <FormGroup className="col-span-12 md:col-span-6 xl:col-span-4">
-                                                <FormLabel>Mức giá</FormLabel>
-                                                <Select
-                                                    defaultValue={
-                                                        roomPriceArr[0]
-                                                    }
-                                                    options={roomPriceArr}
-                                                    name="roomPrice"
-                                                    isSearchable={false}
-                                                    onChange={(value) =>
-                                                        handleRoomPriceChange(
-                                                            value
-                                                        )
-                                                    }
-                                                />
-                                            </FormGroup>
-                                            <FormGroup className="col-span-12 md:col-span-6 xl:col-span-4">
-                                                <FormLabel>Diện tích</FormLabel>
-                                                <Select
-                                                    defaultValue={
-                                                        roomAreaData[0]
-                                                    }
-                                                    options={roomAreaData}
-                                                    name="roomAreaRangeId"
-                                                    isSearchable={false}
-                                                    onChange={(value) =>
-                                                        setFilterValues({
-                                                            ...filterValues,
-                                                            roomAreaRangeId:
-                                                                value.value,
-                                                        })
-                                                    }
-                                                />
-                                            </FormGroup>
-                                        </div>
+        <form onSubmit={handleSubmit(submitFilters)}>
+            <div className="flex flex-col gap-3">
+                    <Collapsible title="Tìm kiếm cơ bản" defaultOpen={isDesktop}>
+                            <div style={{ width: '100%' }}>
+                                <div className="grid grid-cols-12 gap-x-4">
+                                    <FormGroup className="col-span-12 md:col-span-6 xl:col-span-4">
+                                        <FormLabel>
+                                            Tỉnh/Thành phố
+                                        </FormLabel>
+                                        <Select
+                                            defaultValue={
+                                                provinceData[0]
+                                            }
+                                            value={provinceData.find(
+                                                (e) =>
+                                                    e.value ===
+                                                    filterValues.provinceId
+                                            )}
+                                            options={provinceData}
+                                            name="provinceId"
+                                            onChange={(value) =>
+                                                handleProvinceChange(
+                                                    value
+                                                )
+                                            }
+                                        />
+                                    </FormGroup>
+                                    <FormGroup className="col-span-12 md:col-span-6 xl:col-span-4">
+                                        <FormLabel>
+                                            Quận/Huyện
+                                        </FormLabel>
+                                        <Select
+                                            defaultValue={
+                                                filterValues.districtId
+                                            }
+                                            value={districtData.find(
+                                                (e) =>
+                                                    e.value ===
+                                                    filterValues.districtId
+                                            )}
+                                            options={districtData}
+                                            name="districtId"
+                                            onChange={(value) =>
+                                                handleDistrictChange(
+                                                    value
+                                                )
+                                            }
+                                        />
+                                    </FormGroup>
+                                    <FormGroup className="col-span-12 md:col-span-6 xl:col-span-4">
+                                        <FormLabel>Xã/Phường</FormLabel>
+                                        <Select
+                                            defaultValue={
+                                                filterValues.wardId
+                                            }
+                                            value={wardData.find(
+                                                (e) =>
+                                                    e.value ===
+                                                    filterValues.wardId
+                                            )}
+                                            options={wardData}
+                                            name="wardId"
+                                            onChange={(value) =>
+                                                setFilterValues({
+                                                    ...filterValues,
+                                                    wardId: value.value,
+                                                })
+                                            }
+                                        />
+                                    </FormGroup>
+                                    <FormGroup className="col-span-12 md:col-span-6 xl:col-span-4">
+                                        <FormLabel>
+                                            Loại Phòng
+                                        </FormLabel>
+                                        <Select
+                                            defaultValue={
+                                                roomTypeData[0]
+                                            }
+                                            options={roomTypeData}
+                                            name="accommodationTypeId"
+                                            onChange={(value) =>
+                                                setFilterValues({
+                                                    ...filterValues,
+                                                    accommodationTypeId:
+                                                        value.value,
+                                                })
+                                            }
+                                        />
+                                    </FormGroup>
+                                    <FormGroup className="col-span-12 md:col-span-6 xl:col-span-4">
+                                        <FormLabel>Mức giá</FormLabel>
+                                        <Select
+                                            defaultValue={
+                                                roomPriceArr[0]
+                                            }
+                                            options={roomPriceArr}
+                                            name="roomPrice"
+                                            isSearchable={false}
+                                            onChange={(value) =>
+                                                handleRoomPriceChange(
+                                                    value
+                                                )
+                                            }
+                                        />
+                                    </FormGroup>
+                                    <FormGroup className="col-span-12 md:col-span-6 xl:col-span-4">
+                                        <FormLabel>Diện tích</FormLabel>
+                                        <Select
+                                            defaultValue={
+                                                roomAreaData[0]
+                                            }
+                                            options={roomAreaData}
+                                            name="roomAreaRangeId"
+                                            isSearchable={false}
+                                            onChange={(value) =>
+                                                setFilterValues({
+                                                    ...filterValues,
+                                                    roomAreaRangeId:
+                                                        value.value,
+                                                })
+                                            }
+                                        />
+                                    </FormGroup>
+                                </div>
 
-                                        <div className="grid grid-cols-12 gap-x-4">
-                                            <FormGroup className="col-span-12 lg:col-span-6">
-                                                <FormLabel>
-                                                    Đường/Số nhà
-                                                </FormLabel>
-                                                <input
-                                                    label="Đường/Số nhà"
-                                                    variant="outlined"
-                                                    name="street"
-                                                    className={inputClass}
-                                                    onBlur={(value) =>
-                                                        setFilterValues({
-                                                            ...filterValues,
-                                                            street:
-                                                                value.target
-                                                                    .value,
-                                                        })
-                                                    }
-                                                />
-                                            </FormGroup>
-                                            <FormGroup className="col-span-12 lg:col-span-6">
-                                                <FormLabel>
-                                                    Gần địa điểm nào
-                                                </FormLabel>
-                                                <input
-                                                    label="Gần địa điểm nào"
-                                                    variant="outlined"
-                                                    name="strpublicLocationNearbyeet"
-                                                    className={inputClass}
-                                                    onBlur={(value) =>
-                                                        setFilterValues({
-                                                            ...filterValues,
-                                                            publicLocationNearby:
-                                                                value.target
-                                                                    .value,
-                                                        })
-                                                    }
-                                                />
-                                            </FormGroup>
-                                        </div>
-                                    </div>
-                                </Collapsible>
-                            <Collapsible title="Tìm kiếm chi tiết">
-                                    <div style={{ width: '100%' }}>
-                                        <div className="grid grid-cols-12 gap-x-4">
-                                            <FormGroup className="col-span-12 md:col-span-6 lg:col-span-4">
-                                                <FormLabel>Chung chủ</FormLabel>
-                                                <Select
-                                                    defaultValue={choseData[0]}
-                                                    options={choseData}
-                                                    name="liveWithOwner"
-                                                    isSearchable={false}
-                                                    onChange={(value) =>
-                                                        setFilterValues({
-                                                            ...filterValues,
-                                                            liveWithOwner:
-                                                                value.value,
-                                                        })
-                                                    }
-                                                />
-                                            </FormGroup>
-                                            <FormGroup className="col-span-12 md:col-span-6 lg:col-span-4">
-                                                <FormLabel>Nóng lạnh</FormLabel>
-                                                <Select
-                                                    defaultValue={choseData[0]}
-                                                    options={choseData}
-                                                    name="haveWaterHeater"
-                                                    isSearchable={false}
-                                                    onChange={(value) =>
-                                                        setFilterValues({
-                                                            ...filterValues,
-                                                            haveWaterHeater:
-                                                                value.value,
-                                                        })
-                                                    }
-                                                />
-                                            </FormGroup>
-                                            <FormGroup className="col-span-12 md:col-span-6 lg:col-span-4">
-                                                <FormLabel>Ban công</FormLabel>
-                                                <Select
-                                                    defaultValue={choseData[0]}
-                                                    options={choseData}
-                                                    name="haveBalcony"
-                                                    isSearchable={false}
-                                                    onChange={(value) =>
-                                                        setFilterValues({
-                                                            ...filterValues,
-                                                            haveBalcony:
-                                                                value.value,
-                                                        })
-                                                    }
-                                                />
-                                            </FormGroup>
-                                            <FormGroup className="col-span-12 md:col-span-6 lg:col-span-4">
-                                                <FormLabel>Điều hòa</FormLabel>
-                                                <Select
-                                                    defaultValue={choseData[0]}
-                                                    options={choseData}
-                                                    name="haveAirConditioner"
-                                                    isSearchable={false}
-                                                    onChange={(value) =>
-                                                        setFilterValues({
-                                                            ...filterValues,
-                                                            haveAirConditioner:
-                                                                value.value,
-                                                        })
-                                                    }
-                                                />
-                                            </FormGroup>
-                                            <FormGroup className="col-span-12 md:col-span-6 lg:col-span-4">
-                                                <FormLabel>
-                                                    Nhà tắm riêng
-                                                </FormLabel>
-                                                <Select
-                                                    defaultValue={choseData[0]}
-                                                    options={choseData}
-                                                    name="haveClosedBathroom"
-                                                    isSearchable={false}
-                                                    onChange={(value) =>
-                                                        setFilterValues({
-                                                            ...filterValues,
-                                                            haveClosedBathroom:
-                                                                value.value,
-                                                        })
-                                                    }
-                                                />
-                                            </FormGroup>
-                                            <FormGroup className="col-span-12 md:col-span-6 lg:col-span-4">
-                                                <FormLabel>Bếp riêng</FormLabel>
-                                                <Select
-                                                    defaultValue={
-                                                        kitchenTypeData[0]
-                                                    }
-                                                    options={kitchenTypeData}
-                                                    name="kitchenTypeId"
-                                                    isSearchable={false}
-                                                    onChange={(value) =>
-                                                        setFilterValues({
-                                                            ...filterValues,
-                                                            kitchenTypeId:
-                                                                value.value,
-                                                        })
-                                                    }
-                                                />
-                                            </FormGroup>
-                                        </div>
-                                    </div>
-                                </Collapsible>
-                        <div className="flex justify-end">
-                            <Button
-                                type={'submit'}
-                                variant="secondary"
-                                disabled={isLoading}
-                                size="lg"
-                            >
-                                Tìm kiếm <i className="fas fa-search ml-1.5" aria-hidden="true"></i>
-                            </Button>
-                        </div>
-                    </div>
-                </Form>
-            )}
-        </Formik>
+                                <div className="grid grid-cols-12 gap-x-4">
+                                    <FormGroup className="col-span-12 lg:col-span-6">
+                                        <FormLabel>
+                                            Đường/Số nhà
+                                        </FormLabel>
+                                        <input className={inputClass} {...register('street')} />
+                                    </FormGroup>
+                                    <FormGroup className="col-span-12 lg:col-span-6">
+                                        <FormLabel>
+                                            Gần địa điểm nào
+                                        </FormLabel>
+                                        <input className={inputClass} {...register('publicLocationNearby')} />
+                                    </FormGroup>
+                                </div>
+                            </div>
+                        </Collapsible>
+                    <Collapsible title="Tìm kiếm chi tiết">
+                            <div style={{ width: '100%' }}>
+                                <div className="grid grid-cols-12 gap-x-4">
+                                    <FormGroup className="col-span-12 md:col-span-6 lg:col-span-4">
+                                        <FormLabel>Chung chủ</FormLabel>
+                                        <Select
+                                            defaultValue={choseData[0]}
+                                            options={choseData}
+                                            name="liveWithOwner"
+                                            isSearchable={false}
+                                            onChange={(value) =>
+                                                setFilterValues({
+                                                    ...filterValues,
+                                                    liveWithOwner:
+                                                        value.value,
+                                                })
+                                            }
+                                        />
+                                    </FormGroup>
+                                    <FormGroup className="col-span-12 md:col-span-6 lg:col-span-4">
+                                        <FormLabel>Nóng lạnh</FormLabel>
+                                        <Select
+                                            defaultValue={choseData[0]}
+                                            options={choseData}
+                                            name="haveWaterHeater"
+                                            isSearchable={false}
+                                            onChange={(value) =>
+                                                setFilterValues({
+                                                    ...filterValues,
+                                                    haveWaterHeater:
+                                                        value.value,
+                                                })
+                                            }
+                                        />
+                                    </FormGroup>
+                                    <FormGroup className="col-span-12 md:col-span-6 lg:col-span-4">
+                                        <FormLabel>Ban công</FormLabel>
+                                        <Select
+                                            defaultValue={choseData[0]}
+                                            options={choseData}
+                                            name="haveBalcony"
+                                            isSearchable={false}
+                                            onChange={(value) =>
+                                                setFilterValues({
+                                                    ...filterValues,
+                                                    haveBalcony:
+                                                        value.value,
+                                                })
+                                            }
+                                        />
+                                    </FormGroup>
+                                    <FormGroup className="col-span-12 md:col-span-6 lg:col-span-4">
+                                        <FormLabel>Điều hòa</FormLabel>
+                                        <Select
+                                            defaultValue={choseData[0]}
+                                            options={choseData}
+                                            name="haveAirConditioner"
+                                            isSearchable={false}
+                                            onChange={(value) =>
+                                                setFilterValues({
+                                                    ...filterValues,
+                                                    haveAirConditioner:
+                                                        value.value,
+                                                })
+                                            }
+                                        />
+                                    </FormGroup>
+                                    <FormGroup className="col-span-12 md:col-span-6 lg:col-span-4">
+                                        <FormLabel>
+                                            Nhà tắm riêng
+                                        </FormLabel>
+                                        <Select
+                                            defaultValue={choseData[0]}
+                                            options={choseData}
+                                            name="haveClosedBathroom"
+                                            isSearchable={false}
+                                            onChange={(value) =>
+                                                setFilterValues({
+                                                    ...filterValues,
+                                                    haveClosedBathroom:
+                                                        value.value,
+                                                })
+                                            }
+                                        />
+                                    </FormGroup>
+                                    <FormGroup className="col-span-12 md:col-span-6 lg:col-span-4">
+                                        <FormLabel>Bếp riêng</FormLabel>
+                                        <Select
+                                            defaultValue={
+                                                kitchenTypeData[0]
+                                            }
+                                            options={kitchenTypeData}
+                                            name="kitchenTypeId"
+                                            isSearchable={false}
+                                            onChange={(value) =>
+                                                setFilterValues({
+                                                    ...filterValues,
+                                                    kitchenTypeId:
+                                                        value.value,
+                                                })
+                                            }
+                                        />
+                                    </FormGroup>
+                                </div>
+                            </div>
+                        </Collapsible>
+                <div className="flex justify-end">
+                    <Button
+                        type={'submit'}
+                        variant="secondary"
+                        disabled={isLoading}
+                        size="lg"
+                    >
+                        Tìm kiếm <i className="fas fa-search ml-1.5" aria-hidden="true"></i>
+                    </Button>
+                </div>
+            </div>
+        </form>
     );
 }
 
