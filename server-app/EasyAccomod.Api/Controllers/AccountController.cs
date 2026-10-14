@@ -5,6 +5,7 @@ using EasyAccomod.Api.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 
 namespace EasyAccomod.Api.Controllers;
@@ -29,6 +30,7 @@ public class AccountController : ApiControllerBase
 
     // POST api/Account/Token
     [AllowAnonymous]
+    [EnableRateLimiting("login")]
     [HttpPost("Token")]
     public async Task<IActionResult> CreateToken(CreateTokenBindingModel model)
     {
@@ -36,9 +38,10 @@ public class AccountController : ApiControllerBase
         if (user == null)
             return BadRequest("User name or password is invalid.");
 
-        // A locked account rejects even the right password until the lockout ends.
+        // A locked account rejects even the right password until the lockout ends. The reply is
+        // the same as for a wrong password so it does not reveal that the account exists.
         if (await _userManager.IsLockedOutAsync(user))
-            return BadRequest("Too many failed attempts. Try again in a few minutes.");
+            return BadRequest("User name or password is invalid.");
 
         if (!await _userManager.CheckPasswordAsync(user, model.Password))
         {

@@ -6,6 +6,8 @@ using EasyAccomod.Api.Health;
 using EasyAccomod.Api.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.RateLimiting;
+using System.Threading.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
@@ -89,6 +91,29 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddScoped<DbSeeder>();
 
+// Per-IP limit on logins: the per-account lockout alone does not stop guessing across many
+// accounts or parallel guesses against one. Behind a proxy, enable forwarded headers so the
+// client address, not the proxy's, is what gets counted.
+var loginPermitLimit = builder.Configuration.GetValue("RateLimiting:LoginPermitLimit", 10);
+var loginWindowSeconds = builder.Configuration.GetValue("RateLimiting:LoginWindowSeconds", 60);
+builder.Services.AddRateLimiter(options =>
+{
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+    options.OnRejected = (context, _) =>
+    {
+        context.HttpContext.Response.Headers.RetryAfter = loginWindowSeconds.ToString();
+        return ValueTask.CompletedTask;
+    };
+    options.AddPolicy("login", httpContext => RateLimitPartition.GetFixedWindowLimiter(
+        httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+        _ => new FixedWindowRateLimiterOptions
+        {
+            PermitLimit = loginPermitLimit,
+            Window = TimeSpan.FromSeconds(loginWindowSeconds),
+            QueueLimit = 0,
+        }));
+});
+
 builder.Services.AddHealthChecks().AddCheck<DatabaseHealthCheck>("database");
 
 builder.Services.AddControllers().AddJsonOptions(options =>
@@ -112,6 +137,7 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseCors();
+app.UseRateLimiter();
 app.UseAuthentication();
 app.UseAuthorization();
 

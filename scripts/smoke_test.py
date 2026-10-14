@@ -114,7 +114,7 @@ check("renter cannot create post", call("POST", "/api/RentalPosts", renter, post
 check("pending post hidden from anonymous", call("GET", "/api/RentalPosts/Get/%d" % post_id)[0] == 404)
 check("pending post visible to its owner", call("GET", "/api/RentalPosts/Get/%d" % post_id, owner)[0] == 200)
 check("pending post visible to admin", call("GET", "/api/RentalPosts/Get/%d" % post_id, admin)[0] == 200)
-pending_list = expect("admin lists pending posts", call("GET", "/api/Admin/RentalPosts?statusId=1", admin), 200)
+pending_list = expect("admin lists pending posts", call("GET", "/api/Admin/RentalPosts?statusId=1&_limit=1000", admin), 200)
 check("admin list contains post", any(p["id"] == post_id for p in pending_list["simplePostDtos"]), pending_list)
 
 print("admin approves, search and view")
@@ -236,7 +236,9 @@ check("weak password rejected", call("POST", "/api/Account/RenterRegister", None
     "Password": "abcdef", "ConfirmPassword": "abcdef"})[0] == 400)
 for _ in range(5):
     login(renter_name, "wrong")
-check("account is locked after repeated failures", login(renter_name, "Abcdef1!")[0] == 400)
+locked = login(renter_name, "Abcdef1!")
+check("account is locked after repeated failures", locked[0] == 400)
+check("locked reply does not reveal the account", locked[1] == login(renter_name + "nobody", "wrong")[1], locked)
 check("health endpoint reports healthy", call("GET", "/health")[0] == 200)
 check("duplicate username rejected", call("POST", "/api/Account/RenterRegister", None, {
     "Name": "x", "UserName": renter_name, "Email": "other" + run + "@test.com",
@@ -293,6 +295,13 @@ owner_row = call("GET", "/api/account/info", changed["access_token"])[1]
 expect("re-approve owner", call("POST", "/api/Admin/SetOwner", admin, {"AccountId": owner_row["accountId"]}), 200)
 check("owner restored", login("Owner1", "Owner1234.")[1].get("role") == "Owner")
 check("old token works again once the role is restored", call("GET", "/api/Owner/RentalPosts", owner)[0] in (200, 404))
+
+print("login rate limit")
+# Development allows 100 logins per 10 seconds per address (see appsettings.Development.json).
+statuses = [login("nobody" + run, "wrong")[0] for _ in range(130)]
+check("too many logins from one address get 429", 429 in statuses, sorted(set(statuses)))
+time.sleep(11)
+check("logins work again after the window", login("Admin", "Admin1234.")[0] == 200)
 
 print("\n%d checks, %d failed" % (checks, len(failures)))
 for name in failures:
