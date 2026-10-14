@@ -30,6 +30,12 @@ cd server-app/EasyAccomod.Api
 dotnet run --launch-profile http
 ```
 
+Or run the API in a container instead (set `ASPNETCORE_ENVIRONMENT=Development` to seed the demo accounts):
+
+```bash
+JWT_KEY=<at least 32 characters> docker compose --profile api up -d --build
+```
+
 Start the client (http://localhost:3000):
 
 ```bash
@@ -51,8 +57,13 @@ npm run dev
 ## Configuration
 
 - `client-app/.env`: `VITE_API_URL` is the API base URL (default `http://localhost:5100`).
+- `client-app/.env` also takes `VITE_CLOUDINARY_CLOUD_NAME` and `VITE_CLOUDINARY_UPLOAD_PRESET` (an unsigned upload preset); without them, attaching pictures to a post fails with a clear error. Keep the Cloudinary API secret out of the client.
 - `server-app/EasyAccomod.Api/appsettings.json`: CORS origin, JWT issuer, audience and lifetime.
 - `appsettings.Development.json` holds a dev-only database password and JWT key. Outside Development, set the connection string (`ConnectionStrings__DefaultConnection`) and `Jwt__Key` (at least 32 characters) through environment variables; the API refuses to start without a valid key.
+
+## Continuous integration
+
+`.github/workflows/ci.yml` builds the client (including `npm audit`), builds the API and runs the smoke test against a PostgreSQL service for every pull request.
 
 ## Smoke test
 
