@@ -2,6 +2,7 @@ using System.Security.Claims;
 using System.Text.Json.Serialization;
 using EasyAccomod.Api.Auth;
 using EasyAccomod.Api.Data;
+using EasyAccomod.Api.Health;
 using EasyAccomod.Api.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -33,6 +34,9 @@ builder.Services
         options.Password.RequireDigit = true;
         options.Password.RequireLowercase = true;
         options.Password.RequireUppercase = true;
+        options.Lockout.AllowedForNewUsers = true;
+        options.Lockout.MaxFailedAccessAttempts = 5;
+        options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
     })
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
@@ -85,6 +89,8 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddScoped<DbSeeder>();
 
+builder.Services.AddHealthChecks().AddCheck<DatabaseHealthCheck>("database");
+
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
     // The old Newtonsoft setup accepted numbers sent as strings (e.g. from form inputs).
@@ -98,10 +104,18 @@ using (var scope = app.Services.CreateScope())
     await scope.ServiceProvider.GetRequiredService<DbSeeder>().SeedAsync(app.Environment.IsDevelopment());
 }
 
+if (!app.Environment.IsDevelopment())
+{
+    // TLS is expected to end at a reverse proxy, which sets X-Forwarded-Proto
+    // (enable it with ASPNETCORE_FORWARDEDHEADERS_ENABLED=true); browsers only honor HSTS over HTTPS.
+    app.UseHsts();
+}
+
 app.UseCors();
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapHealthChecks("/health");
 
 app.Run();

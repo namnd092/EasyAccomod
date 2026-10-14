@@ -61,6 +61,13 @@ npm run dev
 - `server-app/EasyAccomod.Api/appsettings.json`: CORS origin, JWT issuer, audience and lifetime.
 - `appsettings.Development.json` holds a dev-only database password and JWT key. Outside Development, set the connection string (`ConnectionStrings__DefaultConnection`) and `Jwt__Key` (at least 32 characters) through environment variables; the API refuses to start without a valid key.
 
+## Deployment notes
+
+- The API serves plain HTTP; terminate TLS at a reverse proxy and set `ASPNETCORE_FORWARDEDHEADERS_ENABLED=true` so the API trusts `X-Forwarded-Proto`. Outside Development it also sends an HSTS header (browsers only honor it over HTTPS).
+- `GET /health` returns 200 when the API can reach the database and 503 otherwise; point the load balancer or orchestrator probe at it.
+- Five failed logins lock an account for five minutes, and a locked account is rejected even with the right password. The lockout message tells the caller the account exists, a trade-off kept for usability.
+- Set `Cors__Origins__0` to the real client origin, and keep the demo accounts out of Production (they are only seeded in Development).
+
 ## Continuous integration
 
 `.github/workflows/ci.yml` builds the client (including `npm audit` and the Vitest suite), builds the API and runs the smoke test and the Playwright e2e tests against a PostgreSQL service for every pull request.
