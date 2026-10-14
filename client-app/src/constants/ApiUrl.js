@@ -52,8 +52,5 @@ const ApiUrl = {
     REJECT_OWNER: 'api/Admin/RejectOwner',
     SET_REJECT_OWNER_EDIT_INFO: 'api/Admin/ResolveEditInfo',
     PUT_EDIT_RENTAL_POST: '/api/RentalPosts/Edit/',
-
-    CLOUDINARY_UPLOAD_URL:
-        'https://api.cloudinary.com/v1_1/dsysolkex/image/upload',
 };
 export default ApiUrl;

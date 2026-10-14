@@ -15,5 +15,22 @@ services:
       timeout: 3s
       retries: 10
 
+  # Optional: run the API in a container (`docker compose --profile api up -d --build`).
+  # Requires JWT_KEY (at least 32 characters). Set ASPNETCORE_ENVIRONMENT=Development
+  # to seed the demo accounts.
+  api:
+    profiles: ["api"]
+    build: ./server-app/EasyAccomod.Api
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT:-Production}
+      ConnectionStrings__DefaultConnection: Host=db;Port=5432;Database=easyaccomod;Username=easyaccomod;Password=easyaccomod
+      Jwt__Key: ${JWT_KEY:-}
+      Cors__Origins__0: ${CORS_ORIGIN:-http://localhost:3000}
+    ports:
+      - "5100:8080"
+
 volumes:
   pgdata:
