@@ -1,20 +1,28 @@
 import React from 'react';
-import { cardClass, cardHeaderClass, cardBodyClass } from '../../../../ui';
-
-ImgInfo.propTypes = {};
+import { useFormContext } from 'react-hook-form';
+import { FieldError, cardClass, cardHeaderClass, cardBodyClass } from '../../../../ui';
 
 const ACCEPTED_TYPES = ['image/jpeg', 'image/png', 'image/gif'];
 
-function ImgInfo(props) {
-    const { errors, touched, setFieldValue, name } = props;
+function ImgInfo({ name }) {
+    const {
+        register,
+        setValue,
+        formState: { errors, isSubmitted },
+    } = useFormContext();
+    // The picked files live in the form under `name` but are not tied to a single input.
+    React.useEffect(() => {
+        register(name);
+    }, [register, name]);
     // Each item keeps its preview URL next to the file so both always change together.
     const [items, setItems] = React.useState([]);
 
     const update = (next) => {
         setItems(next);
-        setFieldValue(
+        setValue(
             name,
-            next.map((item) => item.file)
+            next.map((item) => item.file),
+            { shouldValidate: isSubmitted }
         );
     };
 
@@ -68,9 +76,7 @@ function ImgInfo(props) {
                         </div>
                     ))}
                 </div>
-                {errors.roomImageArr && touched.roomImageArr && (
-                    <span className="mt-1 text-sm text-red-600">{errors.roomImageArr}</span>
-                )}
+                <FieldError error={errors[name]} />
             </div>
         </div>
     );

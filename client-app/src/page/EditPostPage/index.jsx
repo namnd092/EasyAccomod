@@ -12,8 +12,6 @@ import 'filepond/dist/filepond.min.css';
 import FilePondPluginImageExifOrientation from 'filepond-plugin-image-exif-orientation';
 import FilePondPluginImagePreview from 'filepond-plugin-image-preview';
 import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css';
-import newPostInitialValue from '../../models/InitialValueForm/newPost';
-import newPostValidationSchema from '../../models/ValidateForm/newPost';
 
 import uploadMultipleFile from '../../utils/cloudinaryUpload';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -31,41 +29,7 @@ const EditPostPage = () => {
     ]);
     const handleChangeFile = (fileArr) => {
         setFiles(fileArr);
-        setNewPostFormValue({ ...newPostFormValue, roomImageArr: fileArr });
     };
-    let [newPostFormValue, setNewPostFormValue] = React.useState({
-        title: null,
-        roomType: {},
-        province: null,
-        district: null,
-        ward: null,
-        street: null,
-        roomPrice: null,
-        roomArea: null,
-        roomQuantity: null,
-        liveWithOwner: false,
-        closeBathroom: false,
-        haveWaterHeader: false,
-        haveAirCondition: false,
-        haveBalcony: false,
-        waterElectricity: 'rent',
-        electricityPrice: null,
-        waterPrice: null,
-        description: null,
-        numberOfDay: null,
-        totalPrice: null,
-        roomImageArr: [],
-        kitchenType: null,
-        publicLocationNearby: null,
-        package: {
-            value: 1,
-            label: 'Đăng theo tuần',
-            price: 1000,
-            type: 'tuần',
-        },
-        numberOfTime: 1,
-        owner: {},
-    });
     const [defaultValue, setDefaultValue] = React.useState(null);
     const handleSubmit = async (values) => {
         console.log(values);
@@ -119,7 +83,6 @@ const EditPostPage = () => {
     return (
         <div className="editPostPage">
             <EditPostForm
-                newPostInitialValue={newPostInitialValue}
                 handleSubmit={handleSubmit}
                 files={files}
                 handleChangeFile={handleChangeFile}

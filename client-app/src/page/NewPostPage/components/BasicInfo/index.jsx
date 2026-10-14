@@ -1,26 +1,15 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import addressApi from '../../../../api/addressApi';
 import roomApi from '../../../../api/roomApi';
-import DebouncedInput from '../../../../components/DebouncedInput';
-import MySelect from '../../../../share/components/select';
-import { FormGroup, FormLabel, Checkbox, Radio, inputClass, cardClass, cardHeaderClass, cardBodyClass } from '../../../../ui';
+import { useFormContext, useWatch } from 'react-hook-form';
+import { InputField, SelectField, CheckboxField } from '../../../../share/components/form-fields';
+import { FormGroup, FormLabel, Radio, cardClass, cardHeaderClass, cardBodyClass } from '../../../../ui';
 
-BasicInfo.propTypes = {
-    handleBasicInfoChange: PropTypes.func,
-};
-
-function BasicInfo(props) {
-    const {
-        errors,
-        touched,
-        defaultValue,
-        values,
-        handleChange,
-        setFieldTouched,
-        setFieldValue,
-    } = props;
-    const [waterElectricity, setWaterElectricity] = React.useState('rent');
+function BasicInfo() {
+    const { register, setValue } = useFormContext();
+    const province = useWatch({ name: 'province' });
+    const district = useWatch({ name: 'district' });
+    const waterElectricity = useWatch({ name: 'waterElectricity' });
     const [roomTypeData, setRoomTypeData] = React.useState([]);
     const [provinceData, setProvinceData] = React.useState([]);
     const [districtData, setDistrictData] = React.useState([]);
@@ -92,12 +81,10 @@ function BasicInfo(props) {
 
     React.useEffect(() => {
         async function handleProvinceChange() {
-            if (values.province?.value == null) return;
-            values.district = null;
-            values.ward = null;
+            if (province?.value == null) return;
             try {
                 const response = await addressApi.getDistrictByProvinceId(
-                    values.province.value
+                    province.value
                 );
                 setDistrictData(
                     [...response].map((e) => ({ value: e.id, label: e.name }))
@@ -107,15 +94,14 @@ function BasicInfo(props) {
             }
         }
         handleProvinceChange();
-    }, [values.province]);
+    }, [province?.value]);
 
     React.useEffect(() => {
         async function handleDistrictChange() {
-            if (values.district?.value == null) return;
-            values.ward = null;
+            if (district?.value == null) return;
             try {
                 const response = await addressApi.getWardByDistrictID(
-                    values.district.value
+                    district.value
                 );
                 setWardData(
                     [...response].map((e) => ({ value: e.id, label: e.name }))
@@ -125,323 +111,82 @@ function BasicInfo(props) {
             }
         }
         handleDistrictChange();
-    }, [values.district]);
+    }, [district?.value]);
+
+    // Picking another province/district invalidates what was chosen below it.
+    const handleProvinceChange = () => {
+        setValue('district', null);
+        setValue('ward', null);
+    };
+    const handleDistrictChange = () => setValue('ward', null);
 
     return (
         <div className={`${cardClass} mt-6`}>
             <h5 className={cardHeaderClass}>Thông tin cơ bản</h5>
             <div className={cardBodyClass}>
-                <FormGroup>
-                    <FormLabel>Tiêu đề</FormLabel>
-                    <DebouncedInput
-                        type="text"
-                        name="title"
-                        className={inputClass}
-                        onChange={handleChange}
-                        value={
-                            defaultValue
-                                ? (values.title = defaultValue.title)
-                                : values.title
-                        }
+                <InputField label="Tiêu đề" name="title" />
+                <div className="grid grid-cols-12 gap-x-4">
+                    <InputField label="Số lượng phòng" name="roomQuantity" type="number" className="col-span-3" />
+                    <SelectField label="Loại Phòng" name="roomType" options={roomTypeData} className="col-span-4" />
+                    <InputField label="Số nhà, Đường" name="street" className="col-span-5" />
+                </div>
+                <InputField label="Gần địa điểm công cộng" name="publicLocationNearby" />
+                <div className="grid grid-cols-12 gap-x-4">
+                    <SelectField
+                        label="Tỉnh/Thành phố"
+                        name="province"
+                        options={provinceData}
+                        className="col-span-4"
+                        onChange={handleProvinceChange}
                     />
-                    {errors.title && touched.title && (
-                        <span className="mt-1 text-sm text-red-600">{errors.title}</span>
-                    )}
-                </FormGroup>
-                <div className="grid grid-cols-12 gap-x-4">
-                    <FormGroup className="col-span-3">
-                        <FormLabel>Số lượng phòng</FormLabel>
-                        <DebouncedInput
-                            type="number"
-                            name="roomQuantity"
-                            className={inputClass}
-                            onChange={handleChange}
-                            value={
-                                defaultValue
-                                    ? (values.roomQuantity =
-                                          defaultValue.accommodation.roomQuantity)
-                                    : values.roomQuantity
-                            }
-                        />
-                        {errors.roomQuantity && touched.roomQuantity && (
-                            <span className="mt-1 text-sm text-red-600">{errors.roomQuantity}</span>
-                        )}
-                    </FormGroup>
-                    <FormGroup className="col-span-4">
-                        <FormLabel>Loại Phòng</FormLabel>
-                        <MySelect
-                            name="roomType"
-                            options={roomTypeData}
-                            onChange={setFieldValue}
-                            onBlur={setFieldTouched}
-                            values={values.roomType}
-                            defaultValue={roomTypeData[0]}
-                        />
-                        {errors.roomType && touched.roomType && (
-                            <span className="mt-1 text-sm text-red-600">{errors.roomType}</span>
-                        )}
-                    </FormGroup>
-                    <FormGroup className="col-span-5">
-                        <FormLabel>Số nhà, Đường</FormLabel>
-                        <DebouncedInput
-                            type="text"
-                            name="street"
-                            className={inputClass}
-                            onChange={handleChange}
-                            value={
-                                defaultValue
-                                    ? (values.street =
-                                          defaultValue.accommodation.address.street)
-                                    : values.street
-                            }
-                        />
-                        {errors.street && touched.street && (
-                            <span className="mt-1 text-sm text-red-600">{errors.street}</span>
-                        )}
-                    </FormGroup>
-                </div>
-                <FormGroup>
-                    <FormLabel>Gần địa điểm công cộng</FormLabel>
-                    <DebouncedInput
-                        type="text"
-                        className={inputClass}
-                        name="publicLocationNearby"
-                        onChange={handleChange}
-                        value={
-                            defaultValue
-                                ? (values.publicLocationNearby =
-                                      defaultValue.accommodation.address.publicLocationNearby)
-                                : values.publicLocationNearby
-                        }
+                    <SelectField
+                        label="Quận/Huyện"
+                        name="district"
+                        options={districtData}
+                        className="col-span-4"
+                        onChange={handleDistrictChange}
                     />
-                    {errors.publicLocationNearby &&
-                        touched.publicLocationNearby && (
-                            <span className="mt-1 text-sm text-red-600">
-                                {errors.publicLocationNearby}
-                            </span>
-                        )}
-                </FormGroup>
-
-                <div className="grid grid-cols-12 gap-x-4">
-                    <FormGroup className="col-span-4">
-                        <FormLabel>Tỉnh/Thành phố</FormLabel>
-                        <MySelect
-                            options={provinceData}
-                            name="province"
-                            onChange={setFieldValue}
-                            onBlur={setFieldTouched}
-                            values={values.province}
-                        />
-                        {errors.province && touched.province && (
-                            <span className="mt-1 text-sm text-red-600">{errors.province}</span>
-                        )}
-                    </FormGroup>
-                    <FormGroup className="col-span-4">
-                        <FormLabel>Quận/Huyện</FormLabel>
-                        <MySelect
-                            options={districtData}
-                            name="district"
-                            onChange={setFieldValue}
-                            onBlur={setFieldTouched}
-                            values={values.district}
-                        />
-                        {errors.district && touched.district && (
-                            <span className="mt-1 text-sm text-red-600">{errors.district}</span>
-                        )}
-                    </FormGroup>
-                    <FormGroup className="col-span-4">
-                        <FormLabel>Xã/Phường</FormLabel>
-                        <MySelect
-                            options={wardData}
-                            name="ward"
-                            onChange={setFieldValue}
-                            onBlur={setFieldTouched}
-                            values={values.ward}
-                        />
-                        {errors.ward && touched.ward && (
-                            <span className="mt-1 text-sm text-red-600">{errors.ward}</span>
-                        )}
-                    </FormGroup>
+                    <SelectField label="Xã/Phường" name="ward" options={wardData} className="col-span-4" />
                 </div>
                 <div className="grid grid-cols-12 gap-x-4">
-                    <FormGroup className="col-span-8">
-                        <FormLabel>Giá tiền(vnd)</FormLabel>
-                        <DebouncedInput
-                            type={'number'}
-                            className={inputClass}
-                            name="roomPrice"
-                            onChange={handleChange}
-                            value={
-                                defaultValue
-                                    ? defaultValue.accommodation.price
-                                    : values.roomPrice
-                            }
-                        />
-                        {errors.roomPrice && touched.roomPrice && (
-                            <span className="mt-1 text-sm text-red-600">{errors.roomPrice}</span>
-                        )}
-                    </FormGroup>
-                    <FormGroup className="col-span-4">
-                        <FormLabel>Tháng/Quý/Năm</FormLabel>
-                        <MySelect
-                            name="roomPaymentType"
-                            options={roomPaymentTypeData}
-                            values={values.roomPaymentType}
-                            onChange={setFieldValue}
-                            onBlur={setFieldTouched}
-                        />
-                        {errors.roomPaymentType && touched.roomPaymentType && (
-                            <span className="mt-1 text-sm text-red-600">
-                                {errors.roomPaymentType}
-                            </span>
-                        )}
-                    </FormGroup>
+                    <InputField label="Giá tiền(vnd)" name="roomPrice" type="number" className="col-span-8" />
+                    <SelectField
+                        label="Tháng/Quý/Năm"
+                        name="roomPaymentType"
+                        options={roomPaymentTypeData}
+                        className="col-span-4"
+                    />
                 </div>
                 <div className="grid grid-cols-12 gap-x-4">
-                    <FormGroup className="col-span-6">
-                        <FormLabel>Diện tích</FormLabel>
-                        <MySelect
-                            name="roomArea"
-                            options={roomAreaRangeData}
-                            values={values.roomArea}
-                            onChange={setFieldValue}
-                            onBlur={setFieldTouched}
-                        />
-                        {errors.roomArea && touched.roomArea && (
-                            <span className="mt-1 text-sm text-red-600">{errors.roomArea}</span>
-                        )}
-                    </FormGroup>
-                    <FormGroup className="col-span-6">
-                        <FormLabel>Bếp(Nấu ăn)</FormLabel>
-                        <MySelect
-                            name="kitchenType"
-                            options={kitchenTypeData}
-                            values={values.kitchenType}
-                            onChange={setFieldValue}
-                            onBlur={setFieldTouched}
-                        />
-                        {errors.kitchenType && touched.kitchenType && (
-                            <span className="mt-1 text-sm text-red-600">{errors.kitchenType}</span>
-                        )}
-                    </FormGroup>
+                    <SelectField label="Diện tích" name="roomArea" options={roomAreaRangeData} className="col-span-6" />
+                    <SelectField label="Bếp(Nấu ăn)" name="kitchenType" options={kitchenTypeData} className="col-span-6" />
                 </div>
                 <FormGroup>
                     <FormLabel>Điện nước</FormLabel>
                     <div className="grid grid-cols-12 gap-x-4">
                         <label className="col-span-6 flex cursor-pointer items-center gap-2">
-                            <Radio
-                                name="waterElectricity"
-                                value="rent"
-                                checked={values.waterElectricity === 'rent'}
-                                onChange={handleChange}
-                            />
+                            <Radio value="rent" {...register('waterElectricity')} />
                             Giá thuê
                         </label>
                         <label className="col-span-5 flex cursor-pointer items-center gap-2">
-                            <Radio
-                                name="waterElectricity"
-                                value="normal"
-                                checked={values.waterElectricity === 'normal'}
-                                onChange={handleChange}
-                            />
+                            <Radio value="normal" {...register('waterElectricity')} />
                             Giá dân
                         </label>
                     </div>
                 </FormGroup>
 
-                <div
-                    style={{
-                        display:
-                            values.waterElectricity === 'normal' ? 'none' : '',
-                    }}
-                >
+                <div style={{ display: waterElectricity === 'normal' ? 'none' : '' }}>
                     <div className="grid grid-cols-12 gap-x-4">
-                        <FormGroup className="col-span-6">
-                            <FormLabel>Giá điện</FormLabel>
-                            <DebouncedInput
-                                type="number"
-                                name="electricityPrice"
-                                className={inputClass}
-                                defaultValue={0}
-                                onChange={handleChange}
-                            />
-                            {errors.electricityPrice &&
-                                touched.electricityPrice && (
-                                    <span className="mt-1 text-sm text-red-600">
-                                        {errors.electricityPrice}
-                                    </span>
-                                )}
-                        </FormGroup>
-                        <FormGroup className="col-span-6">
-                            <FormLabel>Giá nước</FormLabel>
-                            <DebouncedInput
-                                type="number"
-                                name="waterPrice"
-                                className={inputClass}
-                                defaultValue={0}
-                                onChange={handleChange}
-                            />
-                            {errors.waterPrice && touched.waterPrice && (
-                                <span className="mt-1 text-sm text-red-600">
-                                    {errors.waterPrice}
-                                </span>
-                            )}
-                        </FormGroup>
+                        <InputField label="Giá điện" name="electricityPrice" type="number" className="col-span-6" />
+                        <InputField label="Giá nước" name="waterPrice" type="number" className="col-span-6" />
                     </div>
                 </div>
-                <FormGroup>
-                    <FormLabel>Chung chủ (Có/Không)</FormLabel>
-                    <Checkbox
-                        name="liveWithOwner"
-                        onChange={handleChange}
-                    />
-                </FormGroup>
-                <FormGroup>
-                    <FormLabel>Phòng tắm khép kín (Có/Không)</FormLabel>
-                    <Checkbox
-                        name="closeBathroom"
-                        onChange={handleChange}
-                    />
-                </FormGroup>
-                <FormGroup>
-                    <FormLabel>Nóng lạnh (Có/Không)</FormLabel>
-                    <Checkbox
-                        name="haveWaterHeader"
-                        onChange={handleChange}
-                    />
-                </FormGroup>
-                <FormGroup>
-                    <FormLabel>Điều hòa (Có/Không)</FormLabel>
-                    <Checkbox
-                        name="haveAirCondition"
-                        onChange={handleChange}
-                    />
-                </FormGroup>
-                <FormGroup>
-                    <FormLabel>Ban Công(Có/Không)</FormLabel>
-                    <Checkbox
-                        name="haveBalcony"
-                        onChange={handleChange}
-                    />
-                </FormGroup>
-
-                <FormGroup>
-                    <FormLabel>Tiện ích khác</FormLabel>
-                    <DebouncedInput
-                        type="text"
-                        className={inputClass}
-                        name="roomOption"
-                        onChange={handleChange}
-                        value={
-                            defaultValue
-                                ? defaultValue.accommodation.roomOption
-                                : values.roomOption
-                        }
-                    />
-                    {errors.roomOption && touched.roomOption && (
-                        <span className="mt-1 text-sm text-red-600">{errors.roomOption}</span>
-                    )}
-                </FormGroup>
+                <CheckboxField label="Chung chủ (Có/Không)" name="liveWithOwner" />
+                <CheckboxField label="Phòng tắm khép kín (Có/Không)" name="closeBathroom" />
+                <CheckboxField label="Nóng lạnh (Có/Không)" name="haveWaterHeader" />
+                <CheckboxField label="Điều hòa (Có/Không)" name="haveAirCondition" />
+                <CheckboxField label="Ban Công(Có/Không)" name="haveBalcony" />
+                <InputField label="Tiện ích khác" name="roomOption" />
             </div>
         </div>
     );

@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import './style.css';
 import PropTypes from 'prop-types';
-import { Formik, Form } from 'formik';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
 import { useNavigate } from 'react-router-dom';
 import './style.css';
@@ -10,7 +11,23 @@ import { setUser } from '../../redux/slice/userSlice';
 import { useDispatch } from 'react-redux';
 import Axios from 'axios';
 import ApiUrl from '../../constants/ApiUrl';
-import { Button, FormGroup, FormLabel, Spinner, Backdrop, inputClass } from '../../ui';
+import { Button, FormGroup, FormLabel, FieldError, Spinner, Backdrop, inputClass } from '../../ui';
+
+const initialValues = {
+    username: '',
+    password: '',
+};
+
+const validationSchema = Yup.object().shape({
+    username: Yup.string().required('Tên đăng nhập không được bỏ trống'),
+    password: Yup.string()
+        .required('Mật khẩu không được bỏ trống')
+        .min(6, 'Mật khẩu phải chứa ít nhất 6 ký tự')
+        .matches(
+            /\w*(?:[A-Z]+)\w*(?:[\W.]+)\w*/,
+            'Mật khẩu phải chứa ít nhất 1 ký tự in hoa và 1 ký tự đặc biệt'
+        ),
+});
 
 LoginPage.propTypes = {
     handle: PropTypes.func,
@@ -21,20 +38,14 @@ function LoginPage(props) {
     const [message, setMessage] = useState('');
     const [role, setRole] = useState('');
     const [isLoading, setIsLoading] = React.useState(false);
-    const initialValues = {
-        username: '',
-        password: '',
-    };
-
-    const validationSchema = Yup.object().shape({
-        username: Yup.string().required('Tên đăng nhập không được bỏ trống'),
-        password: Yup.string()
-            .required('Mật khẩu không được bỏ trống')
-            .min(6, 'Mật khẩu phải chứa ít nhất 6 ký tự')
-            .matches(
-                /\w*(?:[A-Z]+)\w*(?:[\W.]+)\w*/,
-                'Mật khẩu phải chứa ít nhất 1 ký tự in hoa và 1 ký tự đặc biệt'
-            ),
+    const {
+        register,
+        handleSubmit: withValidation,
+        formState: { errors, isSubmitting },
+    } = useForm({
+        defaultValues: initialValues,
+        resolver: yupResolver(validationSchema),
+        mode: 'onTouched',
     });
     const handleSubmit = async (value) => {
         console.log('Submit Login', value);
@@ -74,87 +85,53 @@ function LoginPage(props) {
                     <h4 className="title">ĐĂNG NHẬP</h4>
                 </div>
                 <div className="bot">
-                    <Formik
-                        validationSchema={validationSchema}
-                        onSubmit={(value) => handleSubmit(value)}
-                        initialValues={initialValues}
-                    >
-                        {({
-                            errors,
-                            values,
-                            touched,
-                            isValid,
-                            handleChange,
-                        }) => (
-                            <Form className="from">
-                                {message && (
-                                    <span
-                                        style={{
-                                            fontSize: 'smaller',
-                                            color: 'red',
-                                        }}
-                                    >
-                                        {message}
-                                    </span>
-                                )}
-                                <FormGroup className="form__group">
-                                    <FormLabel>Tên đăng nhập</FormLabel>
-                                    <input
-                                        id="username"
-                                        label="Tên Đăng Nhập"
-                                        name="username"
-                                        className={inputClass}
-                                        value={values.username}
-                                        onChange={handleChange}
-                                    />
-                                    {errors &&
-                                    errors.username &&
-                                    touched.username ? (
-                                        <span className="mt-1 text-sm text-red-600">
-                                            {errors.username}
-                                        </span>
-                                    ) : null}
-                                </FormGroup>
-                                <FormGroup className="form__group">
-                                    <FormLabel>Mật khẩu</FormLabel>
-                                    <input
-                                        id="password"
-                                        label="Mật khẩu"
-                                        name="password"
-                                        type="password"
-                                        className={inputClass}
-                                        value={values.password}
-                                        onChange={handleChange}
-                                    />
-                                    {errors &&
-                                    errors.password &&
-                                    touched.password ? (
-                                        <span className="mt-1 text-sm text-red-600">
-                                            {errors.password}
-                                        </span>
-                                    ) : null}
-                                </FormGroup>
-                                <div className="mt-5 flex justify-between px-5">
-                                    <Button
- className="h-[50px] w-[150px]"
-                                            onClick={(e) => {
-                                                e.preventDefault();
-                                                navigate('/register');
-                                            }} variant="secondary"
-                                        >
-                                            Đăng ký
-                                        </Button>
-                                    <Button
- className="h-[50px] w-[150px]"
-                                            type="submit"
-                                            disabled={!isValid}
-                                        >
-                                            Đăng nhập
-                                        </Button>
-                                </div>
-                            </Form>
+                    <form className="from" onSubmit={withValidation(handleSubmit)}>
+                        {message && (
+                            <span
+                                style={{
+                                    fontSize: 'smaller',
+                                    color: 'red',
+                                }}
+                            >
+                                {message}
+                            </span>
                         )}
-                    </Formik>
+                        <FormGroup className="form__group">
+                            <FormLabel htmlFor="username">Tên đăng nhập</FormLabel>
+                            <input
+                                id="username"
+                                className={inputClass}
+                                {...register('username')}
+                            />
+                            <FieldError error={errors.username} />
+                        </FormGroup>
+                        <FormGroup className="form__group">
+                            <FormLabel htmlFor="password">Mật khẩu</FormLabel>
+                            <input
+                                id="password"
+                                type="password"
+                                className={inputClass}
+                                {...register('password')}
+                            />
+                            <FieldError error={errors.password} />
+                        </FormGroup>
+                        <div className="mt-5 flex justify-between px-5">
+                            <Button
+                                className="h-[50px] w-[150px]"
+                                variant="secondary"
+                                onClick={() => navigate('/register')}
+                            >
+                                Đăng ký
+                            </Button>
+                            <Button
+                                className="h-[50px] w-[150px]"
+                                type="submit"
+                                disabled={isSubmitting}
+                            >
+                                Đăng nhập
+                            </Button>
+                        </div>
+                    </form>
                 </div>
             </div>
             {isLoading && (

@@ -1,10 +1,10 @@
 import React from 'react';
-import { Form, Formik } from 'formik';
+import { useForm } from 'react-hook-form';
 import Card from '../../share/components/card';
 import Axios from 'axios';
 import ApiUrl from '../../constants/ApiUrl';
 import authApi from '../../api/authApi';
-import ownerRegisterValidationSchema from '../../models/ValidateForm/profile';
+import { numberOrEmpty } from '../../utils/formHelpers';
 import { useNavigate } from 'react-router-dom';
 import { Button, FormGroup, FormLabel, inputClass } from '../../ui';
 
@@ -58,6 +58,7 @@ function ProfilePage(props) {
         }
         getHaveEditing();
     }, []);
+    const { register, handleSubmit: withValues } = useForm({ values: defaultValue });
     const handleSubmit = async (value) => {
         console.log(value);
         try {
@@ -81,121 +82,71 @@ function ProfilePage(props) {
     return (
         <div className="profilePage pt-12">
             <Card title="Thông tin cá nhân">
-                <Formik
-                    initialValues={defaultValue}
-                    onSubmit={(value) => handleSubmit(value)}
-                    enableReinitialize
-                    //validationSchema={ownerRegisterValidationSchema}
-                >
-                    {({ errors, values, handleChange, touched }) => (
-                        <Form>
-                            <div className="grid grid-cols-12 gap-x-4">
-                                <FormGroup className="col-span-6">
-                                    <FormLabel>Tên</FormLabel>
-                                    <input
-                                        className={inputClass}
-                                        name="name"
-                                        onChange={handleChange}
-                                        value={values.name}
-                                        readOnly={haveEditing !== 1}
-                                        //defaultValue={defaultValue.name}
-                                    />
-                                    {errors && errors.name && touched.name ? (
-                                        <span className="mt-1 text-sm text-red-600">
-                                            {errors.name}
-                                        </span>
-                                    ) : null}
-                                </FormGroup>
-                                <FormGroup className="col-span-6">
-                                    <FormLabel>Email</FormLabel>
-                                    <input
-                                        className={inputClass}
-                                        name="email"
-                                        onChange={handleChange}
-                                        readOnly={haveEditing !== 1}
-                                        //defaultValue={defaultValue.email}
-                                        value={values.email}
-                                    />
-                                    {errors && errors.email && touched.email ? (
-                                        <span className="mt-1 text-sm text-red-600">
-                                            {errors.email}
-                                        </span>
-                                    ) : null}
-                                </FormGroup>
-                            </div>
-                            <FormGroup>
-                                <FormLabel>Address</FormLabel>
-                                <input
-                                    className={inputClass}
-                                    name="address"
-                                    onChange={handleChange}
-                                    readOnly={haveEditing !== 1}
-                                    //defaultValue={defaultValue.address}
-                                    value={values.address}
-                                />
-                                {errors && errors.address && touched.address ? (
-                                    <span className="mt-1 text-sm text-red-600">{errors.name}</span>
-                                ) : null}
-                            </FormGroup>
-                            <div className="grid grid-cols-12 gap-x-4">
-                                <FormGroup className="col-span-6">
-                                    <FormLabel>Phone</FormLabel>
-                                    <input
-                                        className={inputClass}
-                                        type="number"
-                                        name="phone"
-                                        onChange={handleChange}
-                                        readOnly={haveEditing !== 1}
-                                        //defaultValue={defaultValue.phone}
-                                        value={values.phone}
-                                    />
-                                    {errors && errors.phone && touched.phone ? (
-                                        <span className="mt-1 text-sm text-red-600">
-                                            {errors.phone}
-                                        </span>
-                                    ) : null}
-                                </FormGroup>
-
-                                <FormGroup className="col-span-6">
-                                    <FormLabel>Identification</FormLabel>
-                                    <input
-                                        className={inputClass}
-                                        name="identification"
-                                        type="number"
-                                        onChange={handleChange}
-                                        readOnly={haveEditing !== 1}
-                                        value={values.identification}
-                                        //defaultValue={defaultValue.identification}
-                                    />
-                                    {errors &&
-                                    errors.identification &&
-                                    touched.identification ? (
-                                        <span className="mt-1 text-sm text-red-600">
-                                            {errors.identification}
-                                        </span>
-                                    ) : null}
-                                </FormGroup>
-                            </div>
-                            <div className="flex justify-center gap-2">
-                                {haveEditing === -1 ? (
-                                    <Button
-                                        onClick={handleRequireEditInfo}
-                                    >
-                                        Yêu cầu chỉnh sửa tài khoản
-                                    </Button>
-                                ) : (
-                                    <Button
-                                        type="submit"
-                                        disabled={haveEditing === 0}
-                                    >
-                                        Xác nhận
-                                        <i className="fas fa-paper-plane ml-2"></i>
-                                    </Button>
-                                )}
-                            </div>
-                        </Form>
-                    )}
-                </Formik>
+                <form onSubmit={withValues(handleSubmit)}>
+                    <div className="grid grid-cols-12 gap-x-4">
+                        <FormGroup className="col-span-6">
+                            <FormLabel htmlFor="profile-name">Tên</FormLabel>
+                            <input
+                                id="profile-name"
+                                className={inputClass}
+                                readOnly={haveEditing !== 1}
+                                {...register('name')}
+                            />
+                        </FormGroup>
+                        <FormGroup className="col-span-6">
+                            <FormLabel htmlFor="profile-email">Email</FormLabel>
+                            <input
+                                id="profile-email"
+                                className={inputClass}
+                                readOnly={haveEditing !== 1}
+                                {...register('email')}
+                            />
+                        </FormGroup>
+                    </div>
+                    <FormGroup>
+                        <FormLabel htmlFor="profile-address">Address</FormLabel>
+                        <input
+                            id="profile-address"
+                            className={inputClass}
+                            readOnly={haveEditing !== 1}
+                            {...register('address')}
+                        />
+                    </FormGroup>
+                    <div className="grid grid-cols-12 gap-x-4">
+                        <FormGroup className="col-span-6">
+                            <FormLabel htmlFor="profile-phone">Phone</FormLabel>
+                            <input
+                                id="profile-phone"
+                                className={inputClass}
+                                type="number"
+                                readOnly={haveEditing !== 1}
+                                {...register('phone', { setValueAs: numberOrEmpty })}
+                            />
+                        </FormGroup>
+                        <FormGroup className="col-span-6">
+                            <FormLabel htmlFor="profile-identification">Identification</FormLabel>
+                            <input
+                                id="profile-identification"
+                                className={inputClass}
+                                type="number"
+                                readOnly={haveEditing !== 1}
+                                {...register('identification', { setValueAs: numberOrEmpty })}
+                            />
+                        </FormGroup>
+                    </div>
+                    <div className="flex justify-center gap-2">
+                        {haveEditing === -1 ? (
+                            <Button onClick={handleRequireEditInfo}>
+                                Yêu cầu chỉnh sửa tài khoản
+                            </Button>
+                        ) : (
+                            <Button type="submit" disabled={haveEditing === 0}>
+                                Xác nhận
+                                <i className="fas fa-paper-plane ml-2"></i>
+                            </Button>
+                        )}
+                    </div>
+                </form>
             </Card>
         </div>
     );

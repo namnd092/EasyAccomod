@@ -42,7 +42,7 @@ test.describe('owner', () => {
         await expect(row).toContainText('Thành phố Hà Nội');
     });
 
-    test('new post form validates what was typed into the debounced inputs', async ({ page }) => {
+    test('new post form validates what was typed', async ({ page }) => {
         await loginViaUi(page, accounts.owner);
         await page.goto('/newpost');
         const title = page.locator('input[name="title"]');

@@ -1,26 +1,16 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import Select from 'react-select';
-import MySelect from '../../../../share/components/select';
+import { useWatch } from 'react-hook-form';
+import { SelectField, InputField } from '../../../../share/components/form-fields';
 import authApi from '../../../../api/authApi';
 import { useSelector } from 'react-redux';
 import { isDisplayByRole } from '../../../../helper/auth';
 import Role from '../../../../models/data/role';
-import { FormGroup, FormLabel, inputClass, tableClass, cardClass, cardHeaderClass, cardBodyClass } from '../../../../ui';
+import { tableClass, cardClass, cardHeaderClass, cardBodyClass } from '../../../../ui';
 
-DurationInfo.propTypes = {};
-
-function DurationInfo(props) {
+function DurationInfo() {
     const role = useSelector((state) => state.user.role);
-    const {
-        errors,
-        touched,
-        defaultValue,
-        values,
-        handleChange,
-        setFieldTouched,
-        setFieldValue,
-    } = props;
+    const packageType = useWatch({ name: 'packageType' });
+    const numberOfTime = useWatch({ name: 'numberOfTime' });
     const packageTypeArr = [
         {
             value: 1,
@@ -52,9 +42,9 @@ function DurationInfo(props) {
         },
     ];
     const [ownerArr, setOwnerArr] = React.useState([]);
-    const type = values.packageType ? values.packageType.type : '';
-    const price = values.packageType ? values.packageType.price : 0;
-    const time = values.numberOfTime ? values.numberOfTime : 1;
+    const type = packageType ? packageType.type : '';
+    const price = packageType ? packageType.price : 0;
+    const time = numberOfTime ? numberOfTime : 1;
     React.useEffect(() => {
         async function getOwnerArr() {
             try {
@@ -78,45 +68,11 @@ function DurationInfo(props) {
         <div className={`${cardClass} mt-6`}>
             <h5 className={cardHeaderClass}>Lịch đăng tin</h5>
             <div className={cardBodyClass}>
-                <FormGroup
-                    style={{ display: isDisplayByRole([Role.ADMIN], role) }}
-                >
-                    <FormLabel>Chọn chủ trọ</FormLabel>
-                    <MySelect
-                        name="owner"
-                        options={ownerArr}
-                        onChange={setFieldValue}
-                        onBlur={setFieldTouched}
-                        values={values.owner}
-                    />
-                </FormGroup>
-                <FormGroup>
-                    <FormLabel>Gói tin</FormLabel>
-                    <MySelect
-                        options={packageTypeArr}
-                        onChange={setFieldValue}
-                        onBlur={setFieldTouched}
-                        defaultValue={packageTypeArr[0]}
-                        name="packageType"
-                        values={values.packageType}
-                    />
-                    {errors.package && touched.package && (
-                        <span>{errors.package}</span>
-                    )}
-                </FormGroup>
-                <FormGroup>
-                    <FormLabel>Số {type}</FormLabel>
-                    <input
-                        type={'number'}
-                        onChange={handleChange}
-                        value={values.numberOfTime ?? 1}
-                        name="numberOfTime"
-                        className={inputClass}
-                    />
-                    {errors.numberOfTime && touched.numberOfTime && (
-                        <span>{errors.numberOfTime}</span>
-                    )}
-                </FormGroup>
+                <div style={{ display: isDisplayByRole([Role.ADMIN], role) }}>
+                    <SelectField label="Chọn chủ trọ" name="owner" options={ownerArr} />
+                </div>
+                <SelectField label="Gói tin" name="packageType" options={packageTypeArr} />
+                <InputField label={`Số ${type}`} name="numberOfTime" type="number" />
                 <table className={tableClass}>
                     <thead>
                         <tr>

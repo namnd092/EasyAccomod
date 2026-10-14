@@ -24,3 +24,13 @@ export function Radio({ className = '', ...rest }) {
 export function Textarea({ className = '', ...rest }) {
     return <textarea className={className} {...rest} />;
 }
+
+// Shows the message of a react-hook-form field error (nothing when the field is valid).
+export function FieldError({ error }) {
+    if (!error?.message) return null;
+    return (
+        <span role="alert" className="mt-1 text-sm text-red-600">
+            {error.message}
+        </span>
+    );
+}
