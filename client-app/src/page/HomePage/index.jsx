@@ -15,6 +15,7 @@ import {
 } from './searchFilters';
 
 const PAGE_SIZE = 15;
+const DONG_PER_MILLION = 1_000_000;
 
 // The filters and the page live in the URL, so a refresh, the back button and a shared link keep the search.
 export const HomePage = () => {
@@ -37,6 +38,9 @@ export const HomePage = () => {
             const { street, publicLocationNearby, ...rest } = current;
             const query = queryString.stringify({
                 ...rest,
+                // The URL and the form count prices in millions, the API in dong.
+                minPrice: rest.minPrice * DONG_PER_MILLION,
+                maxPrice: rest.maxPrice * DONG_PER_MILLION,
                 ...(street && { street }),
                 ...(publicLocationNearby && { publicLocationNearby }),
                 _page: currentPage,

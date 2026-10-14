@@ -28,6 +28,12 @@ public class ListSimplePost
     public int MaxPage { get; set; }
 }
 
+// A page of search results, with how many posts matched in all.
+public class ListSearchPost : ListSimplePost
+{
+    public int TotalCount { get; set; }
+}
+
 public class AdminSimplePostDto
 {
     public int Id { get; set; }

@@ -49,6 +49,20 @@ describe('HomePage', () => {
         expect(query.get('_page')).toBe('2');
     });
 
+    it('sends the price range to the API in dong although the URL keeps it in millions', async () => {
+        renderWithProviders(<HomePage />, { route: '/?minPrice=3&maxPrice=5' });
+        await searchButtonReady();
+        expect(lastQuery().get('minPrice')).toBe('3000000');
+        expect(lastQuery().get('maxPrice')).toBe('5000000');
+    });
+
+    it('sends no price bounds for an unfiltered search', async () => {
+        renderWithProviders(<HomePage />);
+        await searchButtonReady();
+        expect(lastQuery().get('minPrice')).toBe('0');
+        expect(lastQuery().get('maxPrice')).toBe('0');
+    });
+
     it('searches the first page with no filters for a bare URL', async () => {
         renderWithProviders(<HomePage />);
         await searchButtonReady();

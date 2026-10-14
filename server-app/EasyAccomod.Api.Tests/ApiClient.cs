@@ -38,10 +38,10 @@ public static class ApiClient
         return client;
     }
 
-    public static async Task<int> CreateApprovedPostAsync(ApiFactory factory, string street = null)
+    public static async Task<int> CreateApprovedPostAsync(ApiFactory factory, string street = null, int price = 3000000)
     {
         using var owner = await ClientForAsync(factory, OwnerUser, OwnerPassword);
-        var created = await owner.PostAsJsonAsync("/api/RentalPosts", NewPostBody(street ?? "Ngõ " + Guid.NewGuid().ToString("N")));
+        var created = await owner.PostAsJsonAsync("/api/RentalPosts", NewPostBody(street ?? "Ngõ " + Guid.NewGuid().ToString("N"), price));
         created.EnsureSuccessStatusCode();
         using var json = JsonDocument.Parse(await created.Content.ReadAsStringAsync());
         var postId = json.RootElement.GetProperty("id").GetInt32();
@@ -55,7 +55,7 @@ public static class ApiClient
     public static async Task<int> GetViewsAsync(HttpClient client, int postId) =>
         await client.GetFromJsonAsync<int>($"/api/RentalPosts/{postId}/Views");
 
-    private static object NewPostBody(string street) => new
+    private static object NewPostBody(string street, int price) => new
     {
         Title = "Phòng test",
         Content = "Phòng đẹp, gần trung tâm",
@@ -66,7 +66,7 @@ public static class ApiClient
             AccommodationTypeId = 1,
             RoomQuantity = 2,
             PaymentTypeId = 1,
-            Price = 3000000,
+            Price = price,
             RoomAreaRangeId = 2,
             LiveWithOwner = false,
             HaveClosedBathroom = true,
