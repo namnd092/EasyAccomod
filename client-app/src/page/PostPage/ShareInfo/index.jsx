@@ -102,9 +102,9 @@ function ShareInfo(props) {
     }, []);
     return (
         <div className="shareInfo" style={{ marginTop: '30px' }}>
-            <div class="card mt-2">
-                <h5 class="card-header">Chia sẻ</h5>
-                <div class="card-body">
+            <div className="card mt-2">
+                <h5 className="card-header">Chia sẻ</h5>
+                <div className="card-body">
                     <h6>Lượt xem: {numberOfView}</h6>
                     <h6>Lượt thích: {numberOfLike}</h6>
                     <div style={{ display: 'flex' }}>
@@ -118,8 +118,7 @@ function ShareInfo(props) {
                         >
                             <Rating
                                 name="half-rating-read"
-                                defaultValue={star}
-                                value={rate}
+                                value={rate ?? null}
                                 precision={0.5}
                                 readOnly={true}
                             />
@@ -177,35 +176,35 @@ function ShareInfo(props) {
                 </div>
 
                 <div
-                    class="modal fade"
+                    className="modal fade"
                     id="exampleModalCenter"
-                    tabindex="-1"
+                    tabIndex="-1"
                     role="dialog"
                     aria-labelledby="exampleModalCenterTitle"
                     aria-hidden="true"
                 >
                     <div
-                        class="modal-dialog modal-dialog-centered modal-lg"
+                        className="modal-dialog modal-dialog-centered modal-lg"
                         role="document"
                     >
-                        <div class="modal-content">
-                            <div class="modal-header">
+                        <div className="modal-content">
+                            <div className="modal-header">
                                 <h5
-                                    class="modal-title"
+                                    className="modal-title"
                                     id="exampleModalLongTitle"
                                 >
                                     Báo cáo
                                 </h5>
                                 <button
                                     type="button"
-                                    class="close"
+                                    className="close"
                                     data-dismiss="modal"
                                     aria-label="Close"
                                 >
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
-                            <div class="modal-body">
+                            <div className="modal-body">
                                 <TextareaAutosize
                                     minRows={5}
                                     maxLength={1000}
@@ -216,17 +215,17 @@ function ShareInfo(props) {
                                     }
                                 />
                             </div>
-                            <div class="modal-footer">
+                            <div className="modal-footer">
                                 <button
                                     type="button"
-                                    class="btn btn-secondary"
+                                    className="btn btn-secondary"
                                     data-dismiss="modal"
                                 >
                                     Đóng
                                 </button>
                                 <button
                                     type="button"
-                                    class="btn btn-primary"
+                                    className="btn btn-primary"
                                     onClick={handleSubmitReport}
                                     data-dismiss="modal"
                                 >

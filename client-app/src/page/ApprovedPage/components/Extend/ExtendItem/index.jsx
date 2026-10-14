@@ -23,13 +23,13 @@ export default function ExtendItem(props) {
                     className="btn btn-primary"
                     onClick={() => handleApprove(item.extendId)}
                 >
-                    <i class="fas fa-check-circle"></i> Chấp nhận
+                    <i className="fas fa-check-circle"></i> Chấp nhận
                 </button>
                 <button
                     className="btn btn-danger"
                     onClick={() => handleReject(item.extendId)}
                 >
-                    <i class="fas fa-ban"></i> Từ chối
+                    <i className="fas fa-ban"></i> Từ chối
                 </button>
             </td>
         </tr>

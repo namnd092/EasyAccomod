@@ -22,13 +22,13 @@ export default function RentalPostItemPending(props) {
                     className="btn btn-primary"
                     onClick={() => handleConfirm(rentalPost.id, index)}
                 >
-                    <i class="fas fa-check-circle"></i> Xác nhận
+                    <i className="fas fa-check-circle"></i> Xác nhận
                 </button>
                 <button
                     className="btn btn-danger"
                     onClick={() => handleReject(rentalPost.id, index)}
                 >
-                    <i class="fas fa-ban"></i> Từ chối
+                    <i className="fas fa-ban"></i> Từ chối
                 </button>
             </td>
         </tr>

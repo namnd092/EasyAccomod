@@ -9,9 +9,9 @@ function BasicInfo(props) {
     const { accommodation, dateAdded, dateExpired, title, owner } = basicInfo;
     return (
         <div style={{ paddingTop: '30px' }}>
-            <div class="card">
-                <h5 class="card-header">Thông tin</h5>
-                <div class="card-body">
+            <div className="card">
+                <h5 className="card-header">Thông tin</h5>
+                <div className="card-body">
                     <table className="tablePostPage">
                         <tbody>
                             <tr>

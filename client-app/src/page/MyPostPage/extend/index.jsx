@@ -7,6 +7,7 @@ import {
     TableBody,
     TableCell,
     TableHead,
+    TableRow,
 } from '@mui/material';
 import Select from 'react-select';
 import rentalPost from '../../../api/rentalPost';
@@ -72,32 +73,32 @@ export default function ExtendDuration(props) {
     };
     return (
         <div
-            class="modal fade"
+            className="modal fade"
             id="exampleModalCenter"
-            tabindex="-1"
+            tabIndex="-1"
             role="dialog"
             aria-labelledby="exampleModalCenterTitle"
             aria-hidden="true"
         >
-            <div class="modal-dialog modal-dialog-centered" role="document">
-                <div class="modal-content">
+            <div className="modal-dialog modal-dialog-centered" role="document">
+                <div className="modal-content">
                     <div
-                        class="modal-header"
+                        className="modal-header"
                         style={{ backgroundColor: '#F7F7F7' }}
                     >
-                        <h5 class="modal-title" id="exampleModalLongTitle">
+                        <h5 className="modal-title" id="exampleModalLongTitle">
                             Gia hạn
                         </h5>
                         <button
                             type="button"
-                            class="close"
+                            className="close"
                             data-dismiss="modal"
                             aria-label="Close"
                         >
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <div class="modal-body">
+                    <div className="modal-body">
                         <div>
                             <Formik>
                                 {({ errors, values, handleChange }) => (
@@ -124,25 +125,29 @@ export default function ExtendDuration(props) {
                                         </FormGroup>
                                         <Table style={{ marginTop: '10px' }}>
                                             <TableHead>
-                                                <TableCell>Đơn giá</TableCell>
-                                                <TableCell>
-                                                    Số {packageType.type}
-                                                </TableCell>
-                                                <TableCell>
-                                                    Thành tiền
-                                                </TableCell>
+                                                <TableRow>
+                                                    <TableCell>Đơn giá</TableCell>
+                                                    <TableCell>
+                                                        Số {packageType.type}
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        Thành tiền
+                                                    </TableCell>
+                                                </TableRow>
                                             </TableHead>
                                             <TableBody>
-                                                <TableCell>
-                                                    {packageType.price}
-                                                </TableCell>
-                                                <TableCell>
-                                                    {numberOfTime}
-                                                </TableCell>
-                                                <TableCell>
-                                                    {packageType.price *
-                                                        numberOfTime}
-                                                </TableCell>
+                                                <TableRow>
+                                                    <TableCell>
+                                                        {packageType.price}
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        {numberOfTime}
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        {packageType.price *
+                                                            numberOfTime}
+                                                    </TableCell>
+                                                </TableRow>
                                             </TableBody>
                                         </Table>
                                     </Form>
@@ -151,23 +156,23 @@ export default function ExtendDuration(props) {
                         </div>
                     </div>
                     <div
-                        class="modal-footer"
+                        className="modal-footer"
                         style={{ backgroundColor: '#F7F7F7' }}
                     >
                         <button
                             type="button"
-                            class="btn btn-secondary"
+                            className="btn btn-secondary"
                             data-dismiss="modal"
                         >
-                            <i class="fas fa-ban"></i> Hủy
+                            <i className="fas fa-ban"></i> Hủy
                         </button>
                         <button
                             type="button"
-                            class="btn btn-primary"
+                            className="btn btn-primary"
                             onClick={handleSubmit}
                             data-dismiss="modal"
                         >
-                            <i class="fas fa-check-circle"></i> Xác nhận
+                            <i className="fas fa-check-circle"></i> Xác nhận
                         </button>
                     </div>
                 </div>

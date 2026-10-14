@@ -46,7 +46,7 @@ export default function FavoritePage() {
     return (
         <div className="favorite">
             <Card title="Bài đăng yêu thích">
-                <table class="table table-hover">
+                <table className="table table-hover">
                     <thead>
                         <tr>
                             <th scope="col" style={{ minWidth: '10%' }}>
@@ -58,7 +58,9 @@ export default function FavoritePage() {
                     </thead>
                     <tbody>
                         {postList.length === 0 ? (
-                            <p>Không tìm thấy bài viết nào</p>
+                            <tr>
+                                <td colSpan={3}>Không tìm thấy bài viết nào</td>
+                            </tr>
                         ) : (
                             postList.map((item, index) => (
                                 // <FavoriteItem key={index} item={item}/>
@@ -79,7 +81,7 @@ export default function FavoritePage() {
                                                 handleDislike(item.id, index)
                                             }
                                         >
-                                            <i class="fas fa-heart-broken"></i>{' '}
+                                            <i className="fas fa-heart-broken"></i>{' '}
                                             Bỏ thích
                                         </button> */}
                                         <Button

@@ -16,7 +16,7 @@ export default function RentalPostItemReject(props) {
                     className="btn btn-primary"
                     onClick={() => handleResolve(rentalPost.id, index)}
                 >
-                    <i class="fas fa-chevron-circle-up"></i> Khôi phục
+                    <i className="fas fa-chevron-circle-up"></i> Khôi phục
                 </button>
             </td>
         </tr>

@@ -30,8 +30,8 @@ const Footer = props => {
                     </div>
                     <div className="footer__group col-lg-3 col-md-6 col-sm-12 mt-5">
                         <h5>KẾT NỐI VỚI CHÚNG TÔI</h5>
-                        <p><i class="fas fa-phone"></i> Hotline: 0123.456.789</p>
-                        <p><i class="fas fa-envelope"></i> Email: timnhatro@gmail.com</p>
+                        <p><i className="fas fa-phone"></i> Hotline: 0123.456.789</p>
+                        <p><i className="fas fa-envelope"></i> Email: timnhatro@gmail.com</p>
                     </div>
                 </div>
             </div>

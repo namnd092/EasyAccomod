@@ -15,7 +15,7 @@ const CommentItem = (props) => {
                 <h6>{item.renterName}</h6>
                 <Rating
                     name="half-rating-read"
-                    defaultValue={Math.round(item.rate * 2) / 2}
+                    value={Math.round(item.rate * 2) / 2}
                     precision={0.5}
                     readOnly={true}
                     size="small"

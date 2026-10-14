@@ -10,13 +10,6 @@ HomePagination.propTypes = {
     onPageChange: PropTypes.func,
 };
 
-HomePagination.defaultProp = {
-    activePage: 1,
-    totalItemsCount: 0,
-    limit: 0,
-    onPageChange: null,
-};
-
 function HomePagination(props) {
     const { maxPage, activePage } = props;
 

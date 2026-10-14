@@ -77,9 +77,9 @@ function CommentInfo(props) {
     }, []);
     return (
         <div style={{ marginTop: '30px' }}>
-            <div class="card">
-                <h5 class="card-header">Bình luận</h5>
-                <div class="card-body">
+            <div className="card">
+                <h5 className="card-header">Bình luận</h5>
+                <div className="card-body">
                     <Box sx={{ display: 'flex', flexDirection: 'column', '& > * + *': { marginTop: 1 } }}>
                         <div>
                             {commentList.length === 0 ? (

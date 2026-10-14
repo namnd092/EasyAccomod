@@ -11,7 +11,7 @@ export default function FavoriteItem(props) {
             <td onClick={() => gotoPost(item.id)}>Chưa cho thuê</td>
             <td>
                 <button className="btn btn-danger" onClick={handleDislike}>
-                    <i class="fas fa-heart-broken"></i> Bỏ thích
+                    <i className="fas fa-heart-broken"></i> Bỏ thích
                 </button>
             </td>
         </tr>

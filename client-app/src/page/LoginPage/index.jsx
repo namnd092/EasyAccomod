@@ -21,10 +21,6 @@ import ApiUrl from '../../constants/ApiUrl';
 LoginPage.propTypes = {
     handle: PropTypes.func,
 };
-LoginPage.defaultType = {
-    handle: null,
-};
-
 function LoginPage(props) {
     const navigate = useNavigate();
     const dispatch = useDispatch();
