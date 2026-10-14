@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 import './style.css';
 // Import React FilePond
-import { FilePond, registerPlugin } from 'react-filepond';
+import { registerPlugin } from 'react-filepond';
 
 // Import FilePond styles
 import 'filepond/dist/filepond.min.css';
@@ -17,6 +17,7 @@ import uploadMultipleFile from '../../utils/cloudinaryUpload';
 import { useNavigate, useParams } from 'react-router-dom';
 import rentalPost from '../../api/rentalPost';
 import EditPostForm from './Form';
+import { notifyError } from '../../helper/notify';
 
 // Register the plugins
 registerPlugin(FilePondPluginImageExifOrientation, FilePondPluginImagePreview);
@@ -24,15 +25,12 @@ registerPlugin(FilePondPluginImageExifOrientation, FilePondPluginImagePreview);
 const EditPostPage = () => {
     const { id } = useParams();
     const navigate = useNavigate();
-    const [files, setFiles] = React.useState([
-        'https://res.cloudinary.com/dsysolkex/image/upload/v1604846728/vth1yoqreqgzzeww0dby.jpg',
-    ]);
+    const [files, setFiles] = React.useState([]);
     const handleChangeFile = (fileArr) => {
         setFiles(fileArr);
     };
     const [defaultValue, setDefaultValue] = React.useState(null);
     const handleSubmit = async (values) => {
-        console.log(values);
         const newFiles = files.map((file) => {
             if (typeof file === 'string') {
                 return file;
@@ -40,11 +38,9 @@ const EditPostPage = () => {
                 return file.file;
             }
         });
-        console.log(newFiles);
 
         try {
             const fileUploaded = await uploadMultipleFile(newFiles);
-            console.log(fileUploaded);
 
             const newAccommodationPictures = fileUploaded.map((e) => ({
                 PictureLink: e,
@@ -53,12 +49,10 @@ const EditPostPage = () => {
                 ...values,
                 accommodationPictures: newAccommodationPictures,
             };
-            const response = await rentalPost.putEditRentalPost(id, params);
-            console.log(response);
-        } catch (error) {
-            console.log(error);
-        } finally {
+            await rentalPost.putEditRentalPost(id, params);
             navigate('/my-post');
+        } catch (error) {
+            notifyError(error);
         }
     };
 
@@ -66,7 +60,6 @@ const EditPostPage = () => {
         async function getDefaultValue() {
             try {
                 const response = await rentalPost.getRentalPostInfo(id);
-                console.log(response);
                 setDefaultValue(response);
                 setFiles(
                     [...response.accommodationPictures].map(
@@ -74,12 +67,11 @@ const EditPostPage = () => {
                     )
                 );
             } catch (error) {
-                console.log(error);
+                notifyError(error);
             }
         }
         getDefaultValue();
-    }, []);
-    console.log(defaultValue);
+    }, [id]);
     return (
         <div className="editPostPage">
             <EditPostForm

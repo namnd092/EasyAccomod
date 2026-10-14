@@ -21,6 +21,13 @@ test.describe('visitor', () => {
         await expect(page.locator('main img')).toBeVisible();
     });
 
+    test('opening a post shows no error toast', async ({ page, request }) => {
+        const post = await createPost(request, { approved: true });
+        await page.goto(`/post/${post.id}`);
+        await expect(page.getByText(post.title).first()).toBeVisible();
+        await expect(page.getByRole('alert')).toHaveCount(0);
+    });
+
     test('is told off with a wrong password and stays on the login page', async ({ page }) => {
         await page.goto('/login');
         const inputs = page.locator('input');
@@ -28,7 +35,7 @@ test.describe('visitor', () => {
         await inputs.nth(1).fill('Wrong1234.');
         await page.getByRole('button', { name: /đăng nhập/i }).first().click();
         await expect(page).toHaveURL(/\/login$/);
-        expect(await page.evaluate(() => localStorage.getItem('token'))).toBeNull();
+        expect(await page.evaluate(() => localStorage.getItem('hasSession'))).toBeNull();
     });
 });
 
@@ -40,6 +47,49 @@ test.describe('owner', () => {
         const row = page.getByRole('row', { name: new RegExp(post.title) });
         await expect(row).toBeVisible();
         await expect(row).toContainText('Thành phố Hà Nội');
+    });
+
+    test('stays logged in after a reload, without keeping the token in storage', async ({ page }) => {
+        await loginViaUi(page, accounts.owner);
+        await page.goto('/my-post');
+        await page.reload();
+        // The session comes back from the HttpOnly refresh cookie.
+        await expect(page).toHaveURL(/\/my-post$/);
+        await expect(page.getByRole('button', { name: /Owner1|Tài khoản/ })).toBeVisible();
+        const stored = await page.evaluate(() => JSON.stringify({ ...localStorage, ...sessionStorage }));
+        expect(stored).not.toMatch(/eyJ/);
+        const cookies = await page.context().cookies();
+        expect(cookies.find((c) => c.httpOnly)).toBeTruthy();
+    });
+
+    test('logs out for good: the session does not come back after a reload', async ({ page }) => {
+        await loginViaUi(page, accounts.owner);
+        await page.getByRole('button', { name: /Owner1|Tài khoản/ }).click();
+        await page.getByRole('link', { name: /Đăng xuất/ }).click();
+        await expect(page).toHaveURL(/\/login$/);
+        expect(await page.evaluate(() => localStorage.getItem('hasSession'))).toBeNull();
+
+        await page.goto('/my-post');
+        await expect(page).toHaveURL(/\/login$/);
+    });
+
+    test('a remembered session whose cookie is gone sends them to the login page', async ({ page }) => {
+        await loginViaUi(page, accounts.owner);
+        await page.context().clearCookies();
+        await page.goto('/my-post');
+        await expect(page).toHaveURL(/\/login$/);
+        expect(await page.evaluate(() => localStorage.getItem('hasSession'))).toBeNull();
+    });
+
+    test('can open the edit page of a pending post from the post list', async ({ page, request }) => {
+        const post = await createPost(request);
+        await loginViaUi(page, accounts.owner);
+        await page.goto('/my-post');
+        const row = page.getByRole('row', { name: new RegExp(post.title) });
+        await row.getByRole('button', { name: /Chỉnh sửa/ }).click();
+        await expect(page).toHaveURL(new RegExp(`/post/${post.id}/edit$`));
+        // The form is filled with the post being edited.
+        await expect(page.getByRole('textbox', { name: 'Tiêu đề' })).toHaveValue(post.title);
     });
 
     test('new post form validates what was typed', async ({ page }) => {

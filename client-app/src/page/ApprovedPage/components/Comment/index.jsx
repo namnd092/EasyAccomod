@@ -3,6 +3,7 @@ import rentalPost from '../../../../api/rentalPost';
 import Card from '../../../../share/components/card';
 import CommentItem from './CommentItem';
 import { tableClass } from '../../../../ui';
+import { notifyError } from '../../../../helper/notify';
 
 const Comment = () => {
     const [commentList, setCommentList] = React.useState([]);
@@ -10,33 +11,28 @@ const Comment = () => {
         async function getCommentList() {
             try {
                 const response = await rentalPost.getCommendPending();
-                console.log(response);
                 setCommentList([...response]);
             } catch (error) {
-                console.log(error);
+                notifyError(error);
                 setCommentList([]);
             }
         }
         getCommentList();
     }, []);
-    const handleApprove = (id, index) => {
+    const handleApprove = async (id) => {
         try {
-            const response = rentalPost.postApproveComment(id);
-            console.log(response);
-            commentList.splice(index, 1);
-            setCommentList([...commentList]);
+            await rentalPost.postApproveComment(id);
+            setCommentList((list) => list.filter((comment) => comment.id !== id));
         } catch (error) {
-            console.log(error);
+            notifyError(error);
         }
     };
-    const handleReject = (id, index) => {
+    const handleReject = async (id) => {
         try {
-            const response = rentalPost.postRejectComment(id);
-            console.log(response);
-            commentList.splice(index, 1);
-            setCommentList([...commentList]);
+            await rentalPost.postRejectComment(id);
+            setCommentList((list) => list.filter((comment) => comment.id !== id));
         } catch (error) {
-            console.log(error);
+            notifyError(error);
         }
     };
     return (

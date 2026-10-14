@@ -1,18 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Rating } from '../../../../../ui';
-
-function getDistanceTime(time) {
-    const distanceTime = Date.now() - Date.parse(new Date(`${time}`));
-
-    if (distanceTime < 60000)
-        return `${Math.floor(distanceTime / 1000)} giây trước`;
-    if (distanceTime < 3600000)
-        return `${Math.floor(distanceTime / 60000)} phút trước`;
-    if (distanceTime < 3600 * 24 * 1000)
-        return `${Math.floor(distanceTime / 3600000)} giờ trước`;
-    return `${Math.floor(distanceTime / (3600 * 24 * 1000))} ngày trước`;
-}
+import { getDistanceTime } from '../../../../../helper/time';
 
 // "3000000đ/Tháng" -> "3.000.000đ/Tháng"; anything that does not start with digits is left alone.
 function formatPrice(price) {

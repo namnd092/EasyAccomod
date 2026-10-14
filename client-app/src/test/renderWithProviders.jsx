@@ -6,10 +6,10 @@ import { MemoryRouter } from 'react-router-dom';
 import rootReducer from '../redux/reducer';
 
 // Renders a component with a fresh Redux store and an in-memory router.
-export function renderWithProviders(ui, { route = '/', user = {} } = {}) {
+export function renderWithProviders(ui, { route = '/', user = {}, token = null, restoring = false } = {}) {
     const store = configureStore({
         reducer: rootReducer,
-        preloadedState: { user: { role: null, ...user } },
+        preloadedState: { user: { role: null, ...user }, auth: { token, restoring } },
     });
     return {
         store,

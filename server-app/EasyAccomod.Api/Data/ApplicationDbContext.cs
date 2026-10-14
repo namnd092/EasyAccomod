@@ -57,9 +57,24 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 
     public DbSet<Notification> Notifications { get; set; }
 
+    public DbSet<RefreshToken> RefreshTokens { get; set; }
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
+
+        // Looks up a viewer's latest view of a post when deduplicating view counts.
+        builder.Entity<View>().HasIndex(v => new { v.AccommodationRentalPostId, v.ViewerKey, v.Time });
+
+        builder.Entity<RefreshToken>(entity =>
+        {
+            entity.Property(t => t.UserId).IsRequired();
+            entity.Property(t => t.TokenHash).IsRequired();
+            entity.HasIndex(t => t.TokenHash).IsUnique();
+            entity.HasIndex(t => t.UserId);
+            entity.HasIndex(t => t.FamilyId);
+            entity.HasOne(t => t.User).WithMany().HasForeignKey(t => t.UserId).OnDelete(DeleteBehavior.Cascade);
+        });
 
         // Lookup rows are seeded with explicit ids, in the same order as the original EF6 migrations.
         builder.Entity<AccommodationType>().Property(t => t.Id).ValueGeneratedNever();

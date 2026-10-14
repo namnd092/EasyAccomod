@@ -6,6 +6,7 @@ import { useSelector } from 'react-redux';
 import { isDisplayByRole } from '../../../../helper/auth';
 import Role from '../../../../models/data/role';
 import { tableClass, cardClass, cardHeaderClass, cardBodyClass } from '../../../../ui';
+import { notifyError } from '../../../../helper/notify';
 
 function DurationInfo() {
     const role = useSelector((state) => state.user.role);
@@ -50,7 +51,6 @@ function DurationInfo() {
             try {
                 const response = await authApi.getOwnerSuccess(1, 15);
                 const owners = await response.owners;
-                console.log(response);
                 setOwnerArr(
                     [...owners].map((e) => ({
                         value: e.id,
@@ -59,7 +59,7 @@ function DurationInfo() {
                     }))
                 );
             } catch (error) {
-                console.log(error);
+                notifyError(error);
             }
         }
         getOwnerArr();

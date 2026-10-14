@@ -1,6 +1,13 @@
 import axiosClient from './axiosClient';
 import ApiUrl from '../constants/ApiUrl';
 import queryString from 'query-string';
+
+// confirmationStatus values understood by GET api/Admin/Owners.
+const OwnerStatus = { PENDING: -1, CONFIRMED: 1, EDIT_REQUIRED: -2 };
+const getOwners = (_page, _limit, confirmationStatus) =>
+    axiosClient.get(
+        ApiUrl.GET_OWNERS + '?' + queryString.stringify({ _page, _limit, confirmationStatus })
+    );
 const authApi = {
     postLogin: (username, password) => {
         const url = ApiUrl.GET_TOKEN;
@@ -23,18 +30,8 @@ const authApi = {
         const url = ApiUrl.LOG_OUT;
         return axiosClient.post(url);
     },
-    getOwnerSuccess(_page, _limit) {
-        const url =
-            ApiUrl.GET_OWNERS +
-            `?_page=${_page}&_limit=${_limit}&confirmationStatus=${1}`;
-        return axiosClient.get(url);
-    },
-    getOwnerRegisterPending(_page, _limit) {
-        const url =
-            ApiUrl.GET_OWNERS +
-            `?_page=${_page}&_limit=${_limit}&confirmationStatus=${-1}`;
-        return axiosClient.get(url);
-    },
+    getOwnerSuccess: (_page, _limit) => getOwners(_page, _limit, OwnerStatus.CONFIRMED),
+    getOwnerRegisterPending: (_page, _limit) => getOwners(_page, _limit, OwnerStatus.PENDING),
     postRequireEditInfo() {
         const url = ApiUrl.REQUIRE_EDIT_INFO;
         return axiosClient.post(url);
@@ -47,18 +44,7 @@ const authApi = {
         const url = ApiUrl.GET_CAN_EDIT_PROFILE;
         return axiosClient.get(url);
     },
-    getAccountEditPending(_page, _limit) {
-        const url =
-            ApiUrl.GET_OWNERS +
-            `?_page=${_page}&_limit=${_limit}&confirmationStatus=${2}`;
-        return axiosClient.get(url);
-    },
-    getAccountEditRequire(_page, _limit) {
-        const url =
-            ApiUrl.GET_OWNERS +
-            `?_page=${_page}&_limit=${_limit}&confirmationStatus=${-2}`;
-        return axiosClient.get(url);
-    },
+    getAccountEditRequire: (_page, _limit) => getOwners(_page, _limit, OwnerStatus.EDIT_REQUIRED),
     postSetOwner(accountId) {
         const url = ApiUrl.SET_OWNER;
         return axiosClient.post(url, { accountId });

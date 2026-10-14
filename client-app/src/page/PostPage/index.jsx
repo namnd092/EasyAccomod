@@ -7,34 +7,24 @@ import ImgInfo from './ImgInfo';
 import ShareInfo from './ShareInfo';
 import CommentInfo from './CommentInfo';
 import rentalPost from '../../api/rentalPost';
-PostPage.propTypes = {};
-
-function PostPage(props) {
+import { notifyError } from '../../helper/notify';
+function PostPage() {
     const { id } = useParams();
     const navigate = useNavigate();
     const [rentalPostInfo, setRentalPostInfo] = React.useState({});
     React.useEffect(() => {
         async function getRentalPostInfoEffect() {
-            // try {
-            //     const response = await rentalPost.getRentalPostInfo(id);
-            //     console.log(response.status);
-            //     setRentalPostInfo({ ...response });
-            // } catch (error) {
-            //     console.log(error);
-            // }
-            rentalPost
-                .getRentalPostInfo(id)
-                .then((response) => {
-                    console.log(response);
-                    setRentalPostInfo({ ...response });
-                })
-                .catch((error) => {
-                    console.log(error);
-                    navigate('/notfound');
-                });
+            try {
+                const response = await rentalPost.getRentalPostInfo(id);
+                setRentalPostInfo({ ...response });
+            } catch (error) {
+                // A missing, expired or unapproved post is the not-found page; anything else is worth saying.
+                if (error.response?.status !== 404) notifyError(error);
+                navigate('/notfound');
+            }
         }
         getRentalPostInfoEffect();
-    }, []);
+    }, [id, navigate]);
     const {
         accommodation,
         dateAdded,
@@ -57,7 +47,7 @@ function PostPage(props) {
             />
             <DescriptionInfo descriptionInfo={content} />
             <ImgInfo imgInfo={rentalPostInfo.accommodationPictures} />
-            <ShareInfo shareInfo={{ rate }} postId={id} rate={rate} />
+            <ShareInfo postId={id} rate={rate} />
             <CommentInfo postId={id} />
         </div>
     );

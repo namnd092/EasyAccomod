@@ -25,8 +25,8 @@ public class AdminController : ApiControllerBase
     [HttpGet("Owners")]
     public async Task<IActionResult> GetOwners(int _page = 1, int _limit = 15, int confirmationStatus = -1)
     {
-        if (_page < 1)
-            return BadRequest();
+        if (ValidatePaging(_page, _limit) is { } invalidPaging)
+            return invalidPaging;
 
         IQueryable<Owner> owners = _context.Owners.AsNoTracking();
 
@@ -64,7 +64,7 @@ public class AdminController : ApiControllerBase
 
         var page = await owners
             .OrderBy(o => o.Id)
-            .Skip(_limit * (_page - 1))
+            .Skip(Offset(_page, _limit))
             .Take(_limit)
             .ToListAsync();
 
@@ -161,8 +161,8 @@ public class AdminController : ApiControllerBase
     [HttpGet("RentalPosts")]
     public async Task<IActionResult> SearchPostByStatus(int _page = 1, int _limit = 10, byte statusId = 0)
     {
-        if (_page < 1)
-            return BadRequest("Page must be at least 1.");
+        if (ValidatePaging(_page, _limit) is { } invalidPaging)
+            return invalidPaging;
 
         IQueryable<AccommodationRentalPost> posts = _context.AccommodationRentalPosts
             .AsNoTracking()
@@ -179,7 +179,7 @@ public class AdminController : ApiControllerBase
 
         var page = await posts
             .OrderBy(p => p.Id)
-            .Skip(_limit * (_page - 1))
+            .Skip(Offset(_page, _limit))
             .Take(_limit)
             .ToListAsync();
 
@@ -194,8 +194,8 @@ public class AdminController : ApiControllerBase
     [HttpGet("RentalPosts/ExtendPeriod")]
     public async Task<IActionResult> GetExtendPeriodPost(int _page = 1, int _limit = 10)
     {
-        if (_page < 1)
-            return BadRequest("Page >= 1");
+        if (ValidatePaging(_page, _limit) is { } invalidPaging)
+            return invalidPaging;
 
         var posts = _context.AccommodationRentalPosts
             .AsNoTracking()
@@ -214,7 +214,7 @@ public class AdminController : ApiControllerBase
         return Ok(new
         {
             MaxPage = Mapping.MaxPage(await posts.CountAsync(), _limit),
-            ListPost = await posts.OrderBy(p => p.Id).Skip(_limit * (_page - 1)).Take(_limit).ToListAsync(),
+            ListPost = await posts.OrderBy(p => p.Id).Skip(Offset(_page, _limit)).Take(_limit).ToListAsync(),
         });
     }
 

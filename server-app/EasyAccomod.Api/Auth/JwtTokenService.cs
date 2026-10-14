@@ -28,7 +28,7 @@ public class JwtTokenService
         };
         claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
 
-        var lifetime = TimeSpan.FromDays(_options.ExpiresInDays);
+        var lifetime = TimeSpan.FromMinutes(_options.AccessTokenMinutes);
         var token = new JwtSecurityToken(
             issuer: _options.Issuer,
             audience: _options.Audience,

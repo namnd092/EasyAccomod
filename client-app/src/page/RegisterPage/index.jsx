@@ -5,8 +5,7 @@ import OwnerRegister from './Owner';
 import RenterRegister from './Renter';
 import { Tabs } from '../../ui';
 
-RegisterPage.propTypes = {};
-function RegisterPage(props) {
+function RegisterPage() {
     const [value, setValue] = React.useState(0);
 
     return (

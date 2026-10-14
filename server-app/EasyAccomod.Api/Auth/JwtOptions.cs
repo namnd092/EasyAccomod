@@ -8,5 +8,9 @@ public class JwtOptions
 
     public string Audience { get; set; }
 
-    public int ExpiresInDays { get; set; } = 14;
+    // The access token is short-lived and kept in memory by the client; the refresh token
+    // (an HttpOnly cookie, see RefreshTokenService) is what keeps a session going.
+    public int AccessTokenMinutes { get; set; } = 15;
+
+    public int RefreshTokenDays { get; set; } = 30;
 }

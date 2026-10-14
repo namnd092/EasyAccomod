@@ -11,16 +11,11 @@ import newPostInitialValue from '../../models/InitialValueForm/newPost';
 import newPostValidationSchema from '../../models/ValidateForm/newPost';
 import rentalPost from '../../api/rentalPost';
 import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
 import { Button, Spinner, Backdrop } from '../../ui';
+import { notifyError } from '../../helper/notify';
 
-NewPostPage.propTypes = {};
-
-function NewPostPage(props) {
+function NewPostPage() {
     const navigate = useNavigate();
-    const user = useSelector((state) => state.user);
-    const { role } = user;
-
     const [isLoading, setIsLoading] = React.useState(false);
     const methods = useForm({
         defaultValues: newPostInitialValue,
@@ -29,7 +24,6 @@ function NewPostPage(props) {
     });
     const handleSubmit = async (values) => {
         //event.preventDefault();
-        console.log(values);
         const { roomImageArr } = values;
         try {
             setIsLoading(true);
@@ -43,11 +37,10 @@ function NewPostPage(props) {
                 ...values,
                 accommodationPictures: newAccommodationPictures,
             };
-            const response = await rentalPost.postNewPost(params);
-            console.log(response);
+            await rentalPost.postNewPost(params);
             navigate('/');
         } catch (error) {
-            console.log(error);
+            notifyError(error);
         } finally {
             setIsLoading(false);
         }

@@ -1,19 +1,14 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import Card from '../../share/components/card';
-import Axios from 'axios';
-import ApiUrl from '../../constants/ApiUrl';
 import authApi from '../../api/authApi';
 import { useNavigate } from 'react-router-dom';
 import { Button, FormGroup, FormLabel, inputClass } from '../../ui';
+import { notifyError } from '../../helper/notify';
 
-ProfilePage.propTypes = {};
-
-function ProfilePage(props) {
+function ProfilePage() {
     const navigate = useNavigate();
-    const token = localStorage.getItem('token');
     const [haveEditing, setHaveEditing] = React.useState(-1);
-    const [isPending, setIsPending] = React.useState(true);
     const [defaultValue, setDefaultValue] = React.useState({
         name: '',
         email: '',
@@ -23,59 +18,45 @@ function ProfilePage(props) {
     });
     React.useEffect(() => {
         async function effectGetInfo() {
-            Axios.get(`${import.meta.env.VITE_API_URL}/` + ApiUrl.GET_ACCOUNT_INFO, {
-                headers: {
-                    'content-type': 'application/json',
-                    Authorization: `Bearer ${token}`,
-                },
-            })
-                .then(async (response) => {
-                    const infoResponse = await response.data;
-                    console.log(infoResponse);
-                    setDefaultValue({
-                        name: (infoResponse && infoResponse.name) || '',
-                        email: (infoResponse && infoResponse.email) || '',
-                        phone: (infoResponse && infoResponse.phone) || '',
-                        address: (infoResponse && infoResponse.address) || '',
-                        identification:
-                            (infoResponse && infoResponse.identification) || '',
-                    });
-                    console.log(defaultValue);
-                })
-                .catch((error) => console.log(error));
+            try {
+                const info = await authApi.getAccountInfoByToken();
+                setDefaultValue({
+                    name: info?.name || '',
+                    email: info?.email || '',
+                    phone: info?.phone || '',
+                    address: info?.address || '',
+                    identification: info?.identification || '',
+                });
+            } catch (error) {
+                notifyError(error);
+            }
         }
-
         effectGetInfo();
         async function getHaveEditing() {
             try {
                 const response = await authApi.getCanEditProfile();
-                console.log(response);
                 setHaveEditing(response.result);
             } catch (error) {
-                console.log(error);
+                notifyError(error);
             }
         }
         getHaveEditing();
     }, []);
     const { register, handleSubmit: withValues } = useForm({ values: defaultValue });
     const handleSubmit = async (value) => {
-        console.log(value);
         try {
-            const response = await authApi.putEditProfile({ ...value });
-            console.log(response);
-        } catch (error) {
-            console.log(error);
-        } finally {
+            await authApi.putEditProfile({ ...value });
             navigate('/');
+        } catch (error) {
+            notifyError(error);
         }
     };
     const handleRequireEditInfo = async () => {
         setHaveEditing(0);
         try {
-            const response = await authApi.postRequireEditInfo();
-            console.log(response);
+            await authApi.postRequireEditInfo();
         } catch (error) {
-            console.log(error);
+            notifyError(error);
         }
     };
     return (

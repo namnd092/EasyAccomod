@@ -29,19 +29,25 @@ describe('PrivateRoute', () => {
         expect(screen.getByText('login page')).toBeInTheDocument();
     });
 
+    it('waits while the session is being restored instead of redirecting', () => {
+        renderWithProviders(<Guarded roles={[Role.ADMIN]} />, { route: '/secret', restoring: true });
+        expect(screen.queryByText('login page')).not.toBeInTheDocument();
+        expect(screen.queryByText('secret page')).not.toBeInTheDocument();
+    });
+
     it('renders the page for an allowed role', () => {
-        localStorage.setItem('token', 'x');
         renderWithProviders(<Guarded roles={[Role.ADMIN]} />, {
             route: '/secret',
+            token: 'x',
             user: { role: 'Admin' },
         });
         expect(screen.getByText('secret page')).toBeInTheDocument();
     });
 
     it('blocks a role that is not allowed', () => {
-        localStorage.setItem('token', 'x');
         renderWithProviders(<Guarded roles={[Role.ADMIN]} />, {
             route: '/secret',
+            token: 'x',
             user: { role: 'Renter' },
         });
         expect(screen.queryByText('secret page')).not.toBeInTheDocument();
@@ -49,9 +55,9 @@ describe('PrivateRoute', () => {
     });
 
     it('lets an owner who is waiting for confirmation through when that role is allowed', () => {
-        localStorage.setItem('token', 'x');
         renderWithProviders(<Guarded roles={[Role.OWNER, Role.OWNER_PENDING]} />, {
             route: '/secret',
+            token: 'x',
             user: { role: 'Wait for Admin to confirm' },
         });
         expect(screen.getByText('secret page')).toBeInTheDocument();
@@ -80,9 +86,14 @@ describe('AuthRoute', () => {
         expect(screen.getByText('login form')).toBeInTheDocument();
     });
 
+    it('waits while the session is being restored instead of showing the form', () => {
+        renderWithProviders(<AuthOnly />, { route: '/login', restoring: true });
+        expect(screen.queryByText('login form')).not.toBeInTheDocument();
+        expect(screen.queryByText('home page')).not.toBeInTheDocument();
+    });
+
     it('sends a logged-in user home', () => {
-        localStorage.setItem('token', 'x');
-        renderWithProviders(<AuthOnly />, { route: '/login' });
+        renderWithProviders(<AuthOnly />, { route: '/login', token: 'x' });
         expect(screen.getByText('home page')).toBeInTheDocument();
     });
 });

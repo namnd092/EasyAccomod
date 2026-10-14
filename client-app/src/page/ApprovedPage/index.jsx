@@ -8,9 +8,7 @@ import Extend from './components/Extend';
 import Report from './components/Report';
 import { Tabs } from '../../ui';
 
-ApprovedPage.propTypes = {};
-
-function ApprovedPage(props) {
+function ApprovedPage() {
     const [value, setValue] = React.useState(0);
 
     return (

@@ -7,3 +7,4 @@ export { Collapsible } from './Collapsible';
 export { LinearProgress, Spinner, Backdrop } from './Progress';
 export { Modal } from './Modal';
 export { inputClass, tableClass, containerClass, rowClass, cardClass, cardHeaderClass, cardBodyClass } from './classes';
+export { Toaster } from './Toaster';

@@ -1,10 +1,10 @@
-import React, { Component } from 'react';
-import { useSelector } from 'react-redux';
+import React from 'react';
 import queryString from 'query-string';
-import SearchFrom from './components/SearchFrom';
+import SearchForm from './components/SearchForm';
 import PostList, { PostListSkeleton } from './components/PostList';
 import HomePagination from './components/HomePagination';
 import rentalPostApi from '../../api/rentalPost';
+import { notifyError } from '../../helper/notify';
 
 export const HomePage = () => {
     const [maxPage, setMaxPage] = React.useState(0);
@@ -44,11 +44,10 @@ export const HomePage = () => {
             try {
                 setIsLoading(true);
                 const response = await rentalPostApi.getPostBySearch(query);
-                console.log(response);
                 setPostList(response.simplePostDtos);
                 setMaxPage(response.maxPage);
             } catch (error) {
-                console.log(error);
+                notifyError(error);
                 setPostList([]);
             } finally {
                 setIsLoading(false);
@@ -66,7 +65,7 @@ export const HomePage = () => {
         <div className="py-6">
             <section className="rounded-lg bg-white p-5 shadow-sm">
                 <h1 className="mb-4 text-2xl font-semibold">Tìm phòng trọ</h1>
-                <SearchFrom
+                <SearchForm
                     onSubmit={handleFilterChange}
                     isLoading={isLoading}
                 />
