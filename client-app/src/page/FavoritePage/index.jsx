@@ -1,22 +1,42 @@
 import React from 'react';
 import './style.css';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import rentalPost from '../../api/rentalPost';
 import Card from '../../share/components/card';
 import PostItem from '../HomePage/components/PostList/PostItem';
+import { pageFromParams } from '../HomePage/searchFilters';
 import { Button, Pagination, tableClass } from '../../ui';
 import { notifyError } from '../../helper/notify';
 
 const PAGE_SIZE = 15;
 
-// Loads one page of the renter's liked posts. `reload` fetches the current page again.
+// Loads one page of the renter's liked posts. The page is kept in the URL (?page=2, none for the first),
+// so a refresh, the back button and a shared link keep it. `reload` fetches the current page again.
 function useFavoritePosts() {
-    const [page, setPage] = React.useState(1);
+    const [searchParams, setSearchParams] = useSearchParams();
+    const page = pageFromParams(searchParams);
+    const showPage = (nextPage, options) => setSearchParams(nextPage > 1 ? { page: String(nextPage) } : {}, options);
+    const showLastPage = React.useEffectEvent((lastPage) => showPage(lastPage, { replace: true }));
+    const setPage = (nextPage) => {
+        showPage(nextPage);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
     const [posts, setPosts] = React.useState([]);
     const [maxPage, setMaxPage] = React.useState(1);
     const [reloads, setReloads] = React.useState(0);
     React.useEffect(() => {
         let ignore = false;
+        async function goToLastPage() {
+            try {
+                const first = await rentalPost.getAllFavoriteRentalPost(1, PAGE_SIZE);
+                if (ignore) return;
+                showLastPage(Math.max(1, Math.min(page - 1, first.maxPage)));
+            } catch (error) {
+                if (ignore) return;
+                setPosts([]);
+                notifyError(error);
+            }
+        }
         async function load() {
             try {
                 const response = await rentalPost.getAllFavoriteRentalPost(page, PAGE_SIZE);
@@ -25,9 +45,10 @@ function useFavoritePosts() {
                 setMaxPage(response.maxPage);
             } catch (error) {
                 if (ignore) return;
-                // The last post of the last page was removed, so that page no longer exists.
+                // The page no longer exists (its last post was unliked, or the URL is stale). The first page
+                // says how many pages are left, so go to the last one without trying every page in between.
                 if (error.response?.status === 404 && page > 1) {
-                    setPage(page - 1);
+                    await goToLastPage();
                     return;
                 }
                 setPosts([]);
