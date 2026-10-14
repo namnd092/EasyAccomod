@@ -99,7 +99,9 @@ check("ward carries district and province", wards[0]["district"]["province"]["id
 for lookup in ("Types", "PaymentTypes", "KitchenTypes", "RoomAreaRanges", "Statuses"):
     check("lookup " + lookup, len(expect(lookup, call("GET", "/api/Accommodations/" + lookup), 200)) > 0)
 check("post statuses", len(expect("post statuses", call("GET", "/api/RentalPosts/Statuses"), 200)) == 5)
-check("search on empty result is 404 (legacy behaviour)", call("GET", "/api/RentalPosts/Search?street=zzzzzz" + run)[0] == 404)
+empty = call("GET", "/api/RentalPosts/Search?street=zzzzzz" + run)
+check("search with no matches is an empty 200", empty[0] == 200 and empty[1]["simplePostDtos"] == [] and empty[1]["maxPage"] == 0, empty)
+check("search past the last page is 404", call("GET", "/api/RentalPosts/Search?_page=999")[0] == 404)
 
 print("owner creates a post")
 check("fewer than 3 pictures rejected",

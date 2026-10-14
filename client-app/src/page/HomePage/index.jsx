@@ -74,7 +74,7 @@ export const HomePage = () => {
                 />
             </div>
             {isLoading ? <LinearProgress /> : <PostList postList={postList} />}
-            {!isLoading && (
+            {!isLoading && maxPage > 0 && (
                 <div className="homePage__pagination">
                     <HomePagination
                         onPageChange={handlePageChange}

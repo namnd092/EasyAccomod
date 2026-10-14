@@ -33,7 +33,7 @@ function ImgInfo(props) {
             }
         }
         getImgPostInfoEffect();
-    }, imgInfo);
+    }, [imgInfo]);
 
     return (
         <div style={{ marginTop: '30px' }}>

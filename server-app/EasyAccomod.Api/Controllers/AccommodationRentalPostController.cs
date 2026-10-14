@@ -94,8 +94,9 @@ public class AccommodationRentalPostController : ApiControllerBase
             posts = posts.Where(p => p.Accommodation.KitchenTypeId == kitchenTypeId);
 
         // Page and limit result
+        // No matches is a normal answer (an empty first page); only a page past the end is not found.
         var maxPage = Mapping.MaxPage(await posts.CountAsync(), _limit);
-        if (_page > maxPage)
+        if (_page > Math.Max(maxPage, 1))
             return NotFound();
 
         var pagePosts = await posts
