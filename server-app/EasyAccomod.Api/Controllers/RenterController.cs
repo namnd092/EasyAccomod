@@ -90,7 +90,7 @@ public class RenterController : ApiControllerBase
     [HttpPost("RentalPost/Comment")]
     public async Task<IActionResult> Comment(CommentDto commentDto)
     {
-        if (!await _context.AccommodationRentalPosts.AnyAsync(p => p.Id == commentDto.AccommodationRentalPostId))
+        if (!await IsPublishedPostAsync(commentDto.AccommodationRentalPostId))
             return BadRequest("Post does not exist.");
 
         var renterId = await GetRenterIdAsync();
@@ -116,7 +116,7 @@ public class RenterController : ApiControllerBase
     [HttpPost("RentalPost/Report")]
     public async Task<IActionResult> Report(ReportDto reportDto)
     {
-        if (!await _context.AccommodationRentalPosts.AnyAsync(p => p.Id == reportDto.AccommodationRentalPostId))
+        if (!await IsPublishedPostAsync(reportDto.AccommodationRentalPostId))
             return BadRequest("Post does not exist.");
 
         var renterId = await GetRenterIdAsync();
@@ -174,6 +174,14 @@ public class RenterController : ApiControllerBase
         var result = await _context.Reports.AnyAsync(r => r.RenterId == renterId && r.AccommodationRentalPostId == postId);
 
         return Ok(new { result });
+    }
+
+    // Renters can only interact with posts that are publicly visible (approved and not expired).
+    private async Task<bool> IsPublishedPostAsync(int? postId)
+    {
+        var now = DateTime.UtcNow;
+        return await _context.AccommodationRentalPosts.AnyAsync(p =>
+            p.Id == postId && p.Status.Name == RentalPostStatusName.Approved && p.DateExpired > now);
     }
 
     private async Task<int> GetRenterIdAsync()
