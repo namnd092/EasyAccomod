@@ -11,7 +11,8 @@ function PrivateRoute({ children, roles }) {
     if (!auth) {
         return <Navigate to="/login" state={{ from: location }} replace />;
     }
-    if (roles && role && roles.indexOf(role.toLowerCase()) === -1) {
+    const allowed = roles?.map((r) => r.toLowerCase());
+    if (allowed && role && !allowed.includes(role.toLowerCase())) {
         return <Authorization />;
     }
     return children;
