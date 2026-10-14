@@ -119,14 +119,14 @@ check("admin list contains post", any(p["id"] == post_id for p in pending_list["
 
 print("admin approves, search and view")
 expect("approve post", call("PUT", "/api/Admin/RentalPost/SetStatus", admin, {"Id": 2, "PostId": post_id}), 200)
-results = expect("search street (case-insensitive)", call("GET", "/api/RentalPosts/Search?street=ngõ hoa&provinceId=1"), 200)
+results = expect("search street (case-insensitive)", call("GET", "/api/RentalPosts/Search?street=ngõ hoa&provinceId=1&_limit=1000"), 200)
 found = [p for p in results["simplePostDtos"] if p["id"] == post_id]
 check("search returns approved post", len(found) == 1, results)
 if found:
     check("search item shape", found[0]["accommodationProvince"] and "đ/Tháng" in found[0]["accommodationPrice"]
           and found[0]["roomArea"] == "20-30m2" and len(found[0]["pictures"]) == 3, found[0])
 check("search with facility filter", any(p["id"] == post_id for p in call(
-    "GET", "/api/RentalPosts/Search?haveAirConditioner=1&haveBalcony=-1&paymentTypeId=1&minPrice=1000000&maxPrice=5000000")[1]["simplePostDtos"]))
+    "GET", "/api/RentalPosts/Search?haveAirConditioner=1&haveBalcony=-1&paymentTypeId=1&minPrice=1000000&maxPrice=5000000&_limit=1000")[1]["simplePostDtos"]))
 check("search excludes by facility filter", all(p["id"] != post_id for p in call(
     "GET", "/api/RentalPosts/Search?haveBalcony=1")[1].get("simplePostDtos", [])) if call("GET", "/api/RentalPosts/Search?haveBalcony=1")[0] == 200 else True)
 check("search rejects invalid tri-state", call("GET", "/api/RentalPosts/Search?haveBalcony=5")[0] == 400)
@@ -165,7 +165,7 @@ check("pending comment listed with renter name", len(mine) == 1 and mine[0]["ren
 expect("approve comment", call("POST", "/api/Admin/ApproveComment", admin, {"Id": mine[0]["id"]}), 200)
 comments = expect("public comments", call("GET", "/api/RentalPosts/%d/Comments" % post_id), 200)
 check("public comment visible", comments["maxPage"] == 1 and comments["listCommentDtos"][0]["content"] == "Tốt", comments)
-rated = call("GET", "/api/RentalPosts/Search?street=ngõ hoa")[1]["simplePostDtos"]
+rated = call("GET", "/api/RentalPosts/Search?street=ngõ hoa&_limit=1000")[1]["simplePostDtos"]
 check("rating averaged on search", any(p["id"] == post_id and p["rate"] == 4 for p in rated), rated)
 reports = expect("unsolved reports", call("GET", "/api/Admin/RentalPost/Reports?isSolved=false", admin), 200)
 mine = [r for r in reports if r["accommodationRentalPostId"] == post_id]
@@ -234,6 +234,10 @@ check("renter can log in", login(renter_name, "Abcdef1!")[1].get("role") == "Ren
 check("weak password rejected", call("POST", "/api/Account/RenterRegister", None, {
     "Name": "x", "UserName": renter_name + "b", "Email": renter_name + "b@test.com",
     "Password": "abcdef", "ConfirmPassword": "abcdef"})[0] == 400)
+for _ in range(5):
+    login(renter_name, "wrong")
+check("account is locked after repeated failures", login(renter_name, "Abcdef1!")[0] == 400)
+check("health endpoint reports healthy", call("GET", "/health")[0] == 200)
 check("duplicate username rejected", call("POST", "/api/Account/RenterRegister", None, {
     "Name": "x", "UserName": renter_name, "Email": "other" + run + "@test.com",
     "Password": "Abcdef1!", "ConfirmPassword": "Abcdef1!"})[0] == 400)

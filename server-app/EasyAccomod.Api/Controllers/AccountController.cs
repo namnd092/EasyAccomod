@@ -33,8 +33,20 @@ public class AccountController : ApiControllerBase
     public async Task<IActionResult> CreateToken(CreateTokenBindingModel model)
     {
         var user = await _userManager.FindByNameAsync(model.UserName);
-        if (user == null || !await _userManager.CheckPasswordAsync(user, model.Password))
+        if (user == null)
             return BadRequest("User name or password is invalid.");
+
+        // A locked account rejects even the right password until the lockout ends.
+        if (await _userManager.IsLockedOutAsync(user))
+            return BadRequest("Too many failed attempts. Try again in a few minutes.");
+
+        if (!await _userManager.CheckPasswordAsync(user, model.Password))
+        {
+            await _userManager.AccessFailedAsync(user);
+            return BadRequest("User name or password is invalid.");
+        }
+
+        await _userManager.ResetAccessFailedCountAsync(user);
 
         var roles = await _userManager.GetRolesAsync(user);
         var role = roles.FirstOrDefault();
