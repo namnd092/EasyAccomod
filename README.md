@@ -65,7 +65,7 @@ npm run dev
 
 - The API serves plain HTTP; terminate TLS at a reverse proxy and set `ASPNETCORE_FORWARDEDHEADERS_ENABLED=true` so the API trusts `X-Forwarded-Proto`. Outside Development it also sends an HSTS header (browsers only honor it over HTTPS).
 - `GET /health` returns 200 when the API can reach the database and 503 otherwise; point the load balancer or orchestrator probe at it.
-- Five failed logins lock an account for five minutes, and a locked account is rejected even with the right password. The lockout message tells the caller the account exists, a trade-off kept for usability.
+- Five failed logins lock an account for five minutes, and a locked account is rejected even with the right password; the reply is the same as for a wrong password. Because the lockout is per account, anyone who knows a user name can lock that account for five minutes, so logins are also limited per client address: `POST /api/Account/Token` allows 10 requests per 60 seconds (`RateLimiting__LoginPermitLimit`, `RateLimiting__LoginWindowSeconds`) and answers 429 with `Retry-After` beyond that. Behind a proxy, enable forwarded headers (above), otherwise every client shares the proxy's address.
 - Set `Cors__Origins__0` to the real client origin, and keep the demo accounts out of Production (they are only seeded in Development).
 
 ## Continuous integration
