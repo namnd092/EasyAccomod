@@ -30,10 +30,14 @@ public class AccommodationRentalPostController : ApiControllerBase
         byte paymentTypeId = 0, int minPrice = 0, int maxPrice = 0,
         byte accommodationTypeId = 0, byte roomAreaRangeId = 0,
         int liveWithOwner = 0, int haveClosedBathroom = 0, int haveWaterHeater = 0,
-        byte kitchenTypeId = 0, int haveAirConditioner = 0, int haveBalcony = 0)
+        byte kitchenTypeId = 0, int haveAirConditioner = 0, int haveBalcony = 0,
+        string sortBy = "")
     {
         if (ValidatePaging(_page, _limit) is { } invalidPaging)
             return invalidPaging;
+
+        if (!IsKnownSortOrder(sortBy))
+            return BadRequest("Invalid input: sortBy.");
 
         var now = DateTime.UtcNow;
         var posts = _context.AccommodationRentalPosts
@@ -57,15 +61,13 @@ public class AccommodationRentalPostController : ApiControllerBase
             posts = posts.Where(p =>
                 EF.Functions.ILike(p.Accommodation.Address.PublicLocationNearby, "%" + publicLocationNearby + "%"));
 
-        // Search by Price
+        // Search by Price: a bound of 0 means no limit, and the payment type is a filter of its own.
         if (paymentTypeId != 0)
-        {
             posts = posts.Where(p => p.Accommodation.PaymentTypeId == paymentTypeId);
-            if (minPrice != 0)
-                posts = posts.Where(p => p.Accommodation.Price >= minPrice);
-            if (maxPrice != 0)
-                posts = posts.Where(p => p.Accommodation.Price <= maxPrice);
-        }
+        if (minPrice != 0)
+            posts = posts.Where(p => p.Accommodation.Price >= minPrice);
+        if (maxPrice != 0)
+            posts = posts.Where(p => p.Accommodation.Price <= maxPrice);
 
         if (accommodationTypeId != 0)
             posts = posts.Where(p => p.Accommodation.AccommodationTypeId == accommodationTypeId);
@@ -99,12 +101,12 @@ public class AccommodationRentalPostController : ApiControllerBase
 
         // Page and limit result
         // No matches is a normal answer (an empty first page); only a page past the end is not found.
-        var maxPage = Mapping.MaxPage(await posts.CountAsync(), _limit);
+        var totalCount = await posts.CountAsync();
+        var maxPage = Mapping.MaxPage(totalCount, _limit);
         if (_page > Math.Max(maxPage, 1))
             return NotFound();
 
-        var pagePosts = await posts
-            .OrderBy(p => p.Id)
+        var pagePosts = await ApplySortOrder(posts, sortBy)
             .Skip(Offset(_page, _limit))
             .Take(_limit)
             .ToListAsync();
@@ -117,7 +119,7 @@ public class AccommodationRentalPostController : ApiControllerBase
             return dto;
         }).ToList();
 
-        return Ok(new ListSimplePost { SimplePostDtos = simplePostDtos, MaxPage = maxPage });
+        return Ok(new ListSearchPost { SimplePostDtos = simplePostDtos, MaxPage = maxPage, TotalCount = totalCount });
     }
 
     // GET /api/RentalPosts/Get/1
@@ -385,6 +387,20 @@ public class AccommodationRentalPostController : ApiControllerBase
     }
 
     private static bool IsTriState(int value) => value is -1 or 0 or 1;
+
+    // Sort orders of the search; no order keeps the posts in the order they were created.
+    private static bool IsKnownSortOrder(string sortBy) =>
+        string.IsNullOrEmpty(sortBy) || sortBy is "newest" or "priceAsc" or "priceDesc";
+
+    // The id breaks ties so that a post never moves between pages.
+    private static IOrderedQueryable<AccommodationRentalPost> ApplySortOrder(
+        IQueryable<AccommodationRentalPost> posts, string sortBy) => sortBy switch
+    {
+        "newest" => posts.OrderByDescending(p => p.DateAdded).ThenByDescending(p => p.Id),
+        "priceAsc" => posts.OrderBy(p => p.Accommodation.Price).ThenBy(p => p.Id),
+        "priceDesc" => posts.OrderByDescending(p => p.Accommodation.Price).ThenBy(p => p.Id),
+        _ => posts.OrderBy(p => p.Id),
+    };
 
     private async Task<Dictionary<int, double>> GetRatesAsync(List<int> postIds)
     {

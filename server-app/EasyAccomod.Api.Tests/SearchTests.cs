@@ -60,6 +60,113 @@ public class SearchTests
         Assert.Equal(HttpStatusCode.NotFound, detail.StatusCode);
     }
 
+    // Posts that share a street token are found together with ?street=<token>, which keeps each test
+    // apart from the posts the other tests create in the same database.
+    private async Task<(string Token, int[] Ids)> CreatePostsAsync(params int[] prices)
+    {
+        var token = "Ngõ Nhóm " + Guid.NewGuid().ToString("N");
+        var ids = new List<int>();
+        foreach (var price in prices)
+            ids.Add(await ApiClient.CreateApprovedPostAsync(_factory, token + " " + ids.Count, price));
+        return (token, ids.ToArray());
+    }
+
+    private async Task<JsonElement> SearchAsync(string token, string query = "")
+    {
+        using var client = await ApiClient.ClientForAsync(_factory);
+        var response = await client.GetAsync("/api/RentalPosts/Search?_limit=50&street=" + Uri.EscapeDataString(token) + query);
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        using var json = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
+        return json.RootElement.Clone();
+    }
+
+    private static int[] IdsOf(JsonElement result) =>
+        result.GetProperty("simplePostDtos").EnumerateArray().Select(p => p.GetProperty("id").GetInt32()).ToArray();
+
+    [Fact]
+    public async Task Search_keeps_posts_in_the_order_they_were_created_by_default()
+    {
+        var (token, ids) = await CreatePostsAsync(5000000, 1000000, 3000000);
+
+        var result = await SearchAsync(token);
+
+        Assert.Equal(ids, IdsOf(result));
+    }
+
+    [Theory]
+    [InlineData("priceAsc", new[] { 1, 2, 0 })]
+    [InlineData("priceDesc", new[] { 0, 2, 1 })]
+    [InlineData("newest", new[] { 2, 1, 0 })]
+    public async Task Search_sorts_by_the_requested_order(string sortBy, int[] expectedOrder)
+    {
+        // Created in this order: 5 triệu, 1 triệu, 3 triệu.
+        var (token, ids) = await CreatePostsAsync(5000000, 1000000, 3000000);
+
+        var result = await SearchAsync(token, "&sortBy=" + sortBy);
+
+        Assert.Equal(expectedOrder.Select(i => ids[i]), IdsOf(result));
+    }
+
+    [Fact]
+    public async Task Search_sorts_across_pages()
+    {
+        var (token, ids) = await CreatePostsAsync(5000000, 1000000, 3000000);
+        using var client = await ApiClient.ClientForAsync(_factory);
+
+        var second = await client.GetFromJsonAsync<JsonElement>(
+            "/api/RentalPosts/Search?_limit=2&_page=2&sortBy=priceAsc&street=" + Uri.EscapeDataString(token));
+
+        Assert.Equal(new[] { ids[0] }, IdsOf(second));
+    }
+
+    [Fact]
+    public async Task Search_rejects_an_unknown_sort_order()
+    {
+        using var client = await ApiClient.ClientForAsync(_factory);
+
+        var response = await client.GetAsync("/api/RentalPosts/Search?sortBy=cheapest");
+
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task Search_reports_how_many_posts_matched_across_all_pages()
+    {
+        var (token, _) = await CreatePostsAsync(1000000, 2000000, 3000000);
+        using var client = await ApiClient.ClientForAsync(_factory);
+
+        var result = await client.GetFromJsonAsync<JsonElement>(
+            "/api/RentalPosts/Search?_limit=2&street=" + Uri.EscapeDataString(token));
+
+        Assert.Equal(2, result.GetProperty("simplePostDtos").GetArrayLength());
+        Assert.Equal(2, result.GetProperty("maxPage").GetInt32());
+        Assert.Equal(3, result.GetProperty("totalCount").GetInt32());
+    }
+
+    [Fact]
+    public async Task Search_reports_a_total_of_zero_when_nothing_matched()
+    {
+        var result = await SearchAsync("Không có ngõ này " + Guid.NewGuid().ToString("N"));
+
+        Assert.Equal(0, result.GetProperty("totalCount").GetInt32());
+    }
+
+    [Theory]
+    [InlineData("&minPrice=2000000&maxPrice=3000000", new[] { 1 })]
+    [InlineData("&minPrice=2000000", new[] { 1, 2 })]
+    [InlineData("&maxPrice=2000000", new[] { 0 })]
+    [InlineData("&minPrice=2000000&maxPrice=3000000&paymentTypeId=1", new[] { 1 })]
+    [InlineData("&minPrice=2000000&maxPrice=3000000&paymentTypeId=2", new int[0])]
+    public async Task Search_filters_by_price_whether_or_not_a_payment_type_is_given(string query, int[] expectedPosts)
+    {
+        // 1,5 triệu, 2,5 triệu and 6 triệu a month.
+        var (token, ids) = await CreatePostsAsync(1500000, 2500000, 6000000);
+
+        var result = await SearchAsync(token, query);
+
+        Assert.Equal(expectedPosts.Select(i => ids[i]), IdsOf(result));
+    }
+
     [Fact]
     public async Task Search_rejects_an_invalid_tri_state_filter()
     {

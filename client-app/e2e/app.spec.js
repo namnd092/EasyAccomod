@@ -11,6 +11,40 @@ test.describe('visitor', () => {
         await expect(page.getByText(/Thành phố Hà Nội/).first()).toBeVisible();
     });
 
+    test('keeps the search filters in the URL across a reload and can clear them', async ({ page }) => {
+        await page.goto('/?provinceId=1&haveBalcony=-1');
+        await expect(page.getByText('Đang áp dụng 2 bộ lọc')).toBeVisible();
+        await page.reload();
+        await expect(page).toHaveURL(/provinceId=1&haveBalcony=-1/);
+        await expect(page.getByText('Đang áp dụng 2 bộ lọc')).toBeVisible();
+        // The filter that was applied is shown in the (already opened) detail section.
+        await expect(page.getByLabel('Ban công')).toBeAttached();
+        await page.getByRole('button', { name: 'Xóa bộ lọc' }).click();
+        await expect(page).toHaveURL(/\/$/);
+        await expect(page.getByRole('button', { name: 'Xóa bộ lọc' })).toHaveCount(0);
+    });
+
+    test('sorts by newest, counts the results and narrows them with the price chips', async ({ page, request }) => {
+        // The post costs 3 triệu a month. Newest first, it is the first one a search it matches can show.
+        const post = await createPost(request, { approved: true });
+        await page.goto('/?sort=newest');
+        await expect(page.getByText(post.title).first()).toBeVisible();
+        await expect(page.getByText(/\d+ kết quả/)).toBeVisible();
+        await page.getByRole('button', { name: '3 triệu - 5 triệu' }).click();
+        await expect(page).toHaveURL(/minPrice=3&maxPrice=5/);
+        await expect(page.getByText(post.title).first()).toBeVisible();
+        await page.getByRole('button', { name: 'Dưới 1 triệu' }).click();
+        await expect(page).toHaveURL(/maxPrice=1(&|$)/);
+        await expect(page.getByRole('button', { name: 'Dưới 1 triệu' })).toHaveAttribute('aria-pressed', 'true');
+        await expect(page.getByText(post.title)).toHaveCount(0);
+    });
+
+    test('falls back to the first page when the URL asks for a page that does not exist', async ({ page }) => {
+        await page.goto('/?page=9999');
+        await expect(page).toHaveURL(/\/$/);
+        await expect(page.getByRole('alert')).toHaveCount(0);
+    });
+
     test('is sent to the login page from a protected route', async ({ page }) => {
         await page.goto('/my-post');
         await expect(page).toHaveURL(/\/login$/);
