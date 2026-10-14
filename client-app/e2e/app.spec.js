@@ -11,6 +11,25 @@ test.describe('visitor', () => {
         await expect(page.getByText(/Thành phố Hà Nội/).first()).toBeVisible();
     });
 
+    test('keeps the search filters in the URL across a reload and can clear them', async ({ page }) => {
+        await page.goto('/?provinceId=1&haveBalcony=-1');
+        await expect(page.getByText('Đang áp dụng 2 bộ lọc')).toBeVisible();
+        await page.reload();
+        await expect(page).toHaveURL(/provinceId=1&haveBalcony=-1/);
+        await expect(page.getByText('Đang áp dụng 2 bộ lọc')).toBeVisible();
+        // The filter that was applied is shown in the (already opened) detail section.
+        await expect(page.getByLabel('Ban công')).toBeAttached();
+        await page.getByRole('button', { name: 'Xóa bộ lọc' }).click();
+        await expect(page).toHaveURL(/\/$/);
+        await expect(page.getByRole('button', { name: 'Xóa bộ lọc' })).toHaveCount(0);
+    });
+
+    test('falls back to the first page when the URL asks for a page that does not exist', async ({ page }) => {
+        await page.goto('/?page=9999');
+        await expect(page).toHaveURL(/\/$/);
+        await expect(page.getByRole('alert')).toHaveCount(0);
+    });
+
     test('is sent to the login page from a protected route', async ({ page }) => {
         await page.goto('/my-post');
         await expect(page).toHaveURL(/\/login$/);
