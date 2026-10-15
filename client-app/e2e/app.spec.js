@@ -67,7 +67,10 @@ test.describe('visitor', () => {
 
     test('opening a post shows no error toast', async ({ page, request }) => {
         const post = await createPost(request, { approved: true });
+        // The post has no comments yet; wait for the answer to the comments request, which is what could fail.
+        const commentsLoaded = page.waitForResponse((response) => /\/api\/RentalPosts\/\d+\/Comments/.test(response.url()));
         await page.goto(`/post/${post.id}`);
+        expect((await commentsLoaded).status()).toBe(200);
         await expect(page.getByText(post.title).first()).toBeVisible();
         await expect(page.getByRole('alert')).toHaveCount(0);
     });
