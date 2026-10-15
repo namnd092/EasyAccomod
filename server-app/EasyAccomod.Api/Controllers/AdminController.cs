@@ -254,15 +254,27 @@ public class AdminController : ApiControllerBase
 
     // GET api/Admin/PendingComment
     [HttpGet("PendingComment")]
-    public async Task<IActionResult> GetPendingComment()
+    public async Task<IActionResult> GetPendingComment(int _page = 1, int _limit = 10)
     {
-        var comments = await _context.Comments
+        if (ValidatePaging(_page, _limit) is { } invalidPaging)
+            return invalidPaging;
+
+        var comments = _context.Comments
             .AsNoTracking()
+            .Where(c => !c.IsApproved);
+
+        var page = await comments
             .Include(c => c.Renter)
-            .Where(c => !c.IsApproved)
+            .OrderBy(c => c.Id)
+            .Skip(Offset(_page, _limit))
+            .Take(_limit)
             .ToListAsync();
 
-        return Ok(comments.Select(c => c.ToDto()));
+        return Ok(new ListCommentsDto
+        {
+            MaxPage = Mapping.MaxPage(await comments.CountAsync(), _limit),
+            ListCommentDtos = page.Select(c => c.ToDto()).ToList(),
+        });
     }
 
     // POST api/Admin/ApproveComment
@@ -301,16 +313,28 @@ public class AdminController : ApiControllerBase
 
     // GET api/Admin/RentalPost/Reports
     [HttpGet("RentalPost/Reports")]
-    public async Task<IActionResult> GetReports(bool isSolved = false)
+    public async Task<IActionResult> GetReports(int _page = 1, int _limit = 10, bool isSolved = false)
     {
-        var reports = await _context.Reports
+        if (ValidatePaging(_page, _limit) is { } invalidPaging)
+            return invalidPaging;
+
+        var reports = _context.Reports
             .AsNoTracking()
+            .Where(r => r.IsSolved == isSolved);
+
+        var page = await reports
             .Include(r => r.AccommodationRentalPost)
             .Include(r => r.Renter)
-            .Where(r => r.IsSolved == isSolved)
+            .OrderBy(r => r.Id)
+            .Skip(Offset(_page, _limit))
+            .Take(_limit)
             .ToListAsync();
 
-        return Ok(reports.Select(r => r.ToDto()));
+        return Ok(new ListReportsDto
+        {
+            MaxPage = Mapping.MaxPage(await reports.CountAsync(), _limit),
+            Reports = page.Select(r => r.ToDto()).ToList(),
+        });
     }
 
     // POST api/Admin/RentalPost/ResolveReport

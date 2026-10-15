@@ -54,8 +54,8 @@ public class CommentsTests
             new { AccommodationRentalPostId = postId, Rate = 5, Content = content })).EnsureSuccessStatusCode();
 
         using var admin = await ApiClient.ClientForAsync(_factory, ApiClient.AdminUser, ApiClient.AdminPassword);
-        var pending = await admin.GetFromJsonAsync<JsonElement>("/api/Admin/PendingComment");
-        var commentId = pending.EnumerateArray()
+        var pending = await admin.GetFromJsonAsync<JsonElement>("/api/Admin/PendingComment?_page=1&_limit=100");
+        var commentId = pending.GetProperty("listCommentDtos").EnumerateArray()
             .Single(c => c.GetProperty("content").GetString() == content)
             .GetProperty("id").GetInt32();
         (await admin.PostAsJsonAsync("/api/Admin/ApproveComment", new { Id = commentId })).EnsureSuccessStatusCode();
