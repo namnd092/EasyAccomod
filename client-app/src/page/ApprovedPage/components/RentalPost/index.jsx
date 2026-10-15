@@ -2,88 +2,39 @@ import React from 'react';
 import rentalPost from '../../../../api/rentalPost';
 import Card from '../../../../share/components/card';
 import RentalPostItem from './RentalPostItem';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import RentalPostItemReject from './RentalPostItemReject';
 import RentalPostItemPending from './RentalPostItemPending';
 import Select from 'react-select';
-import { tableClass } from '../../../../ui';
+import { Pagination, TableScroll, tableClass } from '../../../../ui';
 import { notifyError } from '../../../../helper/notify';
+import { usePagedList } from '../../../../share/hooks/usePagedList';
+
+const PAGE_SIZE = 15;
+const ALL = 0;
+const PENDING = 1;
+const APPROVED = 2;
+const REJECTED = 3;
 
 const defaultOptions = [
     {
-        value: 0,
+        value: ALL,
         label: 'Tất cả',
     },
 ];
 
+// The status the URL asks for (?status=2); anything that is not a status shows all the posts.
+function statusFromParams(params) {
+    const status = Number(params.get('status'));
+    return [PENDING, APPROVED, REJECTED].includes(status) ? status : ALL;
+}
+
 const RenterPost = () => {
     const navigate = useNavigate();
+    const [searchParams, setSearchParams] = useSearchParams();
+    const status = statusFromParams(searchParams);
     const [options, setOptions] = React.useState(defaultOptions);
-    const [optionValue, setOptionValue] = React.useState(0);
-    const [postListSuccess, setPostListSuccess] = React.useState([]);
-    const [postListReject, setPostListReject] = React.useState([]);
-    const [postListPending, setPostListPending] = React.useState([]);
-    const [allPost, setAllPost] = React.useState([]);
     React.useEffect(() => {
-        async function getAllPost() {
-            try {
-                const postListSuccessResponse = await rentalPost.getRentalPost(
-                    1,
-                    100,
-                    defaultOptions[0].value
-                );
-                setAllPost([...postListSuccessResponse.simplePostDtos]);
-            } catch (error) {
-                notifyError(error);
-                setAllPost([]);
-            }
-        }
-        getAllPost();
-        async function getPostListSuccess() {
-            try {
-                const postListSuccessResponse = await rentalPost.getRentalPost(
-                    1,
-                    100,
-                    // options[2].value || 2
-                    2
-                );
-                setPostListSuccess([...postListSuccessResponse.simplePostDtos]);
-            } catch (error) {
-                notifyError(error);
-                setPostListSuccess([]);
-            }
-        }
-        getPostListSuccess();
-        async function getPostListReject() {
-            try {
-                const postListRejectResponse = await rentalPost.getRentalPost(
-                    1,
-                    100,
-                    // options[3].value || 3
-                    3
-                );
-                setPostListReject([...postListRejectResponse.simplePostDtos]);
-            } catch (error) {
-                notifyError(error);
-                setPostListReject([]);
-            }
-        }
-        getPostListReject();
-        async function getPostListPending() {
-            try {
-                const postListPendingResponse = await rentalPost.getRentalPost(
-                    1,
-                    100,
-                    // options[1].value || 1
-                    1
-                );
-                setPostListPending([...postListPendingResponse.simplePostDtos]);
-            } catch (error) {
-                notifyError(error);
-                setPostListPending([]);
-            }
-        }
-        getPostListPending();
         async function getOptions() {
             try {
                 const response = await rentalPost.getStatusOptions();
@@ -101,197 +52,90 @@ const RenterPost = () => {
         }
         getOptions();
     }, []);
-    const handleOptionChange = (value) => {
-        setOptionValue(Number(value.value));
-    };
+    const { items, page, setPage, maxPage, reload } = usePagedList({
+        queryKey: status,
+        load: async (pageToLoad) => {
+            const response = await rentalPost.getRentalPost(pageToLoad, PAGE_SIZE, status);
+            return { items: [...response.simplePostDtos], maxPage: response.maxPage };
+        },
+    });
+    // Another status starts again from the first page; the other parameters of the URL (the tab) stay.
+    const handleOptionChange = ({ value }) =>
+        setSearchParams((current) => {
+            const next = new URLSearchParams(current);
+            if (value === ALL) next.delete('status');
+            else next.set('status', String(value));
+            next.delete('page');
+            return next;
+        });
     const handleClickPost = (postId) => {
         navigate(`/post/${postId}`);
     };
-    // Moves a post between the lists once the server has accepted the new status.
-    const handleResolve = async (postId) => {
+    // Loads the page again so the posts that moved up from the next page fill the gap.
+    const setStatus = (statusId) => async (postId) => {
         try {
-            await rentalPost.setStatusRentalPost(options[2].value, postId);
-            const post = postListReject.find((item) => item.id === postId);
-            setPostListReject((list) => list.filter((item) => item.id !== postId));
-            if (post) setPostListSuccess((list) => [...list, post]);
+            await rentalPost.setStatusRentalPost(statusId, postId);
+            reload();
         } catch (error) {
             notifyError(error);
         }
     };
-    const handleConfirm = async (postId) => {
-        try {
-            await rentalPost.setStatusRentalPost(options[2].value, postId);
-            const post = postListPending.find((item) => item.id === postId);
-            setPostListPending((list) => list.filter((item) => item.id !== postId));
-            if (post) setPostListSuccess((list) => [...list, post]);
-        } catch (error) {
-            notifyError(error);
-        }
-    };
-    const handleReject = async (postId) => {
-        try {
-            await rentalPost.setStatusRentalPost(3, postId);
-            const post = postListPending.find((item) => item.id === postId);
-            setPostListPending((list) => list.filter((item) => item.id !== postId));
-            if (post) setPostListReject((list) => [...list, post]);
-        } catch (error) {
-            notifyError(error);
-        }
+    const handleConfirm = setStatus(APPROVED);
+    const handleReject = setStatus(REJECTED);
+    const handleResolve = setStatus(APPROVED);
+    const renderRow = (item, index) => {
+        const props = {
+            index: (page - 1) * PAGE_SIZE + index,
+            rentalPost: item,
+            handleClick: () => handleClickPost(item.id),
+        };
+        if (status === PENDING)
+            return (
+                <RentalPostItemPending
+                    key={item.id}
+                    {...props}
+                    handleConfirm={handleConfirm}
+                    handleReject={handleReject}
+                />
+            );
+        if (status === REJECTED)
+            return <RentalPostItemReject key={item.id} {...props} handleResolve={handleResolve} />;
+        return <RentalPostItem key={item.id} {...props} />;
     };
     return (
         <div>
             <Card title="Bài đăng">
-                <table className={tableClass}>
-                    <thead>
-                        <tr>
-                            <th scope="col">STT</th>
-                            <th scope="col">Tên bài đăng</th>
-                            <th scope="col">Người đăng</th>
-                            <th scope="col">Email</th>
-                            <th scope="col">Ngày đăng</th>
-                            <th scope="col" style={{ minWidth: '200px' }}>
-                                <Select
-                                    options={options}
-                                    defaultValue={options[0]}
-                                    onChange={(value) =>
-                                        handleOptionChange(value)
-                                    }
-                                />
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {optionValue === 1 ? (
-                            postListPending.length === 0 ? (
-                                <tr>
-                                    <td colSpan={6}>Không có bài viết nào</td>
-                                </tr>
-                            ) : (
-                                postListPending.map((item, index) => (
-                                    <RentalPostItemPending
-                                        key={item.id}
-                                        index={index}
-                                        rentalPost={item}
-                                        handleClick={() =>
-                                            handleClickPost(item.id)
-                                        }
-                                        handleConfirm={handleConfirm}
-                                        handleReject={handleReject}
-                                    />
-                                ))
-                            )
-                        ) : optionValue === 2 ? (
-                            postListSuccess.length === 0 ? (
-                                <tr>
-                                    <td colSpan={6}>Không có bài viết nào</td>
-                                </tr>
-                            ) : (
-                                postListSuccess.map((item, index) => (
-                                    <RentalPostItem
-                                        key={item.id}
-                                        index={index}
-                                        rentalPost={item}
-                                        handleClick={() =>
-                                            handleClickPost(item.id)
-                                        }
-                                    />
-                                ))
-                            )
-                        ) : optionValue === 3 ? (
-                            postListReject.length === 0 ? (
-                                <tr>
-                                    <td colSpan={6}>Không có bài viết nào</td>
-                                </tr>
-                            ) : (
-                                postListReject.map((item, index) => (
-                                    <RentalPostItemReject
-                                        key={item.id}
-                                        index={index}
-                                        rentalPost={item}
-                                        handleClick={() =>
-                                            handleClickPost(item.id)
-                                        }
-                                        handleResolve={handleResolve}
-                                    />
-                                ))
-                            )
-                        ) : allPost.length === 0 ? (
+                <TableScroll>
+                    <table className={tableClass}>
+                        <thead>
                             <tr>
+                                <th scope="col">STT</th>
+                                <th scope="col">Tên bài đăng</th>
+                                <th scope="col">Người đăng</th>
+                                <th scope="col">Email</th>
+                                <th scope="col">Ngày đăng</th>
+                                <th scope="col" style={{ minWidth: '200px' }}>
+                                    <Select
+                                        options={options}
+                                        value={options.find((option) => option.value === status) ?? null}
+                                        onChange={handleOptionChange}
+                                    />
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {items.length === 0 ? (
+                                <tr>
                                     <td colSpan={6}>Không có bài viết nào</td>
                                 </tr>
-                        ) : (
-                            allPost.map((item, index) => (
-                                <RentalPostItem
-                                    key={item.id}
-                                    index={index}
-                                    rentalPost={item}
-                                    handleClick={() => handleClickPost(item.id)}
-                                />
-                            ))
-                        )}
-                    </tbody>
-                </table>
+                            ) : (
+                                items.map(renderRow)
+                            )}
+                        </tbody>
+                    </table>
+                </TableScroll>
+                <Pagination className="mt-3 justify-center" page={page} count={maxPage} onChange={setPage} />
             </Card>
-            {/* <Card title="Bài đăng bị từ chối">
-                <table className={tableClass}>
-                    <thead>
-                        <tr>
-                            <th scope="col">STT</th>
-                            <th scope="col">Tên bài đăng</th>
-                            <th scope="col">Người đăng</th>
-                            <th scope="col">Email</th>
-                            <th scope="col">Ngày đăng</th>
-                            <th scope="col">Hành động</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {postListReject.length === 0 ? (
-                            <tr>
-                                    <td colSpan={6}>Không có bài viết nào</td>
-                                </tr>
-                        ) : (
-                            postListReject.map((item, index) => (
-                                <RentalPostItemReject
-                                    key={item.id}
-                                    index={index}
-                                    rentalPost={item}
-                                    handleClick={() => handleClickPost(item.id)}
-                                    handleResolve={handleResolve}
-                                />
-                            ))
-                        )}
-                    </tbody>
-                </table>
-            </Card>
-            <Card title="Bài đăng đã duyệt">
-                <table className={tableClass}>
-                    <thead>
-                        <tr>
-                            <th scope="col">STT</th>
-                            <th scope="col">Tên bài đăng</th>
-                            <th scope="col">Người đăng</th>
-                            <th scope="col">Email</th>
-                            <th scope="col">Ngày đăng</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {postListSuccess.length === 0 ? (
-                            <tr>
-                                    <td colSpan={6}>Không có bài viết nào</td>
-                                </tr>
-                        ) : (
-                            postListSuccess.map((item, index) => (
-                                <RentalPostItem
-                                    key={item.id}
-                                    index={index}
-                                    rentalPost={item}
-                                    handleClick={() => handleClickPost(item.id)}
-                                />
-                            ))
-                        )}
-                    </tbody>
-                </table>
-            </Card> */}
         </div>
     );
 };

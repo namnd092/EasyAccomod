@@ -47,10 +47,13 @@ const Report = () => {
                     </thead>
                     <tbody>
                         {reportList.length === 0 ? (
-                            <p>Không có bài viết nào</p>
+                            <tr>
+                                <td colSpan={6}>Không có bài viết nào</td>
+                            </tr>
                         ) : (
                             reportList.map((item, index) => (
                                 <ReportItem
+                                    key={item.id}
                                     index={index}
                                     rentalPost={item}
                                     handleClick={handleClick}
