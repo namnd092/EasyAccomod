@@ -38,8 +38,10 @@ public class RenterController : ApiControllerBase
             .Where(p => _context.Likes.Any(l => l.AccommodationRentalPostId == p.Id && l.RenterId == renterId))
             .Where(p => p.DateExpired > now && p.Status.Name == RentalPostStatusName.Approved);
 
-        var maxPage = Mapping.MaxPage(await likedPosts.CountAsync(), _limit);
-        if (_page > maxPage)
+        var totalCount = await likedPosts.CountAsync();
+        var maxPage = Mapping.MaxPage(totalCount, _limit);
+        // The first page always exists, even when nothing is liked.
+        if (_page > Math.Max(maxPage, 1))
             return NotFound();
 
         var page = await likedPosts
@@ -48,7 +50,12 @@ public class RenterController : ApiControllerBase
             .Take(_limit)
             .ToListAsync();
 
-        return Ok(new ListSimplePost { SimplePostDtos = page.Select(p => p.ToSimpleDto()).ToList(), MaxPage = maxPage });
+        return Ok(new ListSearchPost
+        {
+            SimplePostDtos = page.Select(p => p.ToSimpleDto()).ToList(),
+            MaxPage = maxPage,
+            TotalCount = totalCount,
+        });
     }
 
     // POST api/Renter/RentalPost/Like

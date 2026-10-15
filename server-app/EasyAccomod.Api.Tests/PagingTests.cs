@@ -61,11 +61,7 @@ public class PagingTests
 
         var response = await client.GetAsync(url);
 
-        // The liked list answers 404 when there is nothing on the page; anything else must be a 200.
-        Assert.True(
-            response.StatusCode == HttpStatusCode.OK
-            || (url.Contains("Likes") && response.StatusCode == HttpStatusCode.NotFound),
-            $"{url} answered {(int)response.StatusCode}");
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
     }
 
     [Fact]

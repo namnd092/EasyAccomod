@@ -5,7 +5,7 @@ import rentalPost from '../../api/rentalPost';
 import Card from '../../share/components/card';
 import PostItem from '../HomePage/components/PostList/PostItem';
 import { pageFromParams } from '../HomePage/searchFilters';
-import { Button, Pagination, tableClass } from '../../ui';
+import { Button, Pagination, TableScroll, tableClass } from '../../ui';
 import { notifyError } from '../../helper/notify';
 
 const PAGE_SIZE = 15;
@@ -23,6 +23,7 @@ function useFavoritePosts() {
     };
     const [posts, setPosts] = React.useState([]);
     const [maxPage, setMaxPage] = React.useState(1);
+    const [totalCount, setTotalCount] = React.useState(0);
     const [reloads, setReloads] = React.useState(0);
     React.useEffect(() => {
         let ignore = false;
@@ -43,6 +44,7 @@ function useFavoritePosts() {
                 if (ignore) return;
                 setPosts([...response.simplePostDtos]);
                 setMaxPage(response.maxPage);
+                setTotalCount(response.totalCount ?? 0);
             } catch (error) {
                 if (ignore) return;
                 // The page no longer exists (its last post was unliked, or the URL is stale). The first page
@@ -60,12 +62,12 @@ function useFavoritePosts() {
             ignore = true;
         };
     }, [page, reloads]);
-    return { posts, page, setPage, maxPage, reload: () => setReloads((n) => n + 1) };
+    return { posts, page, setPage, maxPage, totalCount, reload: () => setReloads((n) => n + 1) };
 }
 
 export default function FavoritePage() {
     const navigate = useNavigate();
-    const { posts: postList, page, setPage, maxPage, reload } = useFavoritePosts();
+    const { posts: postList, page, setPage, maxPage, totalCount, reload } = useFavoritePosts();
     const gotoPost = (postId) => {
         navigate(`/post/${postId}`);
     };
@@ -81,41 +83,44 @@ export default function FavoritePage() {
     return (
         <div className="favorite">
             <Card title="Bài đăng yêu thích">
-                <table className={tableClass}>
-                    <thead>
-                        <tr>
-                            <th scope="col" style={{ minWidth: '10%' }}>
-                                STT
-                            </th>
-                            <th scope="col">Bài đăng</th>
-                            <th scope="col">Hành động</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {postList.length === 0 ? (
+                {totalCount > 0 && <p className="mb-3 text-sm text-gray-600">{totalCount} bài đã thích</p>}
+                <TableScroll>
+                    <table className={tableClass}>
+                        <thead>
                             <tr>
-                                <td colSpan={3}>Không tìm thấy bài viết nào</td>
+                                <th scope="col" style={{ minWidth: '10%' }}>
+                                    STT
+                                </th>
+                                <th scope="col">Bài đăng</th>
+                                <th scope="col">Hành động</th>
                             </tr>
-                        ) : (
-                            postList.map((item, index) => (
-                                <tr key={item.id}>
-                                    <th onClick={() => gotoPost(item.id)}>
-                                        {(page - 1) * PAGE_SIZE + index + 1}
-                                    </th>
-                                    <td onClick={() => gotoPost(item.id)}>
-                                        <PostItem rentalPost={item} />
-                                    </td>
-                                    <td>
-                                        <Button onClick={() => handleDislike(item.id)}>
-                                            <i className="fas fa-thumbs-down mr-2.5"></i>
-                                            Bỏ thích
-                                        </Button>
-                                    </td>
+                        </thead>
+                        <tbody>
+                            {postList.length === 0 ? (
+                                <tr>
+                                    <td colSpan={3}>Không tìm thấy bài viết nào</td>
                                 </tr>
-                            ))
-                        )}
-                    </tbody>
-                </table>
+                            ) : (
+                                postList.map((item, index) => (
+                                    <tr key={item.id}>
+                                        <th onClick={() => gotoPost(item.id)}>
+                                            {(page - 1) * PAGE_SIZE + index + 1}
+                                        </th>
+                                        <td onClick={() => gotoPost(item.id)}>
+                                            <PostItem rentalPost={item} />
+                                        </td>
+                                        <td>
+                                            <Button onClick={() => handleDislike(item.id)} aria-label="Bỏ thích">
+                                                <i className="fas fa-thumbs-down sm:mr-2.5" aria-hidden="true"></i>
+                                                <span className="hidden sm:inline">Bỏ thích</span>
+                                            </Button>
+                                        </td>
+                                    </tr>
+                                ))
+                            )}
+                        </tbody>
+                    </table>
+                </TableScroll>
                 <Pagination className="mt-3 justify-center" page={page} count={maxPage} onChange={setPage} />
             </Card>
         </div>

@@ -4,7 +4,7 @@ import { API, accounts, apiLogin, createPost, loginViaUi } from './helpers';
 test.describe('visitor', () => {
     test('sees an approved post on the home page and can open it', async ({ page, request }) => {
         const post = await createPost(request, { approved: true });
-        await page.goto('/');
+        await page.goto('/?sort=newest');
         await page.getByText(post.title).first().click();
         await expect(page).toHaveURL(new RegExp(`/post/${post.id}$`));
         await expect(page.getByText(post.title).first()).toBeVisible();
@@ -83,14 +83,59 @@ test.describe('visitor', () => {
     });
 });
 
+test.describe('on a phone', () => {
+    test.use({ viewport: { width: 375, height: 812 } });
+
+    // A table wider than the screen must scroll by itself instead of making the whole page scroll sideways.
+    const pageScrollsSideways = (page) =>
+        page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth);
+
+    test('the owner posts tables do not widen the page', async ({ page, request }) => {
+        const post = await createPost(request, { approved: true });
+        await loginViaUi(page, accounts.owner);
+        await page.goto('/my-post?approvedPage=9999');
+        await expect(page.getByRole('row', { name: new RegExp(post.title) })).toBeVisible();
+        expect(await pageScrollsSideways(page)).toBe(false);
+    });
+
+    test('the favorites list does not widen the page and keeps its dislike button within reach', async ({ page, request }) => {
+        const post = await createPost(request, { approved: true });
+        const token = await apiLogin(request, accounts.renter);
+        const liked = await request.post(`${API}/api/Renter/RentalPost/Like`, {
+            headers: { Authorization: `Bearer ${token}` },
+            data: { AccommodationRentalPostId: post.id },
+        });
+        expect(liked.ok()).toBe(true);
+        await loginViaUi(page, accounts.renter);
+        await page.goto('/favorite');
+        await expect(page.getByText(post.title).first()).toBeVisible();
+        expect(await pageScrollsSideways(page)).toBe(false);
+        const button = page.getByRole('button', { name: /Bỏ thích/ }).first();
+        await expect(button).toBeVisible();
+        const box = await button.boundingBox();
+        expect(box.x + box.width).toBeLessThanOrEqual(375);
+    });
+});
+
 test.describe('owner', () => {
     test('logs in and sees their posts with the province', async ({ page, request }) => {
         const post = await createPost(request, { approved: true });
         await loginViaUi(page, accounts.owner);
-        await page.goto('/my-post');
+        // The posts are listed oldest first, so the new one is on the last page; asking for a page far past it lands there.
+        await page.goto('/my-post?approvedPage=9999');
         const row = page.getByRole('row', { name: new RegExp(post.title) });
         await expect(row).toBeVisible();
         await expect(row).toContainText('Thành phố Hà Nội');
+    });
+
+    test('steps back from a posts page that does not exist and shows the posts', async ({ page, request }) => {
+        const post = await createPost(request, { approved: true });
+        await loginViaUi(page, accounts.owner);
+        await page.goto('/my-post?approvedPage=9999');
+        await expect(page).not.toHaveURL(/approvedPage=9999/);
+        // The post is on the last page the owner has, whatever page that is.
+        await expect(page.getByRole('row', { name: new RegExp(post.title) })).toBeVisible();
+        await expect(page.getByRole('alert')).toHaveCount(0);
     });
 
     test('stays logged in after a reload, without keeping the token in storage', async ({ page }) => {
@@ -162,6 +207,16 @@ test.describe('owner', () => {
 });
 
 test.describe('admin', () => {
+    test('keeps the chosen tab in the URL across a reload', async ({ page }) => {
+        await loginViaUi(page, accounts.admin);
+        await page.goto('/approved');
+        await page.getByRole('tab', { name: 'Gia hạn' }).click();
+        await expect(page).toHaveURL(/tab=extend/);
+        await page.reload();
+        await expect(page.getByText('Yêu cầu gia hạn bài đăng')).toBeVisible();
+        await expect(page.getByRole('tab', { name: 'Gia hạn' })).toHaveAttribute('aria-selected', 'true');
+    });
+
     test('approves a pending post and it appears on the home page', async ({ page, request }) => {
         const post = await createPost(request);
         await loginViaUi(page, accounts.admin);
@@ -174,7 +229,7 @@ test.describe('admin', () => {
         await row.getByRole('button', { name: /Xác nhận/ }).click();
         await expect(row).toHaveCount(0);
 
-        await page.goto('/');
+        await page.goto('/?sort=newest');
         await expect(page.getByText(post.title).first()).toBeVisible();
     });
 });
@@ -198,6 +253,21 @@ test.describe('renter', () => {
                 return (await response.json()).result;
             })
             .toBe(true);
+    });
+
+    test('opens an empty favorites list without an error', async ({ page, request }) => {
+        const token = await apiLogin(request, accounts.renter);
+        const headers = { Authorization: `Bearer ${token}` };
+        const liked = await request.get(`${API}/api/Renter/RentalPost/Likes?_limit=100`, { headers });
+        // Liking a liked post removes the like, so this empties the list.
+        for (const { id } of liked.ok() ? (await liked.json()).simplePostDtos : []) {
+            await request.post(`${API}/api/Renter/RentalPost/Like`, { headers, data: { AccommodationRentalPostId: id } });
+        }
+
+        await loginViaUi(page, accounts.renter);
+        await page.goto('/favorite');
+        await expect(page.getByText('Không tìm thấy bài viết nào')).toBeVisible();
+        await expect(page.getByRole('alert')).toHaveCount(0);
     });
 
     test('steps back from a favorites page that does not exist and leaves a clean URL', async ({ page, request }) => {

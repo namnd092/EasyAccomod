@@ -39,6 +39,24 @@ describe('FavoritePage', () => {
         expect(screen.getByText('16', { selector: 'th' })).toBeInTheDocument();
     });
 
+    it('says how many posts are liked, and nothing when there are none', async () => {
+        let removed = false;
+        vi.spyOn(rentalPost, 'getAllFavoriteRentalPost').mockImplementation(async () =>
+            removed
+                ? { simplePostDtos: [], maxPage: 0, totalCount: 0 }
+                : { simplePostDtos: posts(1, 2), maxPage: 1, totalCount: 2 }
+        );
+        vi.spyOn(rentalPost, 'postRenterLikeRentalPost').mockImplementation(async () => {
+            removed = true;
+        });
+        renderWithProviders(<FavoritePage />);
+        expect(await screen.findByText('2 bài đã thích')).toBeInTheDocument();
+
+        await userEvent.click(screen.getAllByRole('button', { name: /Bỏ thích/ })[0]);
+        await waitFor(() => expect(screen.queryByText('Post 1')).not.toBeInTheDocument());
+        expect(screen.queryByText(/bài đã thích/)).not.toBeInTheDocument();
+    });
+
     it('refetches the page after removing a post so the next page fills the gap', async () => {
         let removed = false;
         vi.spyOn(rentalPost, 'getAllFavoriteRentalPost').mockImplementation(async () => ({
@@ -54,6 +72,23 @@ describe('FavoritePage', () => {
         await userEvent.click(screen.getAllByRole('button', { name: /Bỏ thích/ })[0]);
         await waitFor(() => expect(screen.queryByText('Post 1')).not.toBeInTheDocument());
         expect(screen.getByText('Post 2')).toBeInTheDocument();
+    });
+
+    it('says there is nothing left after the only liked post is removed, and offers no pages', async () => {
+        let removed = false;
+        const get = vi.spyOn(rentalPost, 'getAllFavoriteRentalPost').mockImplementation(async () =>
+            removed ? { simplePostDtos: [], maxPage: 0 } : { simplePostDtos: posts(1, 1), maxPage: 1 }
+        );
+        vi.spyOn(rentalPost, 'postRenterLikeRentalPost').mockImplementation(async () => {
+            removed = true;
+        });
+        renderWithProviders(<FavoritePage />);
+        await screen.findByText('Post 1');
+
+        await userEvent.click(screen.getByRole('button', { name: /Bỏ thích/ }));
+        expect(await screen.findByText('Không tìm thấy bài viết nào')).toBeInTheDocument();
+        expect(screen.queryByRole('navigation', { name: 'Phân trang' })).not.toBeInTheDocument();
+        expect(get).toHaveBeenCalledTimes(2);
     });
 
     it('steps back a page when the current one no longer exists', async () => {

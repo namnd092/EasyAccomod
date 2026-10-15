@@ -59,8 +59,9 @@ export function filtersFromParams(params) {
     return filters;
 }
 
-export function pageFromParams(params) {
-    const page = Number(params.get('page'));
+// The page kept in the query under `key`; a page that is not a positive whole number is the first.
+export function pageFromParams(params, key = 'page') {
+    const page = Number(params.get(key));
     return Number.isInteger(page) && page > 0 ? page : 1;
 }
 

@@ -72,6 +72,12 @@ describe('pageFromParams', () => {
     it.each(['0', '-2', '1.5', 'abc'])('treats page=%s as page 1', (page) => {
         expect(pageFromParams(new URLSearchParams({ page }))).toBe(1);
     });
+
+    it('reads the page from another parameter when asked to', () => {
+        const params = new URLSearchParams('page=2&approvedPage=5');
+        expect(pageFromParams(params, 'approvedPage')).toBe(5);
+        expect(pageFromParams(params, 'pendingPage')).toBe(1);
+    });
 });
 
 describe('countActiveFilters', () => {
