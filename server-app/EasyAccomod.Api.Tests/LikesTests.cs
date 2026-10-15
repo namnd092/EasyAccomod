@@ -34,6 +34,30 @@ public class LikesTests
         var result = await response.Content.ReadFromJsonAsync<JsonElement>();
         Assert.Equal(0, result.GetProperty("simplePostDtos").GetArrayLength());
         Assert.Equal(0, result.GetProperty("maxPage").GetInt32());
+        Assert.Equal(0, result.GetProperty("totalCount").GetInt32());
+    }
+
+    [Fact]
+    public async Task The_liked_list_reports_how_many_posts_are_liked_across_all_pages()
+    {
+        var first = await ApiClient.CreateApprovedPostAsync(_factory);
+        var second = await ApiClient.CreateApprovedPostAsync(_factory);
+        using var renter = await ApiClient.ClientForAsync(_factory, ApiClient.RenterUser, ApiClient.RenterPassword);
+        await ToggleLikeAsync(renter, first);
+        await ToggleLikeAsync(renter, second);
+        try
+        {
+            var result = await renter.GetFromJsonAsync<JsonElement>(LikesUrl + "?_page=1&_limit=1");
+
+            Assert.Equal(1, result.GetProperty("simplePostDtos").GetArrayLength());
+            Assert.Equal(2, result.GetProperty("maxPage").GetInt32());
+            Assert.Equal(2, result.GetProperty("totalCount").GetInt32());
+        }
+        finally
+        {
+            await ToggleLikeAsync(renter, first);
+            await ToggleLikeAsync(renter, second);
+        }
     }
 
     [Fact]

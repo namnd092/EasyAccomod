@@ -23,6 +23,7 @@ function useFavoritePosts() {
     };
     const [posts, setPosts] = React.useState([]);
     const [maxPage, setMaxPage] = React.useState(1);
+    const [totalCount, setTotalCount] = React.useState(0);
     const [reloads, setReloads] = React.useState(0);
     React.useEffect(() => {
         let ignore = false;
@@ -43,6 +44,7 @@ function useFavoritePosts() {
                 if (ignore) return;
                 setPosts([...response.simplePostDtos]);
                 setMaxPage(response.maxPage);
+                setTotalCount(response.totalCount ?? 0);
             } catch (error) {
                 if (ignore) return;
                 // The page no longer exists (its last post was unliked, or the URL is stale). The first page
@@ -60,12 +62,12 @@ function useFavoritePosts() {
             ignore = true;
         };
     }, [page, reloads]);
-    return { posts, page, setPage, maxPage, reload: () => setReloads((n) => n + 1) };
+    return { posts, page, setPage, maxPage, totalCount, reload: () => setReloads((n) => n + 1) };
 }
 
 export default function FavoritePage() {
     const navigate = useNavigate();
-    const { posts: postList, page, setPage, maxPage, reload } = useFavoritePosts();
+    const { posts: postList, page, setPage, maxPage, totalCount, reload } = useFavoritePosts();
     const gotoPost = (postId) => {
         navigate(`/post/${postId}`);
     };
@@ -81,6 +83,7 @@ export default function FavoritePage() {
     return (
         <div className="favorite">
             <Card title="Bài đăng yêu thích">
+                {totalCount > 0 && <p className="mb-3 text-sm text-gray-600">{totalCount} bài đã thích</p>}
                 <table className={tableClass}>
                     <thead>
                         <tr>
