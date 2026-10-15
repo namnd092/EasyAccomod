@@ -2,8 +2,9 @@ import React from 'react';
 import rentalPost from '../../api/rentalPost';
 import Card from '../../share/components/card';
 import SuccessItem from './successItem';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import PendingItem from './pendingItem';
+import { pageFromParams } from '../HomePage/searchFilters';
 import { Pagination, tableClass } from '../../ui';
 import { notifyError } from '../../helper/notify';
 
@@ -11,9 +12,20 @@ const PAGE_SIZE = 15;
 const STATUS_PENDING = 1;
 const STATUS_APPROVED = 2;
 
-// Loads one page of the owner's posts with the given status.
-function useOwnerPosts(statusId) {
-    const [page, setPage] = React.useState(1);
+// Loads one page of the owner's posts with the given status. The page is kept in the URL under `pageParam`
+// (none for the first page), so each list of the page keeps its own page across a refresh and the back button.
+function useOwnerPosts(statusId, pageParam) {
+    const [searchParams, setSearchParams] = useSearchParams();
+    const page = pageFromParams(searchParams, pageParam);
+    const showPage = (nextPage, options) =>
+        setSearchParams((current) => {
+            const next = new URLSearchParams(current);
+            if (nextPage > 1) next.set(pageParam, String(nextPage));
+            else next.delete(pageParam);
+            return next;
+        }, options);
+    const setPage = (nextPage) => showPage(nextPage);
+    const showExistingPage = React.useEffectEvent((existingPage) => showPage(existingPage, { replace: true }));
     const [posts, setPosts] = React.useState([]);
     const [maxPage, setMaxPage] = React.useState(1);
     React.useEffect(() => {
@@ -22,6 +34,11 @@ function useOwnerPosts(statusId) {
             try {
                 const response = await rentalPost.getOwnerRentalPost(page, PAGE_SIZE, statusId);
                 if (ignore) return;
+                // A page past the end comes back empty but still says how many pages there are.
+                if (page > 1 && response.ownerSimplePostDtos.length === 0) {
+                    showExistingPage(Math.max(1, Math.min(page - 1, response.maxPage)));
+                    return;
+                }
                 setPosts([...response.ownerSimplePostDtos]);
                 setMaxPage(response.maxPage);
             } catch (error) {
@@ -38,8 +55,8 @@ function useOwnerPosts(statusId) {
 
 export default function MyPostPage() {
     const navigate = useNavigate();
-    const approved = useOwnerPosts(STATUS_APPROVED);
-    const pending = useOwnerPosts(STATUS_PENDING);
+    const approved = useOwnerPosts(STATUS_APPROVED, 'approvedPage');
+    const pending = useOwnerPosts(STATUS_PENDING, 'pendingPage');
     const handleClick = (postId) => {
         navigate(`/post/${postId}`);
     };

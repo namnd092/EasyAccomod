@@ -93,6 +93,16 @@ test.describe('owner', () => {
         await expect(row).toContainText('Thành phố Hà Nội');
     });
 
+    test('steps back from a posts page that does not exist and shows the posts', async ({ page, request }) => {
+        const post = await createPost(request, { approved: true });
+        await loginViaUi(page, accounts.owner);
+        await page.goto('/my-post?approvedPage=9999');
+        await expect(page).not.toHaveURL(/approvedPage=9999/);
+        // The post is on the last page the owner has, whatever page that is.
+        await expect(page.getByRole('row', { name: new RegExp(post.title) })).toBeVisible();
+        await expect(page.getByRole('alert')).toHaveCount(0);
+    });
+
     test('stays logged in after a reload, without keeping the token in storage', async ({ page }) => {
         await loginViaUi(page, accounts.owner);
         await page.goto('/my-post');
@@ -162,6 +172,16 @@ test.describe('owner', () => {
 });
 
 test.describe('admin', () => {
+    test('keeps the chosen tab in the URL across a reload', async ({ page }) => {
+        await loginViaUi(page, accounts.admin);
+        await page.goto('/approved');
+        await page.getByRole('tab', { name: 'Gia hạn' }).click();
+        await expect(page).toHaveURL(/tab=extend/);
+        await page.reload();
+        await expect(page.getByText('Yêu cầu gia hạn bài đăng')).toBeVisible();
+        await expect(page.getByRole('tab', { name: 'Gia hạn' })).toHaveAttribute('aria-selected', 'true');
+    });
+
     test('approves a pending post and it appears on the home page', async ({ page, request }) => {
         const post = await createPost(request);
         await loginViaUi(page, accounts.admin);
