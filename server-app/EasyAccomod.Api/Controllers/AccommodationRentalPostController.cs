@@ -350,7 +350,8 @@ public class AccommodationRentalPostController : ApiControllerBase
             .Where(c => c.AccommodationRentalPostId == id && c.IsApproved);
 
         var maxPage = Mapping.MaxPage(await comments.CountAsync(), _limit);
-        if (_page > maxPage)
+        // The first page always exists, even when nobody has commented yet.
+        if (_page > Math.Max(maxPage, 1))
             return NotFound();
 
         var page = await comments
