@@ -202,10 +202,11 @@ check("is commented", call("GET", "/api/Renter/RentalPost/IsCommented?postId=%d"
 expect("report", call("POST", "/api/Renter/RentalPost/Report", renter,
                       {"AccommodationRentalPostId": post_id, "Content": "Thông tin sai"}), 200)
 check("is reported", call("GET", "/api/Renter/RentalPost/IsReported?postId=%d" % post_id, renter)[1]["result"] is True)
-check("unapproved comment not public", call("GET", "/api/RentalPosts/%d/Comments" % post_id)[0] == 404)
+waiting = expect("comments of a post with only an unapproved comment", call("GET", "/api/RentalPosts/%d/Comments" % post_id), 200)
+check("unapproved comment not public", waiting["listCommentDtos"] == [], waiting)
 
 print("admin moderation")
-pending = expect("pending comments", call("GET", "/api/Admin/PendingComment", admin), 200)
+pending = paged("pending comments", "/api/Admin/PendingComment", "listCommentDtos", admin)
 mine = [c for c in pending if c["accommodationRentalPostId"] == post_id]
 check("pending comment listed with renter name", len(mine) == 1 and mine[0]["renterName"] == "Renter1", pending)
 expect("approve comment", call("POST", "/api/Admin/ApproveComment", admin, {"Id": mine[0]["id"]}), 200)
@@ -213,12 +214,12 @@ comments = expect("public comments", call("GET", "/api/RentalPosts/%d/Comments" 
 check("public comment visible", comments["maxPage"] == 1 and comments["listCommentDtos"][0]["content"] == "Tốt", comments)
 rated = paged("search for ratings", "/api/RentalPosts/Search?street=ngõ hoa", "simplePostDtos")
 check("rating averaged on search", any(p["id"] == post_id and p["rate"] == 4 for p in rated), rated)
-reports = expect("unsolved reports", call("GET", "/api/Admin/RentalPost/Reports?isSolved=false", admin), 200)
+reports = paged("unsolved reports", "/api/Admin/RentalPost/Reports?isSolved=false", "reports", admin)
 mine = [r for r in reports if r["accommodationRentalPostId"] == post_id]
 check("report listed with title", len(mine) == 1 and mine[0]["postTitle"] == "Phòng " + run, reports)
 expect("resolve report", call("POST", "/api/Admin/RentalPost/ResolveReport", admin, {"Id": mine[0]["id"]}), 200)
 check("report now solved", any(r["accommodationRentalPostId"] == post_id
-                               for r in call("GET", "/api/Admin/RentalPost/Reports?isSolved=true", admin)[1]))
+                               for r in paged("solved reports", "/api/Admin/RentalPost/Reports?isSolved=true", "reports", admin)))
 check("dislike toggles", call("POST", "/api/Renter/RentalPost/Like", renter, {"AccommodationRentalPostId": post_id})[1] == "Dislike")
 
 print("owner dashboard, extension and notifications")
