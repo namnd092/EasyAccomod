@@ -137,25 +137,25 @@ function BasicInfo() {
                         label="Tỉnh/Thành phố"
                         name="province"
                         options={provinceData}
-                        className="col-span-4"
+                        className="col-span-12 sm:col-span-4"
                         onChange={handleProvinceChange}
                     />
                     <SelectField
                         label="Quận/Huyện"
                         name="district"
                         options={districtData}
-                        className="col-span-4"
+                        className="col-span-12 sm:col-span-4"
                         onChange={handleDistrictChange}
                     />
-                    <SelectField label="Xã/Phường" name="ward" options={wardData} className="col-span-4" />
+                    <SelectField label="Xã/Phường" name="ward" options={wardData} className="col-span-12 sm:col-span-4" />
                 </div>
                 <div className="grid grid-cols-12 gap-x-4">
-                    <InputField label="Giá tiền(vnd)" name="roomPrice" type="number" className="col-span-8" />
+                    <InputField label="Giá tiền(vnd)" name="roomPrice" type="number" className="col-span-12 sm:col-span-8" />
                     <SelectField
                         label="Tháng/Quý/Năm"
                         name="roomPaymentType"
                         options={roomPaymentTypeData}
-                        className="col-span-4"
+                        className="col-span-12 sm:col-span-4"
                     />
                 </div>
                 <div className="grid grid-cols-12 gap-x-4">

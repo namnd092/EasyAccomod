@@ -98,6 +98,13 @@ public class CommentId
     public int? Id { get; set; }
 }
 
+public class ListReportsDto
+{
+    public IEnumerable<ReportDto> Reports { get; set; }
+
+    public int MaxPage { get; set; }
+}
+
 public class ReportId
 {
     [Required]

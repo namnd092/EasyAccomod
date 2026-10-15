@@ -7,7 +7,7 @@
 }
 .registerPage .main{
     background-color: white;
-    min-width: 500px;
+    min-width: min(500px, 100%);
     min-height: 350px;
     margin: auto;
     margin-top: 50px;

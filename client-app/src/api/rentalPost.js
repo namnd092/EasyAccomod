@@ -151,8 +151,11 @@ const rentalPost = {
         const url = ApiUrl.REJECT_EXTEND;
         return axiosClient.post(url, { id });
     },
-    getCommendPending() {
-        const url = ApiUrl.GET_COMMENT_PENDING;
+    getCommendPending(_page, _limit) {
+        const url =
+            ApiUrl.GET_COMMENT_PENDING +
+            '?' +
+            queryString.stringify({ _page, _limit });
         return axiosClient.get(url);
     },
     postApproveComment(id) {
@@ -163,8 +166,11 @@ const rentalPost = {
         const url = ApiUrl.REJECT_COMMENT;
         return axiosClient.post(url, { id });
     },
-    getReportPost() {
-        const url = ApiUrl.GET_REPORT_POST;
+    getReportPost(_page, _limit) {
+        const url =
+            ApiUrl.GET_REPORT_POST +
+            '?' +
+            queryString.stringify({ _page, _limit });
         return axiosClient.get(url);
     },
     getOwnerRentalPost(_page, _limit, statusId) {

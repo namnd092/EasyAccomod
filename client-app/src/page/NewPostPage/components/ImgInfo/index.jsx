@@ -46,6 +46,7 @@ function ImgInfo({ name }) {
                 <p>Chọn tối thiểu 3 ảnh, mỗi ảnh không quá 6MB</p>
                 <input
                     type="file"
+                    className="max-w-full"
                     name={name}
                     accept={ACCEPTED_TYPES.join(',')}
                     multiple
