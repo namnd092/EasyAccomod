@@ -5,7 +5,7 @@ import SuccessItem from './successItem';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import PendingItem from './pendingItem';
 import { pageFromParams } from '../HomePage/searchFilters';
-import { Pagination, tableClass } from '../../ui';
+import { Pagination, TableScroll, tableClass } from '../../ui';
 import { notifyError } from '../../helper/notify';
 
 const PAGE_SIZE = 15;
@@ -67,42 +67,44 @@ export default function MyPostPage() {
         <div className="myPostPage" style={{ paddingBottom: '30px' }}>
             <div style={{ paddingTop: '30px' }}>
                 <Card title="Bài đăng đã xác nhận">
-                    <table className={tableClass}>
-                        <thead>
-                            <tr>
-                                <th scope="col" style={{ minWidth: '10%' }}>
-                                    STT
-                                </th>
-                                <th scope="col">Tiêu đề</th>
-                                <th scope="col">Địa chỉ</th>
-                                <th scope="col">Lượt xem</th>
-                                <th scope="col">Lượt thích</th>
-                                <th scope="col" style={{ minWidth: '100px' }}>
-                                    Ngày hết hạn
-                                </th>
-                                <th scope="col">Trạng thái</th>
-                                <th scope="col" style={{ minWidth: '180px' }}>
-                                    Hành động
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {approved.posts.length === 0 ? (
+                    <TableScroll>
+                        <table className={tableClass}>
+                            <thead>
                                 <tr>
-                                    <td colSpan={8}>Không có bài viết nào</td>
+                                    <th scope="col" style={{ minWidth: '10%' }}>
+                                        STT
+                                    </th>
+                                    <th scope="col">Tiêu đề</th>
+                                    <th scope="col">Địa chỉ</th>
+                                    <th scope="col">Lượt xem</th>
+                                    <th scope="col">Lượt thích</th>
+                                    <th scope="col" style={{ minWidth: '100px' }}>
+                                        Ngày hết hạn
+                                    </th>
+                                    <th scope="col">Trạng thái</th>
+                                    <th scope="col" style={{ minWidth: '180px' }}>
+                                        Hành động
+                                    </th>
                                 </tr>
-                            ) : (
-                                approved.posts.map((item, index) => (
-                                    <SuccessItem
-                                        index={(approved.page - 1) * PAGE_SIZE + index}
-                                        key={item.id}
-                                        item={item}
-                                        handleClick={handleClick}
-                                    />
-                                ))
-                            )}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                {approved.posts.length === 0 ? (
+                                    <tr>
+                                        <td colSpan={8}>Không có bài viết nào</td>
+                                    </tr>
+                                ) : (
+                                    approved.posts.map((item, index) => (
+                                        <SuccessItem
+                                            index={(approved.page - 1) * PAGE_SIZE + index}
+                                            key={item.id}
+                                            item={item}
+                                            handleClick={handleClick}
+                                        />
+                                    ))
+                                )}
+                            </tbody>
+                        </table>
+                    </TableScroll>
                     <Pagination
                         className="mt-3 justify-center"
                         page={approved.page}
@@ -113,36 +115,38 @@ export default function MyPostPage() {
             </div>
             <div style={{ marginTop: '30px' }}>
                 <Card title="Bài đăng đang chờ xác nhận">
-                    <table className={tableClass}>
-                        <thead>
-                            <tr>
-                                <th scope="col" style={{ minWidth: '10%' }}>
-                                    STT
-                                </th>
-                                <th scope="col">Tiêu đề</th>
-                                <th scope="col">Địa chỉ</th>
-                                <th scope="col">Ngày hết hạn</th>
-                                <th scope="col">Hành động</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {pending.posts.length === 0 ? (
+                    <TableScroll>
+                        <table className={tableClass}>
+                            <thead>
                                 <tr>
-                                    <td colSpan={5}>Không tìm thấy bài viết nào</td>
+                                    <th scope="col" style={{ minWidth: '10%' }}>
+                                        STT
+                                    </th>
+                                    <th scope="col">Tiêu đề</th>
+                                    <th scope="col">Địa chỉ</th>
+                                    <th scope="col">Ngày hết hạn</th>
+                                    <th scope="col">Hành động</th>
                                 </tr>
-                            ) : (
-                                pending.posts.map((item, index) => (
-                                    <PendingItem
-                                        index={(pending.page - 1) * PAGE_SIZE + index}
-                                        item={item}
-                                        key={item.id}
-                                        handleClick={handleClick}
-                                        handleEditPost={handleEditPost}
-                                    />
-                                ))
-                            )}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                {pending.posts.length === 0 ? (
+                                    <tr>
+                                        <td colSpan={5}>Không tìm thấy bài viết nào</td>
+                                    </tr>
+                                ) : (
+                                    pending.posts.map((item, index) => (
+                                        <PendingItem
+                                            index={(pending.page - 1) * PAGE_SIZE + index}
+                                            item={item}
+                                            key={item.id}
+                                            handleClick={handleClick}
+                                            handleEditPost={handleEditPost}
+                                        />
+                                    ))
+                                )}
+                            </tbody>
+                        </table>
+                    </TableScroll>
                     <Pagination
                         className="mt-3 justify-center"
                         page={pending.page}

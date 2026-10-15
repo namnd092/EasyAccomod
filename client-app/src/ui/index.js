@@ -3,6 +3,7 @@ export { FormGroup, FormLabel, FieldError, Checkbox, Radio, Textarea } from './F
 export { Rating } from './Rating';
 export { Pagination } from './Pagination';
 export { Tabs } from './Tabs';
+export { TableScroll } from './TableScroll';
 export { Collapsible } from './Collapsible';
 export { LinearProgress, Spinner, Backdrop } from './Progress';
 export { Modal } from './Modal';

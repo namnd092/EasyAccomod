@@ -4,7 +4,7 @@ import { API, accounts, apiLogin, createPost, loginViaUi } from './helpers';
 test.describe('visitor', () => {
     test('sees an approved post on the home page and can open it', async ({ page, request }) => {
         const post = await createPost(request, { approved: true });
-        await page.goto('/');
+        await page.goto('/?sort=newest');
         await page.getByText(post.title).first().click();
         await expect(page).toHaveURL(new RegExp(`/post/${post.id}$`));
         await expect(page.getByText(post.title).first()).toBeVisible();
@@ -83,11 +83,46 @@ test.describe('visitor', () => {
     });
 });
 
+test.describe('on a phone', () => {
+    test.use({ viewport: { width: 375, height: 812 } });
+
+    // A table wider than the screen must scroll by itself instead of making the whole page scroll sideways.
+    const pageScrollsSideways = (page) =>
+        page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth);
+
+    test('the owner posts tables do not widen the page', async ({ page, request }) => {
+        const post = await createPost(request, { approved: true });
+        await loginViaUi(page, accounts.owner);
+        await page.goto('/my-post?approvedPage=9999');
+        await expect(page.getByRole('row', { name: new RegExp(post.title) })).toBeVisible();
+        expect(await pageScrollsSideways(page)).toBe(false);
+    });
+
+    test('the favorites list does not widen the page and keeps its dislike button within reach', async ({ page, request }) => {
+        const post = await createPost(request, { approved: true });
+        const token = await apiLogin(request, accounts.renter);
+        const liked = await request.post(`${API}/api/Renter/RentalPost/Like`, {
+            headers: { Authorization: `Bearer ${token}` },
+            data: { AccommodationRentalPostId: post.id },
+        });
+        expect(liked.ok()).toBe(true);
+        await loginViaUi(page, accounts.renter);
+        await page.goto('/favorite');
+        await expect(page.getByText(post.title).first()).toBeVisible();
+        expect(await pageScrollsSideways(page)).toBe(false);
+        const button = page.getByRole('button', { name: /Bỏ thích/ }).first();
+        await expect(button).toBeVisible();
+        const box = await button.boundingBox();
+        expect(box.x + box.width).toBeLessThanOrEqual(375);
+    });
+});
+
 test.describe('owner', () => {
     test('logs in and sees their posts with the province', async ({ page, request }) => {
         const post = await createPost(request, { approved: true });
         await loginViaUi(page, accounts.owner);
-        await page.goto('/my-post');
+        // The posts are listed oldest first, so the new one is on the last page; asking for a page far past it lands there.
+        await page.goto('/my-post?approvedPage=9999');
         const row = page.getByRole('row', { name: new RegExp(post.title) });
         await expect(row).toBeVisible();
         await expect(row).toContainText('Thành phố Hà Nội');
@@ -194,7 +229,7 @@ test.describe('admin', () => {
         await row.getByRole('button', { name: /Xác nhận/ }).click();
         await expect(row).toHaveCount(0);
 
-        await page.goto('/');
+        await page.goto('/?sort=newest');
         await expect(page.getByText(post.title).first()).toBeVisible();
     });
 });
