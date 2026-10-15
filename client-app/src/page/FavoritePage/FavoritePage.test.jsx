@@ -56,6 +56,23 @@ describe('FavoritePage', () => {
         expect(screen.getByText('Post 2')).toBeInTheDocument();
     });
 
+    it('says there is nothing left after the only liked post is removed, and offers no pages', async () => {
+        let removed = false;
+        const get = vi.spyOn(rentalPost, 'getAllFavoriteRentalPost').mockImplementation(async () =>
+            removed ? { simplePostDtos: [], maxPage: 0 } : { simplePostDtos: posts(1, 1), maxPage: 1 }
+        );
+        vi.spyOn(rentalPost, 'postRenterLikeRentalPost').mockImplementation(async () => {
+            removed = true;
+        });
+        renderWithProviders(<FavoritePage />);
+        await screen.findByText('Post 1');
+
+        await userEvent.click(screen.getByRole('button', { name: /Bỏ thích/ }));
+        expect(await screen.findByText('Không tìm thấy bài viết nào')).toBeInTheDocument();
+        expect(screen.queryByRole('navigation', { name: 'Phân trang' })).not.toBeInTheDocument();
+        expect(get).toHaveBeenCalledTimes(2);
+    });
+
     it('steps back a page when the current one no longer exists', async () => {
         // Page 2 vanished (its last post was unliked elsewhere) after the list said there were two pages.
         const get = vi.spyOn(rentalPost, 'getAllFavoriteRentalPost').mockImplementation(async (page) => {

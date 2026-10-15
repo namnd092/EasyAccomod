@@ -200,6 +200,21 @@ test.describe('renter', () => {
             .toBe(true);
     });
 
+    test('opens an empty favorites list without an error', async ({ page, request }) => {
+        const token = await apiLogin(request, accounts.renter);
+        const headers = { Authorization: `Bearer ${token}` };
+        const liked = await request.get(`${API}/api/Renter/RentalPost/Likes?_limit=100`, { headers });
+        // Liking a liked post removes the like, so this empties the list.
+        for (const { id } of liked.ok() ? (await liked.json()).simplePostDtos : []) {
+            await request.post(`${API}/api/Renter/RentalPost/Like`, { headers, data: { AccommodationRentalPostId: id } });
+        }
+
+        await loginViaUi(page, accounts.renter);
+        await page.goto('/favorite');
+        await expect(page.getByText('Không tìm thấy bài viết nào')).toBeVisible();
+        await expect(page.getByRole('alert')).toHaveCount(0);
+    });
+
     test('steps back from a favorites page that does not exist and leaves a clean URL', async ({ page, request }) => {
         const post = await createPost(request, { approved: true });
         const token = await apiLogin(request, accounts.renter);

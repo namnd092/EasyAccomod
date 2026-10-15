@@ -39,7 +39,8 @@ public class RenterController : ApiControllerBase
             .Where(p => p.DateExpired > now && p.Status.Name == RentalPostStatusName.Approved);
 
         var maxPage = Mapping.MaxPage(await likedPosts.CountAsync(), _limit);
-        if (_page > maxPage)
+        // The first page always exists, even when nothing is liked.
+        if (_page > Math.Max(maxPage, 1))
             return NotFound();
 
         var page = await likedPosts
