@@ -51,7 +51,9 @@ const Comment = () => {
                     </thead>
                     <tbody>
                         {commentList.length === 0 ? (
-                            <p>Không tìm thấy comment nào</p>
+                            <tr>
+                                <td colSpan={6}>Không tìm thấy comment nào</td>
+                            </tr>
                         ) : (
                             commentList.map((item, index) => (
                                 <CommentItem

@@ -175,7 +175,8 @@ test.describe('owner', () => {
     test('can open the edit page of a pending post from the post list', async ({ page, request }) => {
         const post = await createPost(request);
         await loginViaUi(page, accounts.owner);
-        await page.goto('/my-post');
+        // The new post is on the last page of the pending list.
+        await page.goto('/my-post?pendingPage=9999');
         const row = page.getByRole('row', { name: new RegExp(post.title) });
         await row.getByRole('button', { name: /Chỉnh sửa/ }).click();
         await expect(page).toHaveURL(new RegExp(`/post/${post.id}/edit$`));
@@ -217,13 +218,45 @@ test.describe('admin', () => {
         await expect(page.getByRole('tab', { name: 'Gia hạn' })).toHaveAttribute('aria-selected', 'true');
     });
 
+    test('keeps the chosen post status in the URL and starts from the first page', async ({ page }) => {
+        await loginViaUi(page, accounts.admin);
+        await page.goto('/approved?tab=posts&page=3');
+        await page.getByRole('combobox').click();
+        await page.getByRole('option', { name: 'Đang chờ duyệt' }).click();
+        await expect(page).toHaveURL(/tab=posts/);
+        await expect(page).toHaveURL(/status=1/);
+        await expect(page).not.toHaveURL(/page=/);
+    });
+
+    test('reaches the posts beyond the first page', async ({ page, request }) => {
+        // More posts waiting than fit on one page; the last one created is on the last page.
+        let last;
+        for (let i = 0; i < 16; i += 1) last = await createPost(request);
+        await loginViaUi(page, accounts.admin);
+        await page.goto('/approved?tab=posts&status=1');
+        await page.getByRole('button', { name: 'Trang cuối' }).click();
+        await expect(page).toHaveURL(/page=\d+/);
+        await expect(page.getByRole('row', { name: new RegExp(last.title) })).toBeVisible();
+    });
+
+    test('steps back from a page that does not exist in the posts, extend and accounts tabs', async ({ page }) => {
+        await loginViaUi(page, accounts.admin);
+        for (const [path, param] of [
+            ['/approved?tab=posts&page=9999', 'page'],
+            ['/approved?tab=extend&page=9999', 'page'],
+            ['/approved?tab=accounts&confirmedPage=9999', 'confirmedPage'],
+        ]) {
+            await page.goto(path);
+            await expect(page).not.toHaveURL(new RegExp(`${param}=9999`));
+            await expect(page.getByRole('alert')).toHaveCount(0);
+        }
+    });
+
     test('approves a pending post and it appears on the home page', async ({ page, request }) => {
         const post = await createPost(request);
         await loginViaUi(page, accounts.admin);
-        await page.goto('/approved');
-        // The list defaults to "all"; filter to the posts waiting for approval.
-        await page.getByRole('combobox').click();
-        await page.getByRole('option', { name: 'Đang chờ duyệt' }).click();
+        // Posts are listed oldest first, so the new one is on the last page of those waiting for approval.
+        await page.goto('/approved?tab=posts&status=1&page=9999');
         const row = page.getByRole('row', { name: new RegExp(post.title) });
         await expect(row).toBeVisible();
         await row.getByRole('button', { name: /Xác nhận/ }).click();
