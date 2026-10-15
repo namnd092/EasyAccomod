@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { API, accounts, apiLogin, createPost, loginViaUi } from './helpers';
+import { API, accounts, apiLogin, commentOn, createPost, loginViaUi, reportPost } from './helpers';
 
 test.describe('visitor', () => {
     test('sees an approved post on the home page and can open it', async ({ page, request }) => {
@@ -117,6 +117,57 @@ test.describe('on a phone', () => {
         await expect(button).toBeVisible();
         const box = await button.boundingBox();
         expect(box.x + box.width).toBeLessThanOrEqual(375);
+    });
+
+    test('the post page, login and register do not widen the page', async ({ page, request }) => {
+        const post = await createPost(request, { approved: true });
+        await page.goto(`/post/${post.id}`);
+        await expect(page.getByText(post.title).first()).toBeVisible();
+        expect(await pageScrollsSideways(page)).toBe(false);
+        for (const path of ['/login', '/register']) {
+            await page.goto(path);
+            await expect(page.locator('input').first()).toBeVisible();
+            expect(await pageScrollsSideways(page)).toBe(false);
+        }
+    });
+
+    test('the admin comments and reports tables do not widen the page', async ({ page, request }) => {
+        const post = await createPost(request, { approved: true });
+        const comment = `Bình luận dài ${Date.now()} ${'rất '.repeat(20)}tốt`;
+        const report = `Báo cáo dài ${Date.now()} ${'rất '.repeat(20)}xấu`;
+        await commentOn(request, post.id, comment);
+        await reportPost(request, post.id, report);
+        await loginViaUi(page, accounts.admin);
+        await page.goto('/approved?tab=comments&commentPage=9999');
+        await expect(page.getByRole('row', { name: new RegExp(comment) })).toBeVisible();
+        expect(await pageScrollsSideways(page)).toBe(false);
+        await page.goto('/approved?tab=reports&reportPage=9999');
+        await expect(page.getByRole('row', { name: new RegExp(report) })).toBeVisible();
+        expect(await pageScrollsSideways(page)).toBe(false);
+    });
+});
+
+test.describe('on a small phone', () => {
+    test.use({ viewport: { width: 320, height: 640 } });
+
+    const pageScrollsSideways = (page) =>
+        page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth);
+
+    test('the admin tabs, the new post form and the edit form fit the screen', async ({ page, request }) => {
+        const pending = await createPost(request);
+        await loginViaUi(page, accounts.admin);
+        await page.goto('/approved');
+        await expect(page.getByRole('tab', { name: 'Gia hạn' })).toBeVisible();
+        expect(await pageScrollsSideways(page)).toBe(false);
+
+        await page.context().clearCookies();
+        await loginViaUi(page, accounts.owner);
+        await page.goto('/newpost');
+        await expect(page.locator('input').first()).toBeVisible();
+        expect(await pageScrollsSideways(page)).toBe(false);
+        await page.goto(`/post/${pending.id}/edit`);
+        await expect(page.locator('input').first()).toBeVisible();
+        expect(await pageScrollsSideways(page)).toBe(false);
     });
 });
 
@@ -242,17 +293,41 @@ test.describe('admin', () => {
         await expect(page.getByRole('row', { name: new RegExp(last.title) })).toBeVisible();
     });
 
-    test('steps back from a page that does not exist in the posts, extend and accounts tabs', async ({ page }) => {
+    test('steps back from a page that does not exist in every paged tab', async ({ page }) => {
         await loginViaUi(page, accounts.admin);
         for (const [path, param] of [
             ['/approved?tab=posts&page=9999', 'page'],
             ['/approved?tab=extend&page=9999', 'page'],
             ['/approved?tab=accounts&confirmedPage=9999', 'confirmedPage'],
+            ['/approved?tab=comments&commentPage=9999', 'commentPage'],
+            ['/approved?tab=reports&reportPage=9999', 'reportPage'],
         ]) {
             await page.goto(path);
             await expect(page).not.toHaveURL(new RegExp(`${param}=9999`));
             await expect(page.getByRole('alert')).toHaveCount(0);
         }
+    });
+
+    test('approves a comment and resolves a report that sit beyond the first page', async ({ page, request }) => {
+        // Enough comments waiting to push the new one past the first page of 15.
+        const comment = `Chờ duyệt ${Date.now()}`;
+        const report = `Cần xử lý ${Date.now()}`;
+        const post = await createPost(request, { approved: true });
+        await commentOn(request, post.id, comment);
+        await reportPost(request, post.id, report);
+        await loginViaUi(page, accounts.admin);
+
+        await page.goto('/approved?tab=comments&commentPage=9999');
+        const commentRow = page.getByRole('row', { name: new RegExp(comment) });
+        await commentRow.getByRole('button', { name: /Xác nhận/ }).click();
+        await expect(commentRow).toHaveCount(0);
+        await expect(page.getByRole('alert')).toHaveCount(0);
+
+        await page.goto('/approved?tab=reports&reportPage=9999');
+        const reportRow = page.getByRole('row', { name: new RegExp(report) });
+        await reportRow.getByRole('button', { name: /Xóa/ }).click();
+        await expect(reportRow).toHaveCount(0);
+        await expect(page.getByRole('alert')).toHaveCount(0);
     });
 
     test('approves a pending post and it appears on the home page', async ({ page, request }) => {

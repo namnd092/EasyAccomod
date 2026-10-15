@@ -8,3 +8,10 @@
     display: flex;
     justify-content: space-between;
 }
+/* The library positions the slider against the card, not this column: on a phone make it fill the column instead of sticking out. */
+@media (max-width: 640px){
+    .slider{
+        position: relative;
+        width: 100%;
+    }
+}

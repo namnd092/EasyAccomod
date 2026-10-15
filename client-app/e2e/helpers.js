@@ -51,6 +51,26 @@ export async function createPost(request, { approved = false } = {}) {
     return { id: post.id, title };
 }
 
+// The renter writes a comment (waiting for the admin) on a post through the API.
+export async function commentOn(request, postId, content) {
+    const token = await apiLogin(request, accounts.renter);
+    const response = await request.post(`${API}/api/Renter/RentalPost/Comment`, {
+        headers: { Authorization: `Bearer ${token}` },
+        data: { AccommodationRentalPostId: postId, Rate: 4, Content: content },
+    });
+    if (!response.ok()) throw new Error(`comment failed: ${response.status()}`);
+}
+
+// The renter reports a post through the API (a renter can report a post only once).
+export async function reportPost(request, postId, content) {
+    const token = await apiLogin(request, accounts.renter);
+    const response = await request.post(`${API}/api/Renter/RentalPost/Report`, {
+        headers: { Authorization: `Bearer ${token}` },
+        data: { AccommodationRentalPostId: postId, Content: content },
+    });
+    if (!response.ok()) throw new Error(`report failed: ${response.status()}`);
+}
+
 export async function loginViaUi(page, account) {
     await page.goto('/login');
     const inputs = page.locator('input');
